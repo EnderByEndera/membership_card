@@ -81,4 +81,4 @@ flutter:
         - asset: assets/fonts/msyh.ttf
     - family: consolas
       fonts:
-        - asset: assets/fonts/consola.ttf
+        - asset: assets/fonts/consolas.ttf
