@@ -41,7 +41,7 @@ class CardInfoState extends State<CardInfoPage> {
             side: BorderSide(
             color: Colors.black,
             width: 0.6,
-          ),
+            ),
           ),
 
             child: Text(
@@ -72,7 +72,7 @@ class CardInfoState extends State<CardInfoPage> {
                 Text(
                   "500",
                   style: TextStyle(
-                    height: 3.0,
+                    height: 2.0,
                     fontSize: 20.0,
                     color: Colors.red,
                   ),
@@ -93,13 +93,21 @@ class CardInfoState extends State<CardInfoPage> {
                 Text(
                   "0",
                   style: TextStyle(
-                    height: 3.0,
+                    height: 2.0,
                     fontSize: 20.0,
                     color: Colors.red,
                   ),
                 ),
               ],
             ),
+              Text(
+                "NUM:"+args["cardId"],
+                style: TextStyle(
+                  height: 3.0,
+                  fontSize: 20.0,
+                  color: Colors.black,
+                ),
+              ),
           ],
           ),
         ],
@@ -133,7 +141,6 @@ class CardInfoState extends State<CardInfoPage> {
             child: new BarCodeImage(
               data: cardNumberData,
               codeType: BarCodeType.Code128,
-
               barHeight: 120.0,
               hasText: true,
               onError: (error){
