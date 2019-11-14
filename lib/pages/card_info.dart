@@ -14,6 +14,7 @@ class CardInfoState extends State<CardInfoPage> {
   Widget build(BuildContext context) {
     dynamic args = ModalRoute.of(context).settings.arguments;
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
@@ -25,13 +26,6 @@ class CardInfoState extends State<CardInfoPage> {
           color: Colors.black,
         ),
         //Todo: Add more UI for App bar from here
-        title: Text(
-              args["cardType"],
-              style: TextStyle(
-                  color: Colors.black,
-                  ),
-            ),
-
 
       ),
       //Todo: Add more UI about Card Info body from here
@@ -40,15 +34,67 @@ class CardInfoState extends State<CardInfoPage> {
           Image(
             image: AssetImage("assets/images/anz_card.png"),
             fit: BoxFit.fitWidth,
+            height: 150.0,
           ),
           OutlineButton(
             child: Text(
               "barcode",
               style: TextStyle(
               color: Colors.grey,
-            ),),
+              ),
+            ),
+
             onPressed: () {_openBarCodePage(args["cardId"]);},
-          )
+          ),
+          Wrap(
+            spacing: 90.0,        // 主轴(水平)方向间距
+            runSpacing: 4.0,      // 纵轴（垂直）方向间距
+            alignment: WrapAlignment.center, //沿主轴方向居中
+            children: <Widget>[
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  "Integral",
+                  style: TextStyle(
+                    height: 3.0,
+                    fontSize: 20.0,
+                    color: Colors.black,
+                  ),
+                ),
+                Text(
+                  "500",
+                  style: TextStyle(
+                    height: 3.0,
+                    fontSize: 20.0,
+                    color: Colors.red,
+                  ),
+                ),
+              ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  "Coupons",
+                  style: TextStyle(
+                    height: 3.0,
+                    fontSize: 20.0,
+                    color: Colors.black,
+                  ),
+                ),
+                Text(
+                  "0",
+                  style: TextStyle(
+                    height: 3.0,
+                    fontSize: 20.0,
+                    color: Colors.red,
+                  ),
+                ),
+              ],
+            ),
+          ],
+          ),
         ],
       ),
     );
@@ -80,7 +126,7 @@ class CardInfoState extends State<CardInfoPage> {
             child: new BarCodeImage(
               data: cardNumberData,
               codeType: BarCodeType.Code128,
-              lineWidth: 2.0,
+              lineWidth: 3.0,       //This wid can be changed
               barHeight: 120.0,
               hasText: true,
               onError: (error){
