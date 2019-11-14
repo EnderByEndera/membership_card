@@ -39,43 +39,40 @@ class AllCardsPageState extends State<AllCardsPage> {
 
   Widget _buildList(BuildContext context, int index) => Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Container(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Consumer<CardCounter>(
-              builder: (context, counter, child) => Hero(
-                tag: counter.cardList.elementAt(index).cardKey,
-                child: SizedBox(
-                  height: 137.1,
-                  child: GestureDetector(
-                    onTap: () {
-                        var cardInfo = counter.cardList.elementAt(index);
-                        Navigator.of(context).pushNamed("/cardinfo", arguments: {
-                          "cardId": cardInfo.cardId,
-                          "cardType": cardInfo.cardType,
-                          "remark": cardInfo.remark,
-                          "key": cardInfo.cardKey,
-                        });
-                      },
-                    child: Container(
-                      alignment: Alignment.bottomLeft,
-                      padding: EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage("assets/images/anz_card.png"),
-                            fit: BoxFit.fitHeight,
-                          )
-                      ),
-                      child: Text(
-                        "${counter.cardList.elementAt(index).cardType}\n" +
-                            "${counter.cardList.elementAt(index).cardId}",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: "consolas",
-                            fontSize: 28.0),
-                      ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Consumer<CardCounter>(
+            builder: (context, counter, child) => Hero(
+              tag: counter.cardList.elementAt(index).cardKey,
+              child: SizedBox(
+                height: 137.1,
+                child: GestureDetector(
+                  onTap: () {
+                    var cardInfo = counter.cardList.elementAt(index);
+                    Navigator.of(context).pushNamed("/cardinfo", arguments: {
+                      "cardId": cardInfo.cardId,
+                      "cardType": cardInfo.cardType,
+                      "remark": cardInfo.remark,
+                      "key": cardInfo.cardKey,
+                    });
+                  },
+                  child: Container(
+                    alignment: Alignment.bottomLeft,
+                    padding: EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                      image: AssetImage("assets/images/anz_card.png"),
+                      fit: BoxFit.fitHeight,
+                    )),
+                    child: Text(
+                      "${counter.cardList.elementAt(index).cardType}\n" +
+                          "${counter.cardList.elementAt(index).cardId}",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: "consolas",
+                          fontSize: 28.0),
                     ),
-                  )
+                  ),
                 ),
               ),
             ),
@@ -85,8 +82,6 @@ class AllCardsPageState extends State<AllCardsPage> {
 
   @override
   Widget build(BuildContext context) {
-//    _getCardInfo();
-
     return Scaffold(
 
         //Todo: AppBar may be updated in the future, but now we don't do this
@@ -157,13 +152,20 @@ class AllCardsPageState extends State<AllCardsPage> {
               ),
               backgroundColor: Colors.white,
             ),
-            Consumer<CardCounter>(
-              builder: (context, counter, child) => SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                _buildList,
-                childCount: counter.cardList.length,
-              )),
-            )
+            Consumer<CardCounter>(builder: (context, counter, child) {
+              try {
+                return SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                  _buildList,
+                  childCount: counter.cardList.length,
+                ));
+              } on Exception catch (e) {
+                print("Go into AlertDialog");
+                return AlertDialog(
+                  title: Text(e.toString()),
+                );
+              }
+            }),
           ],
         ));
   }
