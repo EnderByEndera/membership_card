@@ -16,7 +16,7 @@ class CardInfoState extends State<CardInfoPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        elevation: 0,
+
         backgroundColor: Colors.white,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -36,14 +36,21 @@ class CardInfoState extends State<CardInfoPage> {
             fit: BoxFit.fitWidth,
             height: 150.0,
           ),
-          OutlineButton(
+          FlatButton(
+          shape: BeveledRectangleBorder(
+            side: BorderSide(
+            color: Colors.black,
+            width: 0.6,
+          ),
+          ),
+
             child: Text(
               "barcode",
               style: TextStyle(
-              color: Colors.grey,
+              color: Colors.black45,
               ),
             ),
-
+          hoverColor: Colors.red,
             onPressed: () {_openBarCodePage(args["cardId"]);},
           ),
           Wrap(
@@ -126,7 +133,7 @@ class CardInfoState extends State<CardInfoPage> {
             child: new BarCodeImage(
               data: cardNumberData,
               codeType: BarCodeType.Code128,
-              lineWidth: 3.0,       //This wid can be changed
+
               barHeight: 120.0,
               hasText: true,
               onError: (error){
