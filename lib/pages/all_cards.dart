@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:membership_card/model/card_count.dart';
@@ -80,6 +81,25 @@ class AllCardsPageState extends State<AllCardsPage> {
         ),
       );
 
+  Widget _getCardBagAppBar() {
+    return SliverAppBar(
+      elevation: 16.0,
+      expandedHeight: MediaQuery.of(context).size.height * 300 / 1920,
+      flexibleSpace: FlexibleSpaceBar(
+        titlePadding: EdgeInsets.only(left: 6, bottom: 30),
+        title: Text(
+          "Card bag",
+          style: TextStyle(
+            fontFamily: "msyh",
+            fontSize: 32.0,
+            color: Colors.black,
+          ),
+        ),
+      ),
+      backgroundColor: Colors.white,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -135,38 +155,35 @@ class AllCardsPageState extends State<AllCardsPage> {
             },
           ),
         ),
-        body: CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              expandedHeight: MediaQuery.of(context).size.height * 300 / 1920,
-              flexibleSpace: FlexibleSpaceBar(
-                titlePadding: EdgeInsets.only(left: 6, bottom: 30),
-                title: Text(
-                  "Card bag",
-                  style: TextStyle(
-                    fontFamily: "msyh",
-                    fontSize: 32.0,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-              backgroundColor: Colors.white,
-            ),
-            Consumer<CardCounter>(builder: (context, counter, child) {
-              try {
-                return SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                  _buildList,
-                  childCount: counter.cardList.length,
-                ));
-              } on Exception catch (e) {
-                print("Go into AlertDialog");
-                return AlertDialog(
-                  title: Text(e.toString()),
-                );
+        body: FutureBuilder(
+          future: dioGet<String>("/api/user", dio),
+          builder: (context, AsyncSnapshot<Response> snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              List<dynamic> _list = jsonDecode(snapshot.data.data);
+              var _cardList = List<CardInfo>();
+              for (var value in _list) {
+                _cardList.add(CardInfo.fromJson(value));
               }
-            }),
-          ],
+              Provider.of<CardCounter>(context).cardList = _cardList;
+              return CustomScrollView(
+                slivers: <Widget>[
+                  _getCardBagAppBar(),
+                  Consumer<CardCounter>(builder: (context, counter, child) {
+                    return SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                      _buildList,
+                      childCount: counter.cardList.length,
+                    ));
+                  }),
+                ],
+              );
+            } else {
+              return Container(
+                alignment: Alignment.center,
+                child: CircularProgressIndicator(),
+              );
+            }
+          },
         ));
   }
 }

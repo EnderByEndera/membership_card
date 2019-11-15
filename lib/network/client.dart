@@ -4,7 +4,7 @@ Dio initDio() {
   Dio dio = Dio(
     // This is the base options for Dio client to connect to server
     BaseOptions(
-      baseUrl: "http://129.204.110.90",
+      baseUrl: "http://101.37.27.155:8080",
       connectTimeout: 3000,
       receiveTimeout: 3000,
       receiveDataWhenStatusError: true,
@@ -12,4 +12,21 @@ Dio initDio() {
     ),
   );
   return dio;
+}
+
+Future<Response<T>> dioGet<T>(String url, Dio dio) async {
+  Response res;
+  try {
+    res = await dio.get(url);
+    return res;
+  } on DioError catch(e) {
+    if (e.response == null) {
+      res.data = "Error occured before connection";
+      res.statusCode = 500;
+      return res;
+    } else {
+      res.statusCode = e.response.statusCode;
+      return res;
+    }
+  }
 }

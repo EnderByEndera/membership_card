@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:membership_card/pages/add_cards_with_camera.dart';
 import 'package:membership_card/pages/all_cards.dart';
 import 'package:membership_card/model/card_count.dart';
@@ -11,7 +12,12 @@ import 'model/card_model.dart';
 import 'pages/add_cards_with_number.dart';
 import 'pages/card_info.dart';
 
-void main() => runApp(GoWallet());
+void main() {
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(GoWallet());
+  });
+}
 
 /// This is the entrance of our GoWallet App.
 /// It is used for entering the whole GoWallet App and
@@ -24,30 +30,27 @@ class GoWallet extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
 
-      // This is the providers for out state management
-      providers: [
-        ChangeNotifierProvider(
-          builder: (context) => CardCounter()
-        ),
-        ChangeNotifierProvider(
-          builder: (context) => CardInfo(),
-        )
-      ],
-      child: MaterialApp(
-        title: 'GoWallet App',
-        home: AllCardsPage(),
-        theme: ThemeData.light(),
+        // This is the providers for out state management
+        providers: [
+          ChangeNotifierProvider(builder: (context) => CardCounter()),
+          ChangeNotifierProvider(
+            builder: (context) => CardInfo(),
+          )
+        ],
+        child: MaterialApp(
+          title: 'GoWallet App',
+          home: AllCardsPage(),
+          theme: ThemeData.light(),
 
-        // routes defined all the page routes of our App
-        routes: {
-          "/addnumber" : (_) => AddCardWithNumberPage(),
-          "/addcamera" : (_) => AddCardWithCameraPage(),
-          "/cardinfo"  : (_) => CardInfoPage(),
-          "/settings"  : (_) => SettingsPage(),
-          "/search"    : (_) => SearchPage(),
-          "/help"      : (_) => HelpPage(),
-        },
-      )
-    );
+          // routes defined all the page routes of our App
+          routes: {
+            "/addnumber": (_) => AddCardWithNumberPage(),
+            "/addcamera": (_) => AddCardWithCameraPage(),
+            "/cardinfo": (_) => CardInfoPage(),
+            "/settings": (_) => SettingsPage(),
+            "/search": (_) => SearchPage(),
+            "/help": (_) => HelpPage(),
+          },
+        ));
   }
 }
