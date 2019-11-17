@@ -46,10 +46,10 @@ class GoWallet extends StatelessWidget {
           routes: {
             "/addnumber": (_) => AddCardWithNumberPage(),
             "/addcamera": (_) => AddCardWithCameraPage(),
-            "/cardinfo": (_) => CardInfoPage(),
-            "/settings": (_) => SettingsPage(),
-            "/search": (_) => SearchPage(),
-            "/help": (_) => HelpPage(),
+            "/cardinfo":  (_) => CardInfoPage(),
+            "/settings":  (_) => SettingsPage(),
+            "/search":    (_) => SearchPage(),
+            "/help":      (_) => HelpPage(),
           },
         ));
   }

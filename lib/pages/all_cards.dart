@@ -156,7 +156,7 @@ class AllCardsPageState extends State<AllCardsPage> {
           ),
         ),
         body: FutureBuilder(
-          future: dioGet<String>("/api/user", dio),
+          future: dio.get("/api/user"),
           builder: (context, AsyncSnapshot<Response> snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               List<dynamic> _list = jsonDecode(snapshot.data.data);
