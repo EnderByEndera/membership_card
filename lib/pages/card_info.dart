@@ -1,5 +1,11 @@
+import 'dart:ui';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:barcode_flutter/barcode_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:membership_card/model/card_count.dart';
+import 'package:membership_card/network/client.dart';
+
 /// This is the Card_Info Page showing one card's information.
 /// It should include one card's all the information here.
 class CardInfoPage extends StatefulWidget {
@@ -12,26 +18,6 @@ class CardInfoPage extends StatefulWidget {
 }
 
 class CardInfoState extends State<CardInfoPage> {
-
-static var image1;
-static var flatButton1;
-static var wrap1;
-
-
-  List<Widget> items = [image1,flatButton1,wrap1];
-
-  //删除方法，判断item长度>=3的时候可以删除 ，根据需求自行定义，
-  //给子组件调用
-  void deleteFirstTitle() {
-    if(items.length>=1) {
-      setState(() {
-        items.removeAt(0);
-      });
-    }
-
-  }
-
-
 
 
   @override
@@ -57,15 +43,14 @@ static var wrap1;
               context: context,
               builder: (BuildContext context) {
                 var list = List();
-                list.add('编辑');
-                list.add('删除');
+                list.add('edit');
+                list.add('delete');
 
                 return CommonBottomSheet(
                     list: list,
                     onItemClickListener: (index) async {
                       Navigator.pop(context);
                     },
-                    deleteItem: deleteFirstTitle
                 );
               });}),
         ],// Here we take the value from the MyHomePage object that was created by
@@ -76,12 +61,12 @@ static var wrap1;
       //Todo: Add more UI about Card Info body from here
       body: new Column(
         children: <Widget>[
-          image1=Image(
+         Image(
             image: AssetImage("assets/images/anz_card.png"),
             fit: BoxFit.fitWidth,
             height: 150.0,
           ),
-         flatButton1= FlatButton(
+          FlatButton(
           shape: BeveledRectangleBorder(
             side: BorderSide(
             color: Colors.black,
@@ -98,7 +83,7 @@ static var wrap1;
           hoverColor: Colors.red,
             onPressed: () {_openBarCodePage(args["cardId"]);},
           ),
-         wrap1= Wrap(
+        Wrap(
             spacing: 90.0,        // 主轴(水平)方向间距
             runSpacing: 4.0,      // 纵轴（垂直）方向间距
             alignment: WrapAlignment.center, //沿主轴方向居中
@@ -207,16 +192,13 @@ static var wrap1;
 
 
 
-
+/// 底部弹出框
 class CommonBottomSheet extends StatefulWidget {
-
-  CommonBottomSheet({Key key, this.list, this.onItemClickListener,@required this.deleteItem})
+  CommonBottomSheet({Key key, this.list, this.onItemClickListener})
       : assert(list != null),
         super(key: key);
   final list;
   final OnItemClickListener onItemClickListener;
-  final deleteItem;
-
   @override
   _CommonBottomSheetState createState() => _CommonBottomSheetState();
 }
@@ -228,6 +210,10 @@ class _CommonBottomSheetState extends State<CommonBottomSheet> {
   double itemHeight = 44;
   var borderColor = Colors.white;
   double circular = 10;
+
+  Response res;
+  Dio dio = initDio();
+
 
   @override
   void initState() {
@@ -265,7 +251,7 @@ class _CommonBottomSheetState extends State<CommonBottomSheet> {
             onTap: () {
               Navigator.pop(context); //点击取消时弹回主界面
             },
-            child: Text("取消",
+            child: Text("cancel",
               style: TextStyle(
                   fontFamily: 'Robot',
                   fontWeight: FontWeight.normal,
@@ -304,6 +290,8 @@ class _CommonBottomSheetState extends State<CommonBottomSheet> {
     );
     return stack;
   }
+
+
   Widget getItemContainer(BuildContext context, int index) {
     if (widget.list == null) {
       return Container();
@@ -385,6 +373,7 @@ class _CommonBottomSheetState extends State<CommonBottomSheet> {
       showAlertDialog(context);
     };
 
+
     var stack = Stack(
       alignment: Alignment.center,
       children: <Widget>[itemContainer, contentText],
@@ -395,35 +384,29 @@ class _CommonBottomSheetState extends State<CommonBottomSheet> {
     );
     return getsture;
   }
-
-  void showAlertDialog(BuildContext context) {  // 对话框函数
-    NavigatorState navigator= context.rootAncestorStateOfType(const TypeMatcher<NavigatorState>());
-    debugPrint("navigator is null?"+(navigator==null).toString());
-
-
-    showDialog(
-        context: context,
-        builder: (_) => new AlertDialog(
-            title: new Text("Delete"),
-            content: new Text("Click 'delete' to confirm the deletion."),
-            actions:<Widget>[
-              new FlatButton(child:new Text("CANCEL"), onPressed: (){
-                Navigator.of(context).pop();
-
-              },),
-              new FlatButton(child:new Text("DELETE"), onPressed: (){
-                //删除body第一个
-                //思路：将 list 保存在数组中，删除数组第一个，更新数据即可
-                //删除方法定义在父组件中，传递给子组件
-                widget.deleteItem();
-                //关闭dialog
-                Navigator.of(context).pop();
-                //关闭bottomSheet
-                widget.onItemClickListener(2);
-              },
-              )
-            ]
-        ));
-  }
 }
 
+void showAlertDialog(BuildContext context) {  // 对话框函数
+  NavigatorState navigator= context.rootAncestorStateOfType(const TypeMatcher<NavigatorState>());
+  debugPrint("navigator is null?"+(navigator==null).toString());
+
+
+  showDialog(
+      context: context,
+      builder: (_) => new AlertDialog(
+          title: new Text("Delete"),
+          content: new Text("Click 'delete' to confirm the deletion."),
+          actions:<Widget>[
+            new FlatButton(child:new Text("CANCEL"), onPressed: (){
+              Navigator.of(context).pop();
+
+            },),
+            new FlatButton(child:new Text("DELETE"), onPressed: (){
+
+              Navigator.of(context).pushNamedAndRemoveUntil( "/mainpage", (Route<dynamic> route) => false);
+
+            },
+            )
+          ]
+      ));
+}

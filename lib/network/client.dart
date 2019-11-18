@@ -30,3 +30,11 @@ Future<Response<T>> dioGet<T>(String url, Dio dio) async {
     }
   }
 }
+
+Future<Response<T>> dioDelete<T>(String url, Dio dio)async{
+    Response res;
+
+      res = await dio.get(url);
+      return res;
+
+}
