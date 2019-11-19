@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'dart:ui' as prefix0;
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:barcode_flutter/barcode_flutter.dart';
@@ -153,9 +154,12 @@ class CardInfoState extends State<CardInfoPage> {
     Navigator.of(context).push(
     MaterialPageRoute<void>(
       builder: (BuildContext context){
-        return Scaffold(
+        return
+        Scaffold(
+
           backgroundColor: Colors.white,
           appBar: AppBar(
+            brightness: Brightness.dark,
             elevation: 0,
             backgroundColor: Colors.white,
             leading: IconButton(
@@ -177,6 +181,7 @@ class CardInfoState extends State<CardInfoPage> {
               data: cardNumberData,
               codeType: BarCodeType.Code128,
               barHeight: 120.0,
+              lineWidth: 1.0,
               hasText: true,
               onError: (error){
                 print('error=$error');
@@ -189,6 +194,7 @@ class CardInfoState extends State<CardInfoPage> {
     );
   }
 }
+
 
 
 
