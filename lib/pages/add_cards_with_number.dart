@@ -17,6 +17,7 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
 
   ///Force the page to remain vertical
   void initState() {
+    super.initState();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown

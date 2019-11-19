@@ -156,13 +156,15 @@ class AllCardsPageState extends State<AllCardsPage> {
           ),
         ),
         body: FutureBuilder(
-          future: dio.get("/api/user"),
+          future: dioGet("/api/user", dio),
           builder: (context, AsyncSnapshot<Response> snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               List<dynamic> _list = jsonDecode(snapshot.data.data);
               var _cardList = List<CardInfo>();
-              for (var value in _list) {
-                _cardList.add(CardInfo.fromJson(value));
+              if (_list != null) {
+                for (var value in _list) {
+                  _cardList.add(CardInfo.fromJson(value));
+                }
               }
               Provider.of<CardCounter>(context).cardList = _cardList;
               return CustomScrollView(

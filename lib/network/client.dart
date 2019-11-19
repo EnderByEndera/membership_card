@@ -7,7 +7,7 @@ Dio initDio() {
       baseUrl: "http://101.37.27.155:8080",
       connectTimeout: 3000,
       receiveTimeout: 3000,
-      receiveDataWhenStatusError: true,
+      receiveDataWhenStatusError: false,
       sendTimeout: 3000,
     ),
   );
@@ -15,7 +15,7 @@ Dio initDio() {
 }
 
 Future<Response<T>> dioGet<T>(String url, Dio dio) async {
-  Response res;
+  Response res = Response();
   try {
     res = await dio.get(url);
     return res;
