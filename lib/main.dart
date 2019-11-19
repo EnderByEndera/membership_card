@@ -30,7 +30,7 @@ class GoWallet extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
 
-        // This is the providers for out state management
+      // This is the providers for out state management
         providers: [
           ChangeNotifierProvider(builder: (context) => CardCounter()),
           ChangeNotifierProvider(
@@ -46,10 +46,11 @@ class GoWallet extends StatelessWidget {
           routes: {
             "/addnumber": (_) => AddCardWithNumberPage(),
             "/addcamera": (_) => AddCardWithCameraPage(),
-            "/cardinfo": (_) => CardInfoPage(),
-            "/settings": (_) => SettingsPage(),
-            "/search": (_) => SearchPage(),
-            "/help": (_) => HelpPage(),
+            "/cardinfo":  (_) => CardInfoPage(),
+            "/settings":  (_) => SettingsPage(),
+            "/search":    (_) => SearchPage(),
+            "/help":      (_) => HelpPage(),
+            "/mainpage":  (_) => AllCardsPage(),
           },
         ));
   }
