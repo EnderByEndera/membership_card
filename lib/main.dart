@@ -4,11 +4,13 @@ import 'package:membership_card/pages/add_cards_with_camera.dart';
 import 'package:membership_card/pages/all_cards.dart';
 import 'package:membership_card/model/card_count.dart';
 import 'package:membership_card/pages/help.dart';
+import 'package:membership_card/pages/login.dart';
 import 'package:membership_card/pages/search.dart';
 import 'package:membership_card/pages/settings.dart';
 import 'package:provider/provider.dart';
 
 import 'model/card_model.dart';
+import 'model/user_model.dart';
 import 'pages/add_cards_with_number.dart';
 import 'pages/card_info.dart';
 
@@ -30,27 +32,31 @@ class GoWallet extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
 
-      // This is the providers for out state management
+        // This is the providers for out state management
         providers: [
-          ChangeNotifierProvider(builder: (context) => CardCounter()),
+          ChangeNotifierProvider(builder: (_) => CardCounter()),
           ChangeNotifierProvider(
-            builder: (context) => CardInfo(),
+            builder: (_) => CardInfo(),
+          ),
+          ChangeNotifierProvider(
+            builder: (_) => User(),
           )
         ],
         child: MaterialApp(
           title: 'GoWallet App',
-          home: AllCardsPage(),
+          home: LoginPage(),
           theme: ThemeData.light(),
 
           // routes defined all the page routes of our App
           routes: {
             "/addnumber": (_) => AddCardWithNumberPage(),
             "/addcamera": (_) => AddCardWithCameraPage(),
-            "/cardinfo":  (_) => CardInfoPage(),
-            "/settings":  (_) => SettingsPage(),
-            "/search":    (_) => SearchPage(),
-            "/help":      (_) => HelpPage(),
-            "/mainpage":  (_) => AllCardsPage(),
+            "/cardinfo": (_) => CardInfoPage(),
+            "/settings": (_) => SettingsPage(),
+            "/search": (_) => SearchPage(),
+            "/help": (_) => HelpPage(),
+            "/allcardspage": (_) => AllCardsPage(),
+            "/loginpage": (_) => LoginPage(),
           },
         ));
   }
