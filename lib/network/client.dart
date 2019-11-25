@@ -7,7 +7,7 @@ Dio initDio() {
   Dio dio = Dio(
     // This is the base options for Dio client to connect to server
     BaseOptions(
-      baseUrl: "http://goflutter.italktoyou.cn:8080",
+      baseUrl: "http://101.37.27.155:8080",
       connectTimeout: 3000,
       receiveTimeout: 3000,
       receiveDataWhenStatusError: false,
@@ -21,7 +21,7 @@ Dio initDio() {
 Future<Response<T>> dioGetAllCards<T>(Dio dio) async {
   Response res = Response();
   try {
-    res = await dio.get("/api/users");
+    res = await dio.get("/v1/api/users");
     return res;
   } on DioError catch (e) {
     if (e.response == null) {
@@ -35,13 +35,14 @@ Future<Response<T>> dioGetAllCards<T>(Dio dio) async {
   }
 }
 
-Future<Response<T>> dioPostLogin<T>(Dio dio, User user) async {
+Future<Response<T>> dioLogin<T>(Dio dio, User user) async {
   Response res = Response();
   try {
-    res = await dio.post(
-      "/api/login",
+    res = await dio.put<String>(
+      "/v1/api/user/login",
       data: jsonEncode(user.toJson()),
     );
+    print("${res.statusCode}");
   } on DioError catch (e) {
     if (e.response == null) {
       res.statusCode = 500;

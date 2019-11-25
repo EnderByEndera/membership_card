@@ -42,7 +42,7 @@ class LoginPageState extends State<LoginPage> {
       if (_passwordController.text.contains(RegExp(r"\W"))) {
         setState(() {
           _passwordCorrect = false;
-          _passwordErrMsg = "Password format not correct";
+          _passwordErrMsg = "Can only input 0-9, a-z and A-Z";
         });
       } else if (_passwordController.text.isEmpty) {
         setState(() {
@@ -65,12 +65,12 @@ class LoginPageState extends State<LoginPage> {
       if (_usernameController.text.isEmpty) {
         setState(() {
           _usernameCorrect = false;
-          _usernameErrMsg = "Username can not be empty";
+          _usernameErrMsg = "Can not be empty";
         });
       } else if (_usernameController.text.contains(RegExp(r"\W"))) {
         setState(() {
           _usernameCorrect = false;
-          _usernameErrMsg = "Username format not correct";
+          _usernameErrMsg = "Can only input 0-9, a-z and A-Z";
         });
       } else {
         setState(() {
@@ -83,14 +83,13 @@ class LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     var _nameTextField = TextField(
       decoration: InputDecoration(
-        labelText: "Username",
-        hintText: "Username",
+        labelText: "Name/Mail/Tel",
         errorText: _usernameErrMsg,
       ),
       controller: _usernameController,
+      maxLength: 24,
     );
 
     var _passwordTextField = TextField(
@@ -98,7 +97,6 @@ class LoginPageState extends State<LoginPage> {
       decoration: InputDecoration(
         errorText: _passwordErrMsg,
         labelText: "Password",
-        hintText: "Password",
       ),
       controller: _passwordController,
     );
@@ -110,47 +108,103 @@ class LoginPageState extends State<LoginPage> {
           children: <Widget>[
             _nameTextField,
             _passwordTextField,
+            Flex(
+              direction: Axis.horizontal,
+              children: <Widget>[
+                Spacer(),
+                FlatButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, "/forgetpage");
+                  },
+                  child: Text("Forget password?"),
+                )
+              ],
+            ),
             Consumer<User>(
-              builder: (context, user, child) => MaterialButton(
-                onPressed: _usernameCorrect && _passwordCorrect
-                    ? () async {
-                        _loginMsg = "";
-                        setState(() {
-                          isSent = true;
-                        });
-                        res = await dioPostLogin(dio, user);
-                        setState(() {
-                          isSent = false;
-                        });
-                        if (res.statusCode == 200) {
-                          Map<String, dynamic> json = jsonDecode(res.data);
-                          if (json["loginInfo"] == "success") {
-                            _loginMsg = "Login Succeeded";
-                            Navigator.pushNamed(context, "/allcardspage");
-                          } else {
-                            _loginMsg = "Login Failed";
+              builder: (context, user, child) => Flex(
+                mainAxisAlignment: MainAxisAlignment.center,
+                direction: Axis.horizontal,
+                children: <Widget>[
+                  MaterialButton(
+                    onPressed: _usernameCorrect && _passwordCorrect
+                        ? () async {
+                            _loginMsg = "";
+                            setState(() {
+                              isSent = true;
+                            });
+                            user.username = _usernameController.text;
+                            user.password = _passwordController.text;
+                            res = await dioLogin(dio, user);
+                            setState(() {
+                              isSent = false;
+                            });
+                            if (res.statusCode == 200) {
+                              print("${res.data}");
+                              try {
+                                Map<String, dynamic> json =
+                                    jsonDecode(res.data);
+                                if (json["loginInfo"] == "success") {
+                                  _loginMsg = "Login Succeeded";
+                                  Navigator.pushNamed(context, "/allcardspage");
+                                } else {
+                                  _loginMsg = "Login Failed!";
+                                  showDialog(
+                                      context: context,
+                                      builder: (_) => AlertDialog(
+                                            title: Text("Alert"),
+                                            content: Text(_loginMsg),
+                                          ));
+                                }
+                              } on FormatException {
+                                _loginMsg = "Login Failed";
+                                showDialog(
+                                    context: context,
+                                    builder: (_) => AlertDialog(
+                                          title: Text("Alert"),
+                                          content: Text(_loginMsg),
+                                        ));
+                              }
+                            } else if (res.statusCode == 400 ||
+                                res.statusCode == 404) {
+                              _loginMsg =
+                                  "Network connection failed, "
+                                      "check your network";
+                              showDialog(context: context, builder: (_) => AlertDialog(
+                                title: Text("Alert"),
+                                content: Text(_loginMsg),
+                              ));
+                            } else if (res.statusCode >= 500) {
+                              _loginMsg = "Server error";
+                            }
                           }
-                        } else if (res.statusCode == 404) {
-                          _loginMsg =
-                              "Network connection failed, check your network";
-                        } else if (res.statusCode >= 500) {
-                          _loginMsg = "Server error";
-                        }
-                      }
-                    : null,
-                child: Container(
-                  child: isSent
-                      ? CircularProgressIndicator()
-                      : Text(
-                          "Login",
-                          textAlign: TextAlign.center,
-                        ),
-                ),
+                        : null,
+                    color: Colors.amber,
+                    child: Container(
+                      child: Text(
+                        "Sign In",
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  MaterialButton(
+                    color: Colors.blue,
+                    onPressed: () {
+                      Navigator.of(context).pushNamed("/registerpage");
+                    },
+                    child: Container(
+                      child: Text("Sign Up"),
+                    ),
+                  )
+                ],
               ),
             ),
-            Text(
-              _loginMsg == null ? "" : _loginMsg,
-              textAlign: TextAlign.center,
+            Container(
+              child: isSent
+                  ? CircularProgressIndicator()
+                  : Text(
+                      _loginMsg == null ? "" : _loginMsg,
+                      textAlign: TextAlign.center,
+                    ),
             ),
           ],
         ),

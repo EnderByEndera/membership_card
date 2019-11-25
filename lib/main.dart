@@ -5,6 +5,7 @@ import 'package:membership_card/pages/all_cards.dart';
 import 'package:membership_card/model/card_count.dart';
 import 'package:membership_card/pages/help.dart';
 import 'package:membership_card/pages/login.dart';
+import 'package:membership_card/pages/register.dart';
 import 'package:membership_card/pages/search.dart';
 import 'package:membership_card/pages/settings.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +13,7 @@ import 'package:provider/provider.dart';
 import 'model/card_model.dart';
 import 'model/user_model.dart';
 import 'pages/add_cards_with_number.dart';
+import 'pages/forget_password.dart';
 import 'pages/card_info.dart';
 
 void main() {
@@ -57,6 +59,8 @@ class GoWallet extends StatelessWidget {
             "/help": (_) => HelpPage(),
             "/allcardspage": (_) => AllCardsPage(),
             "/loginpage": (_) => LoginPage(),
+            "/registerpage": (_) => RegisterPage(),
+            "/forgetpage": (_) => ForgetPasswordPage(),
           },
         ));
   }

@@ -21,6 +21,10 @@ class User extends ChangeNotifier {
 
   User([this._username, this._password]);
 
+  set username(String value) {
+    _username = value;
+  }
+
   User.fromJson(Map<String, dynamic> json) {
     _username = json[_USERNAME_JSON];
     _password = json[_PASSWORD_JSON];
@@ -32,5 +36,9 @@ class User extends ChangeNotifier {
       _PASSWORD_JSON: _password,
     };
     return user;
+  }
+
+  set password(String value) {
+    _password = value;
   }
 }
