@@ -48,6 +48,11 @@ flutter:
 
   assets:
     - assets/images/anz_card.png
+    - assets/buttons/btnAdd.png
+    - assets/backgrounds/nfcIllu.jpg
+    - assets/buttons/btnPunch.png
+    - assets/backgrounds/tabCard.png
+    - assets/backgrounds/tabUser.png
 
   # To add assets to your application, add an assets section, like this:
 

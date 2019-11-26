@@ -5,7 +5,7 @@ import 'package:membership_card/pages/all_cards.dart';
 
 
 /// This is the class defining all the card info
-/// It is generally used in [AllCardsState] and [AllCardsPage]
+/// It is generally used in [AllCardsState] and [AllCardsMainPage]
 /// [CardInfo] CONSTRUCTOR ORDER is {[_cardId], [_eName], [_remark]}
 /// ```dart
 /// // This is the basic CardInfo constructing method

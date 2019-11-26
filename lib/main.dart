@@ -46,8 +46,10 @@ class GoWallet extends StatelessWidget {
         ],
         child: MaterialApp(
           title: 'GoWallet App',
-          home: LoginPage(),
-          theme: ThemeData.light(),
+          home: AllCardsMainPage(),
+          theme: ThemeData(
+            primaryColor: Color.fromARGB(0xFF, 251, 108, 0),
+          ),
 
           // routes defined all the page routes of our App
           routes: {
@@ -57,7 +59,7 @@ class GoWallet extends StatelessWidget {
             "/settings": (_) => SettingsPage(),
             "/search": (_) => SearchPage(),
             "/help": (_) => HelpPage(),
-            "/allcardspage": (_) => AllCardsPage(),
+            "/allcardspage": (_) => AllCardsMainPage(),
             "/loginpage": (_) => LoginPage(),
             "/registerpage": (_) => RegisterPage(),
             "/forgetpage": (_) => ForgetPasswordPage(),
