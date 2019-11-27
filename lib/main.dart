@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:membership_card/pages/add_cards_with_camera.dart';
 import 'package:membership_card/pages/all_cards.dart';
 import 'package:membership_card/model/card_count.dart';
+import 'package:membership_card/pages/coupon.dart';
 import 'package:membership_card/pages/help.dart';
 import 'package:membership_card/pages/login.dart';
 import 'package:membership_card/pages/register.dart';
@@ -46,7 +47,7 @@ class GoWallet extends StatelessWidget {
         ],
         child: MaterialApp(
           title: 'GoWallet App',
-          home: AllCardsMainPage(),
+          home: AllCardsPage(),
           theme: ThemeData(
             primaryColor: Color.fromARGB(0xFF, 251, 108, 0),
           ),
@@ -63,6 +64,7 @@ class GoWallet extends StatelessWidget {
             "/loginpage": (_) => LoginPage(),
             "/registerpage": (_) => RegisterPage(),
             "/forgetpage": (_) => ForgetPasswordPage(),
+            "/couponpage": (_) => CouponPage(),
           },
         ));
   }

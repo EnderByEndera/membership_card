@@ -55,6 +55,11 @@ flutter:
     - assets/buttons/btnPunch.png
     - assets/backgrounds/tabCard.png
     - assets/backgrounds/tabUser.png
+    - assets/coupon/green.png
+    - assets/coupon/purple.png
+    - assets/coupon/orange.png
+    - assets/coupon/coffee.png
+    - assets/coupon/staffFig.png
 
   # To add assets to your application, add an assets section, like this:
 
