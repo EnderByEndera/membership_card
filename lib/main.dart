@@ -47,7 +47,7 @@ class GoWallet extends StatelessWidget {
         ],
         child: MaterialApp(
           title: 'GoWallet App',
-          home: AllCardsPage(),
+          home: AllCardsMainPage(),
           theme: ThemeData(
             primaryColor: Color.fromARGB(0xFF, 251, 108, 0),
           ),
