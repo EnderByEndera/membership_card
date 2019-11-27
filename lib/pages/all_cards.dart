@@ -40,6 +40,129 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
 
   var _dots = List<TextSpan>();
 
+  void _intoNFC() async {
+    showDialog(
+      context: context,
+      builder: (_) => Container(
+        child: Flex(
+          direction: Axis.vertical,
+          children: [
+            GestureDetector(
+                onTap: () async {
+                  Navigator.of(context).pop();
+                  NfcData response = await FlutterNfcReader.stop();
+                  print(response.content);
+                },
+                child:
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.5)),
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                    boxShadow: [BoxShadow(blurRadius: 3.0)],
+                    borderRadius: BorderRadius.circular(15.0),
+                    color: Colors.white),
+                child: Flex(
+                  direction: Axis.vertical,
+                  children: <Widget>[
+                    SizedBox(height: 20),
+                    Container(
+                      alignment: Alignment.topCenter,
+                      child: Text(
+                        "Ready to Scan",
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 28.0,
+                          decoration: TextDecoration.none,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Container(
+                      height: 200,
+                      child: Image(
+                        image: AssetImage("assets/backgrounds/nfcIllu.jpg"),
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      child: RichText(
+                        text: TextSpan(
+                          text: "Hold your phone near the fire",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16.0,
+                            decoration: TextDecoration.none,
+                          ),
+                          children: _dots,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.0),
+                        color: Colors.grey,
+                      ),
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      height: 50,
+                      child: MaterialButton(
+                          onPressed: () async {
+                            try {
+                              Navigator.of(context).pop();
+                              NfcData response = await FlutterNfcReader.stop();
+                              print(response.content);
+                            } on Exception {
+                              Navigator.of(context).pop();
+                            }
+                          },
+                          child: Text(
+                            "Cancel",
+                            style: TextStyle(fontSize: 20.0),
+                          )),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+    try {
+      NfcData response = await FlutterNfcReader.read();
+      print(response.error);
+      Navigator.of(context).popAndPushNamed("/cardinfo");
+    } on Exception {
+      Navigator.of(context).pop();
+      showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+                title: Text("NFC Not Found"),
+                content: Text("Please open NFC in your phone first"),
+                actions: <Widget>[
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      _intoNFC();
+                    },
+                    child: Text("already done",
+                        style:
+                            TextStyle(color: Theme.of(context).primaryColor)),
+                  ),
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(color: Theme.of(context).primaryColor),
+                    ),
+                  )
+                ],
+              ));
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -116,117 +239,7 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
               Container(
                 alignment: Alignment.center,
                 child: MaterialButton(
-                  onPressed: () async {
-                    showDialog(
-                      context: context,
-                      builder: (_) => Container(
-                        child: Flex(
-                          direction: Axis.vertical,
-                          children: [
-                            SizedBox(
-                                height: MediaQuery.of(context).size.height * 0.5),
-                            Expanded(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    boxShadow: [BoxShadow(blurRadius: 3.0)],
-                                    borderRadius: BorderRadius.circular(15.0),
-                                    color: Colors.white),
-                                child: Flex(
-                                  direction: Axis.vertical,
-                                  children: <Widget>[
-                                    SizedBox(height: 20),
-                                    Container(
-                                      alignment: Alignment.topCenter,
-                                      child: Text(
-                                        "Ready to Scan",
-                                        style: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 28.0,
-                                          decoration: TextDecoration.none,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                    Container(
-                                      height: 200,
-                                      child: Image(
-                                        image: AssetImage(
-                                            "assets/backgrounds/nfcIllu.jpg"),
-                                      ),
-                                    ),
-                                    Container(
-                                      alignment: Alignment.center,
-                                      child: RichText(
-                                        text: TextSpan(
-                                          text: "Hold your phone near the fire",
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 16.0,
-                                            decoration: TextDecoration.none,
-                                          ),
-                                          children: _dots,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(height: 20),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10.0),
-                                        color: Colors.grey,
-                                      ),
-                                      width:
-                                          MediaQuery.of(context).size.width * 0.9,
-                                      height: 50,
-                                      child: MaterialButton(
-                                          onPressed: () async {
-                                            try {
-                                              Navigator.of(context).pop();
-                                              NfcData response =
-                                                  await FlutterNfcReader.stop();
-                                              print(response.content);
-                                            } on Exception {
-                                              Navigator.of(context).pop();
-                                            }
-                                          },
-                                          child: Text(
-                                            "Cancel",
-                                            style: TextStyle(fontSize: 20.0),
-                                          )),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                    try {
-                      NfcData response = await FlutterNfcReader.read();
-                      print(response.content);
-                      Navigator.of(context).popAndPushNamed("/cardinfo");
-                    } on Exception {
-                      Navigator.of(context).pop();
-                      showDialog(
-                          context: context,
-                          builder: (_) => AlertDialog(
-                                title: Text("NFC Not Found"),
-                                content:
-                                    Text("Please open NFC in your phone first"),
-                                actions: <Widget>[
-                                  FlatButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text("already done",
-                                        style: TextStyle(
-                                            color:
-                                                Theme.of(context).primaryColor)),
-                                  )
-                                ],
-                              ));
-                    }
-                  },
+                  onPressed: _intoNFC,
                   child: Image(
                     width: MediaQuery.of(context).size.width * 0.33,
                     image: AssetImage("assets/buttons/btnPunch.png"),
@@ -292,7 +305,8 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
                                   Navigator.of(context).pushNamed("/addnumber");
                                 },
                                 child: Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 8.0),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     border: Border.all(
@@ -308,8 +322,8 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
                                   child: Padding(
                                     padding: const EdgeInsets.all(24.0),
                                     child: Image(
-                                      image:
-                                          AssetImage("assets/buttons/btnAdd.png"),
+                                      image: AssetImage(
+                                          "assets/buttons/btnAdd.png"),
                                     ),
                                   ),
                                 ),
@@ -337,7 +351,8 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
                               Hero(
                                 tag: 'first',
                                 child: Container(
-                                  height: MediaQuery.of(context).size.height * 0.25,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.25,
                                   alignment: Alignment(0, -1),
                                   child: Container(
                                     decoration: BoxDecoration(
@@ -355,7 +370,8 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
                               Hero(
                                 tag: 'second',
                                 child: Container(
-                                  height: MediaQuery.of(context).size.height * 0.25,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.25,
                                   alignment: Alignment(0, -0.3),
                                   child: Container(
                                     decoration: BoxDecoration(
@@ -372,7 +388,8 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
                               Hero(
                                 tag: 'third',
                                 child: Container(
-                                  height: MediaQuery.of(context).size.height * 0.25,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.25,
                                   alignment: Alignment(0, 0.3),
                                   child: Container(
                                     decoration: BoxDecoration(
@@ -389,7 +406,8 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
                               Hero(
                                 tag: 'fourth',
                                 child: Container(
-                                  height: MediaQuery.of(context).size.height * 0.25,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.25,
                                   alignment: Alignment(0, 1),
                                   child: Container(
                                     decoration: BoxDecoration(
