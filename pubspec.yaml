@@ -18,6 +18,8 @@ environment:
 
 dependencies:
   barcode_flutter: ^1.0.0
+  flutter_nfc_reader: ^0.1.0
+
   flutter:
     sdk: flutter
 
