@@ -18,6 +18,8 @@ environment:
 
 dependencies:
   barcode_flutter: ^1.0.0
+  flutter_nfc_reader: ^0.1.0
+
   flutter:
     sdk: flutter
 
@@ -48,6 +50,16 @@ flutter:
 
   assets:
     - assets/images/anz_card.png
+    - assets/buttons/btnAdd.png
+    - assets/backgrounds/nfcIllu.jpg
+    - assets/buttons/btnPunch.png
+    - assets/backgrounds/tabCard.png
+    - assets/backgrounds/tabUser.png
+    - assets/coupon/green.png
+    - assets/coupon/purple.png
+    - assets/coupon/orange.png
+    - assets/coupon/coffee.png
+    - assets/coupon/staffFig.png
 
   # To add assets to your application, add an assets section, like this:
 

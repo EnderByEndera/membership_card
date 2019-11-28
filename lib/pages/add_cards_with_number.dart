@@ -14,17 +14,15 @@ class AddCardWithNumberPage extends StatefulWidget {
 }
 
 class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
-
   ///Force the page to remain vertical
   void initState() {
     super.initState();
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown
-    ]);
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   }
+
   ///Destroy vertical lock
-  void dispose(){
+  void dispose() {
     SystemChrome.setPreferredOrientations([]);
     super.dispose();
   }
@@ -40,11 +38,10 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: (){
+          onPressed: () {
             Navigator.of(context).pop();
           },
           icon: Icon(Icons.arrow_back),
@@ -66,7 +63,7 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
             autofocus: false,
           ),
           //card type input
-          TextField (
+          TextField(
             controller: cardTypeController,
             keyboardType: TextInputType.text,
             decoration: InputDecoration(
@@ -74,7 +71,8 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
               icon: Icon(Icons.calendar_view_day),
               labelText: 'Please enter your cardtype',
             ),
-            autofocus: false,),
+            autofocus: false,
+          ),
           TextField(
             controller: cardRemarkController,
             keyboardType: TextInputType.text,
