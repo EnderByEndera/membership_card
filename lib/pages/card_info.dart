@@ -21,45 +21,33 @@ class CardInfoState extends State<CardInfoPage> {
 
   @override
   Widget build(BuildContext context) {
-    dynamic args = ModalRoute.of(context).settings.arguments;
+      ///dynamic args = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.white,
+          title: Container(
+              child:
+              GestureDetector(
+                child: Text(
+                  "﹤Back",
+                  style: TextStyle(
+                    decoration: TextDecoration.none,
+                    fontSize: 25.0,
+                    color: Theme.of(context).primaryColor,
+                    //fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                onTap: (){
+                  Navigator.pop(context);
+                },
+              ),
+          )
 
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          color: Colors.black,
-        ),
         //Todo: Add more UI for App bar from here
 
-        actions: <Widget>[
-          new IconButton(
-              icon: new Icon(Icons.list),
-              color: Colors.black,
-              onPressed: () {
-                showDialog(//弹出框
-                barrierDismissible: true,//是否点击空白区域关闭对话框,默认为true，可以关闭
-                context: context,
-                builder: (BuildContext context) {
-                  var list = List();
-                  list.add('edit');
-                  list.add('delete');
-                return CommonBottomSheet(
-                    list: list,
-                    onItemClickListener: (index) async {
-                      Navigator.pop(context);
-                    },
-                );
-              }
-              );
-          }
-          ),
-        ],// Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
 
 
       ),
@@ -67,89 +55,10 @@ class CardInfoState extends State<CardInfoPage> {
       body: new Column(
         children: <Widget>[
          Image(
-            image: AssetImage("assets/images/anz_card.png"),
-            fit: BoxFit.fitWidth,
-            height: 150.0,
-          ),
-          FlatButton(
-          shape: BeveledRectangleBorder(
-            side: BorderSide(
-            color: Colors.black,
-            width: 0.6,
-            ),
-          ),
+            image: AssetImage("/assets/backgrounds/starbucksBackground.jpg"),
 
-            child: Text(
-              "barcode",
-              style: TextStyle(
-              color: Colors.black45,
-              ),
             ),
-          hoverColor: Colors.red,
-            onPressed: () {_openBarCodePage(args["cardId"]);},
-          ),
-        Wrap(
-            spacing: 90.0,        // 主轴(水平)方向间距
-            runSpacing: 4.0,      // 纵轴（垂直）方向间距
-            alignment: WrapAlignment.center, //沿主轴方向居中
-            children: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  "Integral",
-                  style: TextStyle(
-                    height: 3.0,
-                    fontSize: 20.0,
-                    color: Colors.black,
-                  ),
-                ),
-                Text(
-                  "500",
-                  style: TextStyle(
-                    height: 2.0,
-                    fontSize: 20.0,
-                    color: Colors.red,
-                  ),
-                ),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  "Coupons",
-                  style: TextStyle(
-                    height: 3.0,
-                    fontSize: 20.0,
-                    color: Colors.black,
-                  ),
-                ),
-                Text(
-                  "0",
-                  style: TextStyle(
-                    height: 2.0,
-                    fontSize: 20.0,
-                    color: Colors.red,
-                  ),
-                ),
-              ],
-            ),
-              Text(
-                "NUM:"+args["cardId"],
-                style: TextStyle(
-                  height: 3.0,
-                  fontSize: 20.0,
-                  color: Colors.black,
-                ),
-              ),
           ],
-          ),
-
-
-        ],
-
-
       ),
     );
   }

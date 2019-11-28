@@ -229,7 +229,7 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
               ),
             ),
             onTap: () {
-              Navigator.of(context).pushNamed("/addnumber");
+              Navigator.of(context).pushNamed("/addnumber");                      ///We can test page here
             },
           )
         ],
@@ -375,10 +375,12 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
                                       border: Border.all(
                                           color: Colors.yellow, width: 1.5),
                                       color: Colors.yellow,
+
                                     ),
                                     width: 160 * 1.5,
                                     height: 90 * 1.5,
                                     alignment: Alignment.center,
+
                                   ),
                                 ),
                               ),
