@@ -57,6 +57,7 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
                     SizedBox(height: MediaQuery.of(context).size.height * 0.5)),
             Expanded(
               child: Container(
+                height: MediaQuery.of(context).size.height / 2,
                 decoration: BoxDecoration(
                     boxShadow: [BoxShadow(blurRadius: 3.0)],
                     borderRadius: BorderRadius.circular(15.0),
@@ -64,62 +65,76 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
                 child: Flex(
                   direction: Axis.vertical,
                   children: <Widget>[
-                    SizedBox(height: 20),
-                    Container(
-                      alignment: Alignment.topCenter,
-                      child: Text(
-                        "Ready to Scan",
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 28.0,
-                          decoration: TextDecoration.none,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
+                    Spacer(
+                      flex: 52 ,
                     ),
-                    Container(
-                      height: 200,
-                      child: Image(
-                        image: AssetImage("assets/backgrounds/nfcIllu.jpg"),
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.center,
-                      child: RichText(
-                        text: TextSpan(
-                          text: "Hold your phone near the fire",
+                    Expanded(
+                      flex: 70,
+                      child: Container(
+                        alignment: Alignment.topCenter,
+                        child: Text(
+                          "Ready to Scan",
                           style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 16.0,
+                            color: Colors.grey,
+                            fontSize: 28.0,
                             decoration: TextDecoration.none,
                           ),
-                          children: _dots,
+                          textAlign: TextAlign.center,
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.0),
-                        color: Colors.grey,
+                    Expanded(
+                      flex: 310,
+                      child: Container(
+                        height: 200,
+                        child: Image(
+                          image: AssetImage("assets/backgrounds/nfcIllu.jpg"),
+                        ),
                       ),
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      height: 50,
-                      child: MaterialButton(
-                          onPressed: () async {
-                            try {
-                              Navigator.of(context).pop();
-                              NfcData response = await FlutterNfcReader.stop();
-                              print(response.content);
-                            } on Exception {
-                              Navigator.of(context).pop();
-                            }
-                          },
-                          child: Text(
-                            "Cancel",
-                            style: TextStyle(fontSize: 20.0),
-                          )),
                     ),
+                    Expanded(
+                      flex: 50,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: RichText(
+                          text: TextSpan(
+                            text: "Hold your phone near the fire",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16.0,
+                              decoration: TextDecoration.none,
+                            ),
+                            children: _dots,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Spacer(flex: 60),
+                    Expanded(
+                      flex: 106,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        child: MaterialButton(
+                            onPressed: () async {
+                              try {
+                                Navigator.of(context).pop();
+                                NfcData response = await FlutterNfcReader.stop();
+                                print(response.content);
+                              } on Exception {
+                                Navigator.of(context).pop();
+                              }
+                            },
+                            child: Text(
+                              "Cancel",
+                              style: TextStyle(fontSize: 20.0),
+                            )),
+                      ),
+                    ),
+                    Spacer(flex: 30),
                   ],
                 ),
               ),
