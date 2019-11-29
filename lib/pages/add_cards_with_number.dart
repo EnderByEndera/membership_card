@@ -7,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:membership_card/model/card_count.dart';
 import 'package:membership_card/model/card_model.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter/services.dart';
 import 'dart:async';
 import 'package:barcode_scan/barcode_scan.dart';
 
@@ -16,17 +15,20 @@ class AddCardWithNumberPage extends StatefulWidget {
   State<StatefulWidget> createState() => AddCardWithNumberPageState();
 }
 
-class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
-  ///Force the page to remain vertical
+class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
+    with TickerProviderStateMixin {
+  TabController _tabController;
+
   void initState() {
+    _tabController = TabController(
+      length: 2,
+      vsync: this,
+    );
     super.initState();
-    SystemChrome.setPreferredOrientations(
-        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   }
 
-  ///Destroy vertical lock
   void dispose() {
-    SystemChrome.setPreferredOrientations([]);
+    _tabController.dispose();
     super.dispose();
   }
 
@@ -39,26 +41,25 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
   ///card remark control
   TextEditingController cardRemarkController = TextEditingController();
 
-  String result="Hey!";
+  String result = "Hey!";
 
-  Future _scanQR() async{
-    try{
+  Future _scanQR() async {
+    try {
       String qrResult = await BarcodeScanner.scan();
       setState(() {
-        result= qrResult;
+        result = qrResult;
       });
-    }on PlatformException catch(e){
-      if(e.code== BarcodeScanner.CameraAccessDenied){
+    } on PlatformException catch (e) {
+      if (e.code == BarcodeScanner.CameraAccessDenied) {
         setState(() {
-          result="CameraAccessDenied ";
+          result = "CameraAccessDenied ";
         });
-      }
-      else{
+      } else {
         setState(() {
           result = "Unknown Error $e";
         });
       }
-    }catch(e) {
+    } catch (e) {
       setState(() {
         result = "Unknown Error $e";
       });
@@ -76,7 +77,10 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
           icon: Icon(Icons.arrow_back),
           color: Colors.orange,
         ),
-        title:Text('Back',style: TextStyle(color: Colors.orange,fontSize: 20.0),) ,
+        title: Text(
+          'Back',
+          style: TextStyle(color: Colors.orange, fontSize: 20.0),
+        ),
         backgroundColor: Colors.white,
         actions: <Widget>[
           Consumer<CardCounter>(
@@ -89,7 +93,10 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
                   cardRemarkController.value.text,
                 ));
               },
-              child: Text('Save',style: TextStyle(color: Colors.orange),),
+              child: Text(
+                'Save',
+                style: TextStyle(color: Colors.orange),
+              ),
             ),
           ),
         ],
@@ -129,42 +136,38 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
             autofocus: false,
           ),
           RaisedButton(
-            child: Text(
-              'Use Camera',
-              style: TextStyle(fontSize: 20.0),
-
-            ),
-            color: Colors.orange,
-            colorBrightness: Brightness.dark,
-            disabledColor: Colors.grey,
-            disabledTextColor: Colors.grey,
-            padding: new EdgeInsets.only(
-              bottom: 5.0,
-              top: 5.0,
-              left: 20.0,
-              right: 20.0,
-            ),
-            onPressed: _scanQR,
-
+              child: Text(
+                'Use Camera',
+                style: TextStyle(fontSize: 20.0),
+              ),
+              color: Colors.orange,
+              colorBrightness: Brightness.dark,
+              disabledColor: Colors.grey,
+              disabledTextColor: Colors.grey,
+              padding: new EdgeInsets.only(
+                bottom: 5.0,
+                top: 5.0,
+                left: 20.0,
+                right: 20.0,
+              ),
+              onPressed: _scanQR,
               shape: RoundedRectangleBorder(
                 side: new BorderSide(
                   width: 2.0,
                   color: Colors.white,
                   style: BorderStyle.solid,
                 ),
-
                 borderRadius: BorderRadius.only(
                   topRight: Radius.circular(10.0),
                   topLeft: Radius.circular(10.0),
                   bottomLeft: Radius.circular(10.0),
                   bottomRight: Radius.circular(10.0),
                 ),
-              )
-          )
+              ))
         ],
       ),
       bottomNavigationBar: TabBar(
-
+        controller: _tabController,
         tabs: <Widget>[
           Container(
             height: MediaQuery.of(context).size.height * 0.066,
@@ -184,7 +187,6 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
           )
         ],
       ),
-
     );
   }
 }

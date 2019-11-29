@@ -62,10 +62,7 @@ flutter:
     - assets/coupon/orange.png
     - assets/coupon/coffee.png
     - assets/coupon/staffFig.png
-
-    - assets/images/anz_card.
-    - assets/images/Bin.png.
-    - assets/images/btnAddNewCard.png.
+    - assets/images/Bin.png
   # To add assets to your application, add an assets section, like this:
 
   # An image asset can refer to one or more resolution-specific "variants", see

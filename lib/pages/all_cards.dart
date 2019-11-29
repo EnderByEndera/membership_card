@@ -1,7 +1,5 @@
-import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_nfc_reader/flutter_nfc_reader.dart';
 import 'package:membership_card/model/card_count.dart';
@@ -210,11 +208,14 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
 
     Widget _randomColorContainer = Container(
       decoration: BoxDecoration(
-          boxShadow: [BoxShadow(offset: Offset.zero, blurRadius: 5.0)],
-          border: Border.all(color: Colors.grey, width: 1.5),
-          borderRadius: BorderRadius.circular(12.0),
-          color: Color.fromRGBO(Random().nextInt(256), Random().nextInt(256),
-              Random().nextInt(256), Random().nextDouble())),
+        border: Border.all(color: Colors.grey, width: 1.5),
+        borderRadius: BorderRadius.circular(12.0),
+        image: DecorationImage(
+          image: AssetImage('assets/backgrounds/starbucksBackground.jpg'),
+          fit: BoxFit.fitWidth,
+        ),
+      ),
+      margin: EdgeInsets.symmetric(horizontal: 4.0),
       height: MediaQuery.of(context).size.height / 10,
       width: MediaQuery.of(context).size.height / 10 / 0.9 * 1.6,
     );
@@ -248,6 +249,7 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
         ],
       ),
       body: SafeArea(
+        minimum: EdgeInsets.all(8.0),
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
@@ -282,7 +284,8 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
               Expanded(
                 flex: 80,
                 child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  padding:
+                      EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                   alignment: Alignment.center,
                   child: RichText(
                     textAlign: TextAlign.center,
@@ -297,7 +300,8 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
                               style: TextStyle(
                                 color: Theme.of(context).primaryColor,
                               )),
-                          TextSpan(text: "button and hold your phone close to "),
+                          TextSpan(
+                              text: "button and hold your phone close to "),
                           TextSpan(
                               text: "Punch Reward ",
                               style: TextStyle(
@@ -315,16 +319,16 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
                 ),
               ),
               Spacer(
-                flex: 70,
+                flex: 10,
               ),
               Expanded(
-                flex: 100,
+                flex: 130,
                 child: _cardNumber == 0
                     ? Flex(direction: Axis.vertical, children: <Widget>[
                         Expanded(
-                          flex: 30,
+                          flex: 10,
                           child: Align(
-                            alignment: Alignment.centerLeft,
+                            alignment: Alignment.bottomLeft,
                             child: Text(
                               "Manage other membership cards",
                               style: TextStyle(
@@ -333,9 +337,11 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
                             ),
                           ),
                         ),
-                        Spacer(flex: 20,),
+                        Spacer(
+                          flex: 4,
+                        ),
                         Expanded(
-                          flex: 120,
+                          flex: 17,
                           child: Container(
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
@@ -344,23 +350,27 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
                                 if (index == 0) {
                                   return GestureDetector(
                                     onTap: () {
-                                      Navigator.of(context).pushNamed("/addnumber");
+                                      Navigator.of(context)
+                                          .pushNamed("/addcamera");
                                     },
                                     child: Container(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 8.0),
+                                      margin:
+                                          EdgeInsets.symmetric(horizontal: 4.0),
                                       decoration: BoxDecoration(
                                         color: Colors.white,
                                         border: Border.all(
                                             color: Colors.grey, width: 1.5),
-                                        borderRadius: BorderRadius.circular(12.0),
+                                        borderRadius:
+                                            BorderRadius.circular(12.0),
                                       ),
                                       height:
-                                          MediaQuery.of(context).size.height * 0.1,
-                                      width: MediaQuery.of(context).size.height *
-                                          0.1 /
-                                          0.9 *
-                                          1.6,
+                                          MediaQuery.of(context).size.height *
+                                              0.1,
+                                      width:
+                                          MediaQuery.of(context).size.height *
+                                              0.1 /
+                                              0.9 *
+                                              1.6,
                                       child: Padding(
                                         padding: const EdgeInsets.all(24.0),
                                         child: Image(
@@ -379,7 +389,7 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
                         )
                       ])
                     : Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 60.0),
                         child: GestureDetector(
                           onVerticalDragEnd: (details) {
                             if (details.primaryVelocity <= 0) {
@@ -389,23 +399,20 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
                           },
                           child: Consumer<CardCounter>(
                             builder: (context, counter, child) => Stack(
-                              fit: StackFit.loose,
+                              fit: StackFit.expand,
                               children: <Widget>[
                                 Hero(
                                   tag: 'first',
                                   child: Container(
-                                    height:
-                                        MediaQuery.of(context).size.height * 0.25,
-                                    alignment: Alignment(0, -1),
+                                    margin: EdgeInsets.only(top: 0.0),
                                     child: Container(
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15.0),
+                                        borderRadius:
+                                            BorderRadius.circular(15.0),
                                         border: Border.all(
                                             color: Colors.yellow, width: 1.5),
                                         color: Colors.yellow,
                                       ),
-                                      width: 160 * 1.5,
-                                      height: 90 * 1.5,
                                       alignment: Alignment.center,
                                     ),
                                   ),
@@ -413,54 +420,45 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
                                 Hero(
                                   tag: 'second',
                                   child: Container(
-                                    height:
-                                        MediaQuery.of(context).size.height * 0.25,
-                                    alignment: Alignment(0, -0.3),
+                                    margin: EdgeInsets.only(top: 16.0),
                                     child: Container(
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15.0),
+                                        borderRadius:
+                                            BorderRadius.circular(15.0),
                                         border: Border.all(
                                             color: Colors.blue, width: 1.5),
                                         color: Colors.blue,
                                       ),
-                                      width: 160 * 1.5,
-                                      height: 90 * 1.5,
                                     ),
                                   ),
                                 ),
                                 Hero(
                                   tag: 'third',
                                   child: Container(
-                                    height:
-                                        MediaQuery.of(context).size.height * 0.25,
-                                    alignment: Alignment(0, 0.3),
+                                    margin: EdgeInsets.only(top: 32.0),
                                     child: Container(
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15.0),
+                                        borderRadius:
+                                            BorderRadius.circular(15.0),
                                         border: Border.all(
                                             color: Colors.purple, width: 1.5),
                                         color: Colors.purple,
                                       ),
-                                      width: 160 * 1.5,
-                                      height: 90 * 1.5,
                                     ),
                                   ),
                                 ),
                                 Hero(
                                   tag: 'fourth',
                                   child: Container(
-                                    height:
-                                        MediaQuery.of(context).size.height * 0.25,
-                                    alignment: Alignment(0, 1),
+                                    margin: EdgeInsets.only(top: 48.0),
                                     child: Container(
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15.0),
+                                        borderRadius:
+                                            BorderRadius.circular(15.0),
                                         border: Border.all(
                                             color: Colors.green, width: 1.5),
                                         color: Colors.green,
                                       ),
-                                      width: 160 * 1.5,
-                                      height: 90 * 1.5,
                                     ),
                                   ),
                                 ),
