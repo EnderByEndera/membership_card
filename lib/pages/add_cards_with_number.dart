@@ -7,6 +7,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:membership_card/model/card_count.dart';
 import 'package:membership_card/model/card_model.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
+import 'dart:async';
+import 'package:barcode_scan/barcode_scan.dart';
 
 class AddCardWithNumberPage extends StatefulWidget {
   @override
@@ -36,6 +39,32 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
   ///card remark control
   TextEditingController cardRemarkController = TextEditingController();
 
+  String result="Hey!";
+
+  Future _scanQR() async{
+    try{
+      String qrResult = await BarcodeScanner.scan();
+      setState(() {
+        result= qrResult;
+      });
+    }on PlatformException catch(e){
+      if(e.code== BarcodeScanner.CameraAccessDenied){
+        setState(() {
+          result="CameraAccessDenied ";
+        });
+      }
+      else{
+        setState(() {
+          result = "Unknown Error $e";
+        });
+      }
+    }catch(e) {
+      setState(() {
+        result = "Unknown Error $e";
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,9 +74,25 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
             Navigator.of(context).pop();
           },
           icon: Icon(Icons.arrow_back),
-          color: Colors.black,
+          color: Colors.orange,
         ),
+        title:Text('Back',style: TextStyle(color: Colors.orange,fontSize: 20.0),) ,
         backgroundColor: Colors.white,
+        actions: <Widget>[
+          Consumer<CardCounter>(
+            builder: (context, counter, child) => FlatButton(
+              onPressed: () {
+                Navigator.pop(context);
+                counter.addCard(CardInfo(
+                  cardController.value.text,
+                  cardTypeController.value.text,
+                  cardRemarkController.value.text,
+                ));
+              },
+              child: Text('Save',style: TextStyle(color: Colors.orange),),
+            ),
+          ),
+        ],
       ),
       body: Column(
         children: <Widget>[
@@ -83,21 +128,63 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
             ),
             autofocus: false,
           ),
-          Consumer<CardCounter>(
-            builder: (context, counter, child) => RaisedButton(
-              onPressed: () {
-                Navigator.pop(context);
-                counter.addCard(CardInfo(
-                  cardController.value.text,
-                  cardTypeController.value.text,
-                  cardRemarkController.value.text,
-                ));
-              },
-              child: Text('Add and return'),
+          RaisedButton(
+            child: Text(
+              'Use Camera',
+              style: TextStyle(fontSize: 20.0),
+
             ),
-          ),
+            color: Colors.orange,
+            colorBrightness: Brightness.dark,
+            disabledColor: Colors.grey,
+            disabledTextColor: Colors.grey,
+            padding: new EdgeInsets.only(
+              bottom: 5.0,
+              top: 5.0,
+              left: 20.0,
+              right: 20.0,
+            ),
+            onPressed: _scanQR,
+
+              shape: RoundedRectangleBorder(
+                side: new BorderSide(
+                  width: 2.0,
+                  color: Colors.white,
+                  style: BorderStyle.solid,
+                ),
+
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(10.0),
+                  topLeft: Radius.circular(10.0),
+                  bottomLeft: Radius.circular(10.0),
+                  bottomRight: Radius.circular(10.0),
+                ),
+              )
+          )
         ],
       ),
+      bottomNavigationBar: TabBar(
+
+        tabs: <Widget>[
+          Container(
+            height: MediaQuery.of(context).size.height * 0.066,
+            padding: EdgeInsets.all(8.0),
+            alignment: Alignment.topCenter,
+            child: Image(
+              image: AssetImage("assets/backgrounds/tabCard.png"),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.all(8.0),
+            alignment: Alignment.topCenter,
+            height: MediaQuery.of(context).size.height * 0.066,
+            child: Image(
+              image: AssetImage("assets/backgrounds/tabUser.png"),
+            ),
+          )
+        ],
+      ),
+
     );
   }
 }
