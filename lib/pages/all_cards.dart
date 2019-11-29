@@ -39,6 +39,7 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
   TabController _tabController;
 
   var _dots = List<TextSpan>();
+  NfcData response = new NfcData(content: "");
 
   void _intoNFC() async {
     showDialog(
@@ -48,13 +49,20 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
           direction: Axis.vertical,
           children: [
             GestureDetector(
-                onTap: () async {
-                  Navigator.of(context).pop();
-                  NfcData response = await FlutterNfcReader.stop();
-                  print(response.content);
-                },
-                child:
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.5)),
+              onTap: () async {
+                Navigator.of(context).pop();
+                response = await FlutterNfcReader.stop();
+                print(response.content);
+              },
+              child: Container(
+                  height: MediaQuery.of(context).size.height / 2,
+                  alignment: Alignment.center,
+                  child: Text(
+                    response.content,
+                    style: TextStyle(
+                        fontSize: 16.0, decoration: TextDecoration.none),
+                  )),
+            ),
             Expanded(
               child: Container(
                 height: MediaQuery.of(context).size.height / 2,
@@ -66,7 +74,7 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
                   direction: Axis.vertical,
                   children: <Widget>[
                     Spacer(
-                      flex: 52 ,
+                      flex: 52,
                     ),
                     Expanded(
                       flex: 70,
@@ -122,7 +130,7 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
                             onPressed: () async {
                               try {
                                 Navigator.of(context).pop();
-                                NfcData response = await FlutterNfcReader.stop();
+                                response = await FlutterNfcReader.stop();
                                 print(response.content);
                               } on Exception {
                                 Navigator.of(context).pop();
@@ -144,9 +152,12 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
       ),
     );
     try {
-      NfcData response = await FlutterNfcReader.read();
-      print(response.error);
-      Navigator.of(context).popAndPushNamed("/cardinfo");
+      response = await FlutterNfcReader.read();
+      print("content: ${response.content} "
+          "status: ${response.status.toString()} "
+          "error: ${response.error}");
+      Navigator.of(context).pop();
+//      Navigator.of(context).popAndPushNamed("/cardinfo");
     } on Exception {
       Navigator.of(context).pop();
       showDialog(
@@ -229,7 +240,9 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
               ),
             ),
             onTap: () {
-              Navigator.of(context).pushNamed("/addnumber");                      ///We can test page here
+              Navigator.of(context).pushNamed("/addnumber");
+
+              ///We can test page here
             },
           )
         ],
@@ -238,211 +251,225 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
-            image: DecorationImage(
-              fit: BoxFit.fitWidth,
-              image: AssetImage("assets/backgrounds/nfcIllu.jpg"),
-              alignment: Alignment.topCenter,
-            ),
           ),
           alignment: Alignment.center,
           child: Flex(
             direction: Axis.vertical,
             children: <Widget>[
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.37,
-              ),
-              Container(
-                alignment: Alignment.center,
-                child: MaterialButton(
-                  onPressed: _intoNFC,
+              Spacer(flex: 30),
+              Expanded(
+                flex: 250,
+                child: Container(
+                  alignment: Alignment.center,
                   child: Image(
-                    width: MediaQuery.of(context).size.width * 0.33,
-                    image: AssetImage("assets/buttons/btnPunch.png"),
+                    image: AssetImage("assets/backgrounds/nfcIllu.jpg"),
                   ),
                 ),
               ),
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                alignment: Alignment.center,
-                child: RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                      text: "Press ",
-                      style: TextStyle(
-                        color: Colors.grey,
-                      ),
-                      children: <TextSpan>[
-                        TextSpan(
-                            text: "\'Punch\' ",
-                            style: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                            )),
-                        TextSpan(text: "button and hold your phone close to "),
-                        TextSpan(
-                            text: "Punch Reward ",
-                            style: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                            )),
-                        TextSpan(text: "in the "),
-                        TextSpan(
-                            text: "shop",
-                            style: TextStyle(
-                              decoration: TextDecoration.underline,
-                            )),
-                        TextSpan(text: " to receive discounts")
-                      ]),
+              Expanded(
+                flex: 40,
+                child: Container(
+                  alignment: Alignment.center,
+                  child: MaterialButton(
+                    onPressed: _intoNFC,
+                    child: Image(
+                      width: MediaQuery.of(context).size.width * 0.33,
+                      image: AssetImage("assets/buttons/btnPunch.png"),
+                    ),
+                  ),
                 ),
               ),
-              Spacer(),
-              _cardNumber == 0
-                  ? Flex(direction: Axis.vertical, children: <Widget>[
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "Manage other membership cards",
-                          style: TextStyle(
-                            color: Colors.grey,
+              Expanded(
+                flex: 80,
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  alignment: Alignment.center,
+                  child: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                        text: "Press ",
+                        style: TextStyle(
+                          color: Colors.grey,
+                        ),
+                        children: <TextSpan>[
+                          TextSpan(
+                              text: "\'Punch\' ",
+                              style: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                              )),
+                          TextSpan(text: "button and hold your phone close to "),
+                          TextSpan(
+                              text: "Punch Reward ",
+                              style: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                              )),
+                          TextSpan(text: "in the "),
+                          TextSpan(
+                              text: "shop",
+                              style: TextStyle(
+                                decoration: TextDecoration.underline,
+                              )),
+                          TextSpan(text: " to receive discounts")
+                        ]),
+                  ),
+                ),
+              ),
+              Spacer(
+                flex: 70,
+              ),
+              Expanded(
+                flex: 100,
+                child: _cardNumber == 0
+                    ? Flex(direction: Axis.vertical, children: <Widget>[
+                        Expanded(
+                          flex: 30,
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Manage other membership cards",
+                              style: TextStyle(
+                                color: Colors.grey,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 10.0,
-                      ),
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.1,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: 5,
-                          itemBuilder: (context, index) {
-                            if (index == 0) {
-                              return GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).pushNamed("/cardinfo");      //TODO: change back after test here
-                                },
-                                child: Container(
-                                  padding:
-                                      EdgeInsets.symmetric(horizontal: 8.0),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    border: Border.all(
-                                        color: Colors.grey, width: 1.5),
-                                    borderRadius: BorderRadius.circular(12.0),
-                                  ),
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.1,
-                                  width: MediaQuery.of(context).size.height *
-                                      0.1 /
-                                      0.9 *
-                                      1.6,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(24.0),
-                                    child: Image(
-                                      image: AssetImage(
-                                          "assets/buttons/btnAdd.png"),
+                        Spacer(flex: 20,),
+                        Expanded(
+                          flex: 120,
+                          child: Container(
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: 5,
+                              itemBuilder: (context, index) {
+                                if (index == 0) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).pushNamed("/addnumber");
+                                    },
+                                    child: Container(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 8.0),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        border: Border.all(
+                                            color: Colors.grey, width: 1.5),
+                                        borderRadius: BorderRadius.circular(12.0),
+                                      ),
+                                      height:
+                                          MediaQuery.of(context).size.height * 0.1,
+                                      width: MediaQuery.of(context).size.height *
+                                          0.1 /
+                                          0.9 *
+                                          1.6,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(24.0),
+                                        child: Image(
+                                          image: AssetImage(
+                                              "assets/buttons/btnAdd.png"),
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
-                              );
-                            } else {
-                              return _randomColorContainer;
+                                  );
+                                } else {
+                                  return _randomColorContainer;
+                                }
+                              },
+                            ),
+                          ),
+                        )
+                      ])
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                        child: GestureDetector(
+                          onVerticalDragEnd: (details) {
+                            if (details.primaryVelocity <= 0) {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (_) => AllCardsPage()));
                             }
                           },
-                        ),
-                      )
-                    ])
-                  : Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                      child: GestureDetector(
-                        onVerticalDragEnd: (details) {
-                          if (details.primaryVelocity <= 0) {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (_) => AllCardsPage()));
-                          }
-                        },
-                        child: Consumer<CardCounter>(
-                          builder: (context, counter, child) => Stack(
-                            fit: StackFit.loose,
-                            children: <Widget>[
-                              Hero(
-                                tag: 'first',
-                                child: Container(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.25,
-                                  alignment: Alignment(0, -1),
+                          child: Consumer<CardCounter>(
+                            builder: (context, counter, child) => Stack(
+                              fit: StackFit.loose,
+                              children: <Widget>[
+                                Hero(
+                                  tag: 'first',
                                   child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                      border: Border.all(
-                                          color: Colors.yellow, width: 1.5),
-                                      color: Colors.yellow,
-
+                                    height:
+                                        MediaQuery.of(context).size.height * 0.25,
+                                    alignment: Alignment(0, -1),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15.0),
+                                        border: Border.all(
+                                            color: Colors.yellow, width: 1.5),
+                                        color: Colors.yellow,
+                                      ),
+                                      width: 160 * 1.5,
+                                      height: 90 * 1.5,
+                                      alignment: Alignment.center,
                                     ),
-                                    width: 160 * 1.5,
-                                    height: 90 * 1.5,
-                                    alignment: Alignment.center,
-
                                   ),
                                 ),
-                              ),
-                              Hero(
-                                tag: 'second',
-                                child: Container(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.25,
-                                  alignment: Alignment(0, -0.3),
+                                Hero(
+                                  tag: 'second',
                                   child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                      border: Border.all(
-                                          color: Colors.blue, width: 1.5),
-                                      color: Colors.blue,
+                                    height:
+                                        MediaQuery.of(context).size.height * 0.25,
+                                    alignment: Alignment(0, -0.3),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15.0),
+                                        border: Border.all(
+                                            color: Colors.blue, width: 1.5),
+                                        color: Colors.blue,
+                                      ),
+                                      width: 160 * 1.5,
+                                      height: 90 * 1.5,
                                     ),
-                                    width: 160 * 1.5,
-                                    height: 90 * 1.5,
                                   ),
                                 ),
-                              ),
-                              Hero(
-                                tag: 'third',
-                                child: Container(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.25,
-                                  alignment: Alignment(0, 0.3),
+                                Hero(
+                                  tag: 'third',
                                   child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                      border: Border.all(
-                                          color: Colors.purple, width: 1.5),
-                                      color: Colors.purple,
+                                    height:
+                                        MediaQuery.of(context).size.height * 0.25,
+                                    alignment: Alignment(0, 0.3),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15.0),
+                                        border: Border.all(
+                                            color: Colors.purple, width: 1.5),
+                                        color: Colors.purple,
+                                      ),
+                                      width: 160 * 1.5,
+                                      height: 90 * 1.5,
                                     ),
-                                    width: 160 * 1.5,
-                                    height: 90 * 1.5,
                                   ),
                                 ),
-                              ),
-                              Hero(
-                                tag: 'fourth',
-                                child: Container(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.25,
-                                  alignment: Alignment(0, 1),
+                                Hero(
+                                  tag: 'fourth',
                                   child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                      border: Border.all(
-                                          color: Colors.green, width: 1.5),
-                                      color: Colors.green,
+                                    height:
+                                        MediaQuery.of(context).size.height * 0.25,
+                                    alignment: Alignment(0, 1),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15.0),
+                                        border: Border.all(
+                                            color: Colors.green, width: 1.5),
+                                        color: Colors.green,
+                                      ),
+                                      width: 160 * 1.5,
+                                      height: 90 * 1.5,
                                     ),
-                                    width: 160 * 1.5,
-                                    height: 90 * 1.5,
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    )
+              )
             ],
           ),
         ),
@@ -562,59 +589,104 @@ class _AllCardsPageState extends State<AllCardsPage>
                 if (index == 0) {
                   return Hero(
                     tag: "first",
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15.0),
-                        border: Border.all(color: Colors.white, width: 3),
-                        color: Colors.yellow,
+                    child: Consumer<CardCounter>(
+                      builder: (context, counter, child) => GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pushNamed("/cardinfo",
+                              arguments: <String, dynamic>{
+                                "herotag": "first",
+                                "index": index,
+                              });
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15.0),
+                            border: Border.all(color: Colors.white, width: 3),
+                            color: Colors.yellow,
+                          ),
+                          constraints: BoxConstraints(minHeight: 150),
+                        ),
                       ),
-                      constraints: BoxConstraints(minHeight: 150),
                     ),
                   );
                 } else if (index == 1) {
                   return Hero(
                     tag: 'second',
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15.0),
-                        border: Border.all(color: Colors.white, width: 3),
-                        color: Colors.blue,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context)
+                            .pushNamed("/cardinfo", arguments: {
+                          "herotag": "second",
+                          "index": index,
+                        });
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15.0),
+                          border: Border.all(color: Colors.white, width: 3),
+                          color: Colors.blue,
+                        ),
+                        constraints: BoxConstraints(minHeight: 150),
                       ),
-                      constraints: BoxConstraints(minHeight: 150),
                     ),
                   );
                 } else if (index == 2) {
                   return Hero(
                     tag: 'third',
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15.0),
-                        border: Border.all(color: Colors.white, width: 3),
-                        color: Colors.purple,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context)
+                            .pushNamed("/cardinfo", arguments: {
+                          "herotag": "third",
+                          "index": index,
+                        });
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15.0),
+                          border: Border.all(color: Colors.white, width: 3),
+                          color: Colors.purple,
+                        ),
+                        constraints: BoxConstraints(minHeight: 150),
                       ),
-                      constraints: BoxConstraints(minHeight: 150),
                     ),
                   );
                 } else if (index == 3) {
                   return Hero(
                     tag: 'fourth',
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context)
+                            .pushNamed("/cardinfo", arguments: {
+                          "herotag": "fourth",
+                          "index": index,
+                        });
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15.0),
+                          border: Border.all(color: Colors.white, width: 3),
+                          color: Colors.green,
+                        ),
+                        constraints: BoxConstraints(minHeight: 150),
+                      ),
+                    ),
+                  );
+                } else {
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pushNamed("/cardinfo", arguments: {
+                        "index": index,
+                      });
+                    },
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15.0),
                         border: Border.all(color: Colors.white, width: 3),
-                        color: Colors.green,
+                        color: Colors.amber,
                       ),
                       constraints: BoxConstraints(minHeight: 150),
                     ),
-                  );
-                } else {
-                  return Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15.0),
-                      border: Border.all(color: Colors.white, width: 3),
-                      color: Colors.amber,
-                    ),
-                    constraints: BoxConstraints(minHeight: 150),
                   );
                 }
               },
