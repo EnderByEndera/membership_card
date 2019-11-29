@@ -54,6 +54,7 @@ flutter:
     - assets/buttons/btnAdd.png
     - assets/backgrounds/nfcIllu.jpg
     - assets/buttons/btnPunch.png
+    - assets/backgrounds/starbucksBackground.jpg
     - assets/backgrounds/tabCard.png
     - assets/backgrounds/tabUser.png
     - assets/coupon/green.png

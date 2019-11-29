@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:membership_card/pages/card_info.dart';
 
 class CouponPage extends StatefulWidget {
   @override
@@ -8,6 +9,11 @@ class CouponPage extends StatefulWidget {
   }
 }
 
+/// This is the [CouponPageState] used for CouponPage
+/// It builds a widget which you can do some operations about coupons
+/// It contains Redeem Button which is tapped by the staff in the shop
+/// when the button is tapped, the coupon will be consumed
+/// This should be the upper-stack page of [CardInfoPage]
 class CouponPageState extends State with SingleTickerProviderStateMixin {
   TabController _tabController;
 

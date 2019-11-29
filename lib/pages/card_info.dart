@@ -1,15 +1,15 @@
 import 'dart:ui';
+import 'dart:ui' as prefix0;
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:barcode_flutter/barcode_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:membership_card/model/card_count.dart';
+import 'package:membership_card/network/client.dart';
 
 /// This is the Card_Info Page showing one card's information.
 /// It should include one card's all the information here.
 class CardInfoPage extends StatefulWidget {
-
-
   @override
   State<StatefulWidget> createState() {
     return CardInfoState();
@@ -21,42 +21,33 @@ class CardInfoState extends State<CardInfoPage> {
 
   @override
   Widget build(BuildContext context) {
-    dynamic args = ModalRoute.of(context).settings.arguments;
+      ///dynamic args = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.white,
+          title: Container(
+              child:
+              GestureDetector(
+                child: Text(
+                  "﹤Back",
+                  style: TextStyle(
+                    decoration: TextDecoration.none,
+                    fontSize: 25.0,
+                    color: Theme.of(context).primaryColor,
+                    //fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                onTap: (){
+                  Navigator.pop(context);
+                },
+              ),
+          )
 
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          color: Colors.black,
-        ),
         //Todo: Add more UI for App bar from here
 
-        actions: <Widget>[
-          new IconButton(icon: new Icon(Icons.list),color: Colors.black,onPressed: () {
-              showDialog(//弹出框
-              barrierDismissible: true,//是否点击空白区域关闭对话框,默认为true，可以关闭
-              context: context,
-              builder: (BuildContext context) {
-                var list = List();
-                list.add('edit');
-                list.add('delete');
-
-                return CommonBottomSheet(
-                    list: list,
-                    onItemClickListener: (index) async {
-                      Navigator.pop(context);
-
-                      showAlertDialog(context);
-                    },
-                );
-              });}),
-        ],// Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
 
 
       ),
@@ -64,89 +55,10 @@ class CardInfoState extends State<CardInfoPage> {
       body: new Column(
         children: <Widget>[
          Image(
-            image: AssetImage("assets/images/anz_card.png"),
-            fit: BoxFit.fitWidth,
-            height: 150.0,
-          ),
-          FlatButton(
-          shape: BeveledRectangleBorder(
-            side: BorderSide(
-            color: Colors.black,
-            width: 0.6,
-            ),
-          ),
+            image: AssetImage("/assets/backgrounds/starbucksBackground.jpg"),
 
-            child: Text(
-              "barcode",
-              style: TextStyle(
-              color: Colors.black45,
-              ),
             ),
-          hoverColor: Colors.red,
-            onPressed: () {_openBarCodePage(args["cardId"]);},
-          ),
-        Wrap(
-            spacing: 90.0,        // 主轴(水平)方向间距
-            runSpacing: 4.0,      // 纵轴（垂直）方向间距
-            alignment: WrapAlignment.center, //沿主轴方向居中
-            children: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  "Integral",
-                  style: TextStyle(
-                    height: 3.0,
-                    fontSize: 20.0,
-                    color: Colors.black,
-                  ),
-                ),
-                Text(
-                  "500",
-                  style: TextStyle(
-                    height: 2.0,
-                    fontSize: 20.0,
-                    color: Colors.red,
-                  ),
-                ),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  "Coupons",
-                  style: TextStyle(
-                    height: 3.0,
-                    fontSize: 20.0,
-                    color: Colors.black,
-                  ),
-                ),
-                Text(
-                  "0",
-                  style: TextStyle(
-                    height: 2.0,
-                    fontSize: 20.0,
-                    color: Colors.red,
-                  ),
-                ),
-              ],
-            ),
-              Text(
-                "NUM:"+args["cardId"],
-                style: TextStyle(
-                  height: 3.0,
-                  fontSize: 20.0,
-                  color: Colors.black,
-                ),
-              ),
           ],
-          ),
-
-
-        ],
-
-
       ),
     );
   }
@@ -155,9 +67,12 @@ class CardInfoState extends State<CardInfoPage> {
     Navigator.of(context).push(
     MaterialPageRoute<void>(
       builder: (BuildContext context){
-        return Scaffold(
+        return
+        Scaffold(
+
           backgroundColor: Colors.white,
           appBar: AppBar(
+            brightness: Brightness.dark,
             elevation: 0,
             backgroundColor: Colors.white,
             leading: IconButton(
@@ -179,6 +94,7 @@ class CardInfoState extends State<CardInfoPage> {
               data: cardNumberData,
               codeType: BarCodeType.Code128,
               barHeight: 120.0,
+              lineWidth: 1.0,
               hasText: true,
               onError: (error){
                 print('error=$error');
@@ -191,6 +107,7 @@ class CardInfoState extends State<CardInfoPage> {
     );
   }
 }
+
 
 
 
@@ -212,6 +129,10 @@ class _CommonBottomSheetState extends State<CommonBottomSheet> {
   double itemHeight = 44;
   var borderColor = Colors.white;
   double circular = 10;
+
+  Response res;
+  Dio dio = initDio();
+
 
   @override
   void initState() {
@@ -368,10 +289,7 @@ class _CommonBottomSheetState extends State<CommonBottomSheet> {
         ),
         child: center);
     var onTap2 = () {
-
-      if (onItemClickListener != null) {
-        onItemClickListener(index);
-      }
+      showAlertDialog(context);
     };
 
 
@@ -393,7 +311,6 @@ void showAlertDialog(BuildContext context) {  // 对话框函数
 
 
   showDialog(
-
       context: context,
       builder: (_) => new AlertDialog(
           title: new Text("Delete"),
