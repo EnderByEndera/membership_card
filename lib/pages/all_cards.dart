@@ -317,7 +317,7 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
                             if (index == 0) {
                               return GestureDetector(
                                 onTap: () {
-                                  Navigator.of(context).pushNamed("/addnumber");
+                                  Navigator.of(context).pushNamed("/cardinfo");      //TODO: change back after test here
                                 },
                                 child: Container(
                                   padding:
