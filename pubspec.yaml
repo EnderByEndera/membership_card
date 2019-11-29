@@ -31,6 +31,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
+  barcode_scan: ^0.0.4
 
 dev_dependencies:
   flutter_test:
@@ -61,6 +62,9 @@ flutter:
     - assets/coupon/coffee.png
     - assets/coupon/staffFig.png
 
+    - assets/images/anz_card.
+    - assets/images/Bin.png.
+    - assets/images/btnAddNewCard.png.
   # To add assets to your application, add an assets section, like this:
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -96,3 +100,5 @@ flutter:
     - family: consolas
       fonts:
         - asset: assets/fonts/consolas.ttf
+
+
