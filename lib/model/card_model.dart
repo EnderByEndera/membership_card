@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:membership_card/pages/all_cards.dart';
@@ -38,9 +39,12 @@ class CardInfo extends ChangeNotifier{
   String _style;
   String _type;
   String _userId;
+  int    _cardCoupon = 3;
 
   bool _isChosen = false;
   Key _cardKey = UniqueKey();
+  Color _cardColor = Color.fromARGB(255, Random().nextInt(255),
+      Random().nextInt(255), Random().nextInt(255));
 
   String get cardId     => _cardId;
   String get cardType   => _eName;
@@ -54,6 +58,8 @@ class CardInfo extends ChangeNotifier{
   String get userId     => _userId;
   String get eName      => _eName;
   bool   get isChosen   => _isChosen;
+  Color  get cardColor  => _cardColor;
+  int    get cardCoupon => _cardCoupon;
 
   set isChosen(bool isChosen) => this._isChosen = isChosen;
 

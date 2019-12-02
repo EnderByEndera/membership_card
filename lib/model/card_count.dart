@@ -19,10 +19,18 @@ class CardCounter extends ChangeNotifier {
     notifyListeners();
   }
 
+  CardInfo getOneCard(int index) {
+    return _cardList.elementAt(index);
+  }
+
   void chooseOneCard(int index) {
     if (index < _cardList.length) {
       _cardList.elementAt(index).chooseOrNotChoose();
       notifyListeners();
     }
+  }
+
+  Color getCardColor(int index) {
+    return _cardList.elementAt(index).cardColor;
   }
 }
