@@ -1,6 +1,8 @@
 import 'dart:ui';
 import 'dart:ui' as prefix0;
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart' as prefix1;
 import 'package:flutter/material.dart';
 import 'package:barcode_flutter/barcode_flutter.dart';
 import 'package:provider/provider.dart';
@@ -17,19 +19,16 @@ class CardInfoPage extends StatefulWidget {
 }
 
 class CardInfoState extends State<CardInfoPage> {
-
-
   @override
   Widget build(BuildContext context) {
-      ///dynamic args = ModalRoute.of(context).settings.arguments;
+    dynamic args = ModalRoute.of(context).settings.arguments;
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-          automaticallyImplyLeading: false,
-          backgroundColor: Colors.white,
-          title: Container(
-              child:
-              GestureDetector(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.white,
+            title: Container(
+              child: GestureDetector(
                 child: Text(
                   "﹤Back",
                   style: TextStyle(
@@ -40,292 +39,352 @@ class CardInfoState extends State<CardInfoPage> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                onTap: (){
+                onTap: () {
                   Navigator.pop(context);
                 },
               ),
-          )
-
-        //Todo: Add more UI for App bar from here
-
-
-
-      ),
-      //Todo: Add more UI about Card Info body from here
-      body: new Column(
-        children: <Widget>[
-         Image(
-            image: AssetImage("/assets/backgrounds/starbucksBackground.jpg"),
-
-            ),
-          ],
-      ),
-    );
-  }
-
-  void _openBarCodePage(String cardNumberData){
-    Navigator.of(context).push(
-    MaterialPageRoute<void>(
-      builder: (BuildContext context){
-        return
-        Scaffold(
-
-          backgroundColor: Colors.white,
-          appBar: AppBar(
-            brightness: Brightness.dark,
-            elevation: 0,
-            backgroundColor: Colors.white,
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              color: Colors.black,
-            ),
-            title: Text(
-              "Barcode",
-              style: TextStyle(
-                color: Colors.black,
-              ),
-            ),
-          ),
-          body: new Center(
-            child: new BarCodeImage(
-              data: cardNumberData,
-              codeType: BarCodeType.Code128,
-              barHeight: 120.0,
-              lineWidth: 1.0,
-              hasText: true,
-              onError: (error){
-                print('error=$error');
-              },
-            ),
-          ),
-        );
-      }
-    )
-    );
-  }
-}
-
-
-
-
-/// 底部弹出框
-class CommonBottomSheet extends StatefulWidget {
-  CommonBottomSheet({Key key, this.list, this.onItemClickListener})
-      : assert(list != null),
-        super(key: key);
-  final list;
-  final OnItemClickListener onItemClickListener;
-  @override
-  _CommonBottomSheetState createState() => _CommonBottomSheetState();
-}
-typedef OnItemClickListener = void Function(int index);
-
-class _CommonBottomSheetState extends State<CommonBottomSheet> {
-  OnItemClickListener onItemClickListener;
-  var itemCount;
-  double itemHeight = 44;
-  var borderColor = Colors.white;
-  double circular = 10;
-
-  Response res;
-  Dio dio = initDio();
-
-
-  @override
-  void initState() {
-    super.initState();
-    onItemClickListener = widget.onItemClickListener;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    Orientation orientation = MediaQuery
-        .of(context)
-        .orientation;
-    Size screenSize = MediaQuery
-        .of(context)
-        .size;
-
-    var deviceWidth = orientation == Orientation.portrait
-        ? screenSize.width
-        : screenSize.height;
-    print('devide width');
-    print(deviceWidth);
-
-    /// *2-1是为了加分割线，最后还有一个cancel，所以加1
-    itemCount = (widget.list.length * 2 - 1) + 1;
-    var height = ((widget.list.length + 1) * 48).toDouble();
-    var cancelContainer = Container(
-        height: itemHeight,
-        margin: EdgeInsets.only(left: 10, right: 10),
-        decoration: BoxDecoration(
-          color: Colors.white, // 底色
-          borderRadius: BorderRadius.circular(circular),
-        ),
-        child: Center(
-          child: GestureDetector(
-            onTap: () {
-              Navigator.pop(context); //点击取消时弹回主界面
-            },
-            child: Text("cancel",
-              style: TextStyle(
-                  fontFamily: 'Robot',
-                  fontWeight: FontWeight.normal,
-                  decoration: TextDecoration.none,
-                  color: Color(0xff333333),
-                  fontSize: 18),
-            ),
-          ),
-        ));
-    var listview = ListView.builder(
-        itemCount: itemCount,
-        itemBuilder: (BuildContext context, int index) {
-          if (index == itemCount - 1) {
-            return new Container(
-              child: cancelContainer,
-              margin: const EdgeInsets.only(top: 10),
-            );
-          }
-          return getItemContainer(context, index);
-        });
-
-    var totalContainer = Container(
-      child: listview,
-      height: height,
-      width: deviceWidth * 0.98,
-    );
-
-    var stack = Stack(
-      alignment: Alignment.center,
-      children: <Widget>[
-        Positioned(
-          bottom: 0,
-          child: totalContainer,
-        ),
-      ],
-    );
-    return stack;
-  }
-
-
-  Widget getItemContainer(BuildContext context, int index) {
-    if (widget.list == null) {
-      return Container();
-    }
-    if (index.isOdd) {
-      return Container(
-        margin: EdgeInsets.symmetric(horizontal: 10),
-        child: Divider(
-          height: 0.5,
-          color: borderColor,
-        ),
-      );
-    }
-
-    var borderRadius;
-    var margin;
-    var border;
-    var borderAll = Border.all(color: borderColor, width: 0.5);
-    var borderSide = BorderSide(color: borderColor, width: 0.5);
-    var isFirst = false;
-    var isLast = false;
-
-    /// 只有一个元素
-    if (widget.list.length == 1) {
-      borderRadius = BorderRadius.circular(circular);
-      margin = EdgeInsets.only(bottom: 10, left: 10, right: 10);
-      border = borderAll;
-    } else if (widget.list.length > 1) {
-      /// 第一个元素
-      if (index == 0) {
-        isFirst = true;
-        borderRadius = BorderRadius.only(topLeft: Radius.circular(circular),
-            topRight: Radius.circular(circular));
-        margin = EdgeInsets.only(left: 10, right: 10,);
-        border = Border(top: borderSide, left: borderSide, right: borderSide);
-      } else if (index == itemCount - 2) {
-        isLast = true;
-
-        /// 最后一个元素
-        borderRadius = BorderRadius.only(bottomLeft: Radius.circular(circular),
-            bottomRight: Radius.circular(circular));
-        margin = EdgeInsets.only(left: 10, right: 10);
-        border =
-            Border(bottom: borderSide, left: borderSide, right: borderSide);
-      } else {
-        /// 其他位置元素
-        margin = EdgeInsets.only(left: 10, right: 10);
-        border = Border(left: borderSide, right: borderSide);
-      }
-    }
-    var isFirstOrLast = isFirst || isLast;
-    int listIndex = index ~/ 2;
-    var text = widget.list[listIndex];
-    var contentText = Text(
-      text,
-      style: TextStyle(
-          fontWeight: FontWeight.normal,
-          decoration: TextDecoration.none,
-          color: Color(0xFF333333),
-          fontSize: 18),
-    );
-
-    var center;
-    if (!isFirstOrLast) {
-      center = Center(
-        child: contentText,
-      );
-    }
-    var itemContainer = Container(
-        height: itemHeight,
-        margin: margin,
-        decoration: BoxDecoration(
-          color: Colors.white, // 底色
-          borderRadius: borderRadius,
-          border: border,
-        ),
-        child: center);
-    var onTap2 = () {
-      showAlertDialog(context);
-    };
-
-
-    var stack = Stack(
-      alignment: Alignment.center,
-      children: <Widget>[itemContainer, contentText],
-    );
-    var getsture = GestureDetector(
-      onTap: onTap2,
-      child: isFirstOrLast ? stack : itemContainer,
-    );
-    return getsture;
-  }
-}
-
-void showAlertDialog(BuildContext context) {  // 对话框函数
-  NavigatorState navigator= context.rootAncestorStateOfType(const TypeMatcher<NavigatorState>());
-  debugPrint("navigator is null?"+(navigator==null).toString());
-
-
-  showDialog(
-      context: context,
-      builder: (_) => new AlertDialog(
-          title: new Text("Delete"),
-          content: new Text("Click 'delete' to confirm the deletion."),
-          actions:<Widget>[
-            new FlatButton(child:new Text("CANCEL"), onPressed: (){
-              Navigator.of(context).pop();
-
-            },),
-            new FlatButton(child:new Text("DELETE"), onPressed: (){
-
-              Navigator.of(context).pushNamedAndRemoveUntil( "/mainpage", (Route<dynamic> route) => false);
-
-            },
             )
-          ]
-      ));
+
+            //Todo: Add more UI for App bar from here
+
+            ),
+        //Todo: Add more UI about Card Info body from here
+        body: new ListView.builder(
+            itemCount: 1,
+            itemBuilder: (BuildContext context, int index) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Image(
+                    image: AssetImage(
+                        "assets/backgrounds/starbucksBackground.jpg"),
+                    //height: 300,
+                    fit: BoxFit.fitWidth,
+                  ),
+                  Text(
+                    " Add: 123 Conllins Street,Melbourne (3.1km)\n "
+                    "Tel: (03) - 9883 8373\n "
+                    "BH: Mon Wed Thur Fri Sat Sun (9am to 6pm)",
+                    style:
+                        TextStyle(color: Colors.grey, fontSize: 15, height: 2),
+                    textAlign: TextAlign.left,
+                  ),
+                  Hero(
+                    tag: "first",
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15.0),
+                        border: Border.all(color: Colors.white, width: 3),
+                        color: Colors.yellow,
+                      ),
+                      constraints: BoxConstraints(minHeight: 150),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  ),
+                  Stack(
+                    children: <Widget>[
+                      Image(
+                        image: AssetImage("assets/coupon/green.png"),
+                        //height: 300,
+                        fit: BoxFit.fitWidth,
+                      ),
+                      Positioned(
+                          left: 32.0,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 4.0),
+                              ),
+                              Text(
+                                "Ducks Coffee Roaster",
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w800,
+                                  height: 2.5,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                              Text(
+                                "Add: 123 Collins Street\n"
+                                "Tel: 03 9847 8372",
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.2,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                              Padding(
+                                padding:
+                                const EdgeInsets.symmetric(vertical: 12.0),
+                              ),
+                              Text(
+                                "Free Coffee Size Upgrade\n"
+                                "Enjoy the extra",
+                                style: TextStyle(
+                                  color: Colors.green,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.2,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                            ],
+                          )),
+                      Positioned(
+                        right: 32.0,
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: <Widget>[
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 20.0),
+                              ),
+                              Image(
+                                image: AssetImage("assets/coupon/coffee.png"),
+                              ),
+                              Padding(
+                                padding:
+                                const EdgeInsets.symmetric(vertical: 20.0),
+                              ),
+                              Text(
+                                "Offer expires 31/12/2019",
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w400,
+                                  height: 1.2,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                            ]),
+                      )
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  ),
+                  Stack(
+                    children: <Widget>[
+                      Image(
+                        image: AssetImage("assets/coupon/purple.png"),
+                        //height: 300,
+                        fit: BoxFit.fitWidth,
+                      ),
+                      Positioned(
+                          left: 32.0,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding:
+                                const EdgeInsets.symmetric(vertical: 4.0),
+                              ),
+                              Text(
+                                "Ducks Coffee Roaster",
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w800,
+                                  height: 2.5,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                              Text(
+                                "Add: 123 Collins Street\n"
+                                    "Tel: 03 9847 8372",
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.2,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                              Padding(
+                                padding:
+                                const EdgeInsets.symmetric(vertical: 12.0),
+                              ),
+                              Text(
+                                "Free Coffee Size Upgrade\n"
+                                    "Enjoy the extra",
+                                style: TextStyle(
+                                  color: Colors.purple,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.2,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                            ],
+                          )),
+                      Positioned(
+                        right: 32.0,
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: <Widget>[
+                              Padding(
+                                padding:
+                                const EdgeInsets.symmetric(vertical: 20.0),
+                              ),
+                              Image(
+                                image: AssetImage("assets/coupon/coffee.png"),
+                              ),
+                              Padding(
+                                padding:
+                                const EdgeInsets.symmetric(vertical: 20.0),
+                              ),
+                              Text(
+                                "Offer expires 31/12/2019",
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w400,
+                                  height: 1.2,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                            ]),
+                      )
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  ),
+                  Stack(
+                    children: <Widget>[
+                      Image(
+
+
+                        image: AssetImage("assets/coupon/orange.png"),
+                        //height: 300,
+                        fit: BoxFit.fitWidth,
+                      ),
+                      Positioned(
+                          left: 32.0,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding:
+                                const EdgeInsets.symmetric(vertical: 4.0),
+                              ),
+                              Text(
+                                "Ducks Coffee Roaster",
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w800,
+                                  height: 2.5,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                              Text(
+                                "Add: 123 Collins Street\n"
+                                    "Tel: 03 9847 8372",
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.2,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                              Padding(
+                                padding:
+                                const EdgeInsets.symmetric(vertical: 12.0),
+                              ),
+                              Text(
+                                "Free Coffee Size Upgrade\n"
+                                    "Enjoy the extra",
+                                style: TextStyle(
+                                  color: Colors.orange,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.2,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                            ],
+                          )),
+                      Positioned(
+                        right: 32.0,
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: <Widget>[
+                              Padding(
+                                padding:
+                                const EdgeInsets.symmetric(vertical: 20.0),
+                              ),
+                              Image(
+                                image: AssetImage("assets/coupon/coffee.png"),
+                              ),
+                              Padding(
+                                padding:
+                                const EdgeInsets.symmetric(vertical: 20.0),
+                              ),
+                              Text(
+                                "Offer expires 31/12/2019",
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w400,
+                                  height: 1.2,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                            ]),
+                      )
+                    ],
+                  ),
+                ],
+              );
+            }));
+  }
 }
+
+//Container(
+//            child: Image(
+//              image: AssetImage("assets/backgrounds/starbucksBackground.jpg"),
+//              //height: 300,
+//              fit: BoxFit.fitWidth,
+//            ),
+//              decoration: BoxDecoration(gradient: LinearGradient(
+//                colors: [
+//                  Colors.grey,
+//                ],
+//                begin: FractionalOffset.topCenter,
+//                end: FractionalOffset.bottomCenter,
+//                tileMode: TileMode.repeated
+//            )),
+//          )
+
+//Container(
+//height: 100.0,
+//child: Image(
+//image: AssetImage("assets/images/EBGames.png"),
+//),
+//),
+//new Expanded(
+//child: new BarCodeImage(
+//data: '321654987',
+//codeType: BarCodeType.Code128,
+//barHeight: 120.0,
+//lineWidth: 1.0,
+//hasText: true,
+//onError: (error){
+//print('error=$error');
+//},
+//),
+//),
+//new Center(
+//child: Image(
+//image: AssetImage("assets/backgrounds/nfcIllu.jpg"),
+//),
+//),
