@@ -10,6 +10,8 @@ import 'package:membership_card/pages/add_cards_with_number.dart';
 import 'package:membership_card/pages/card_info.dart';
 import 'package:membership_card/pages/help.dart';
 import 'package:provider/provider.dart';
+import 'package:barcode_flutter/barcode_flutter.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 /// This is the All_Cards Page [AllCardsMainPage] which is the home of the App.
 /// It shows all the cards users created and users can also add cards
@@ -35,11 +37,16 @@ class AllCardsMainPage extends StatefulWidget {
 /// It is the main state of the [AllCardsMainPage]
 class AllCardsMainPageState extends State<AllCardsMainPage>
     with SingleTickerProviderStateMixin {
+  /// Controlling the bottomTabBar
   TabController _tabController;
   ScrollController _scrollController;
+  TextEditingController _textEditingController;
 
   NfcData response = new NfcData(content: "");
 
+  /// Build on NFC dialog for users to notice the phone is using NFC now.
+  /// If NFC not open, will push a [_nfcAlertDialog] to remind of users to open
+  /// NFC.
   void _intoNFC() async {
     showDialog(
       context: context,
@@ -162,6 +169,7 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
     }
   }
 
+  /// Push a [AlertDialog] noticing users NFC not open.
   AlertDialog _nfcAlertDialog() {
     return AlertDialog(
       title: Text("NFC Not Found"),
@@ -197,6 +205,7 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
     );
   }
 
+  /// Overwritten Method for disposing _tabController;
   @override
   void dispose() {
     _tabController.dispose();
@@ -221,13 +230,20 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
       width: MediaQuery.of(context).size.height / 10 / 0.9 * 1.6,
     );
 
-    return Scaffold(
-      appBar: buildAppBar(context),
-      body: buildBody(context, _cardNumber, _randomColorContainer),
-      bottomNavigationBar: buildTabBar(context, _tabController),
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: Scaffold(
+        appBar: _buildAppBar(context, _textEditingController),
+        body: buildBody(context, _cardNumber, _randomColorContainer),
+        bottomNavigationBar: buildTabBar(context, _tabController),
+        resizeToAvoidBottomPadding: false,
+      ),
     );
   }
 
+  /// Build the tabBar in the very bottom of the [AllCardsMainPageState]
   static TabBar buildTabBar(BuildContext context, TabController tabController) {
     return TabBar(
       controller: tabController,
@@ -252,8 +268,9 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
     );
   }
 
+  /// Build the body in the Scaffold of the [AllCardsMainPageState]
   SafeArea buildBody(
-      BuildContext context, int _cardNumber, Widget _randomColorContainer) {
+      BuildContext context, int _cardNumber, Widget _storePicContainer) {
     return SafeArea(
       minimum: EdgeInsets.all(8.0),
       child: Container(
@@ -382,7 +399,7 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
                                   ),
                                 );
                               } else {
-                                return _randomColorContainer;
+                                return _storePicContainer;
                               }
                             },
                           ),
@@ -416,9 +433,25 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
     );
   }
 
-  static AppBar buildAppBar(BuildContext context) {
+  /// Build the Primary Theme AppBar for all the widgets to use.
+  Widget _buildAppBar(
+      BuildContext context, TextEditingController textEditingController) {
     return AppBar(
       backgroundColor: Colors.white,
+      bottom: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: TextField(
+          controller: textEditingController,
+          autofocus: true,
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.all(12.0),
+            hintText: "SEARCH...",
+            border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(15.0)),
+          ),
+        ),
+      ),
       title: Text(
         "Puntos",
         style: TextStyle(
@@ -446,6 +479,9 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
     );
   }
 
+  /// Method to build the folding card design in the bottom of
+  /// [AllCardsMainPage], the reason why is called [_buildStack] is because it
+  /// is serviced for Stack Widget
   List<Widget> _buildStack(int number, BuildContext context) {
     var heroList = List<Widget>();
     for (int heroNumber = 0; heroNumber < number; heroNumber++) {
@@ -493,6 +529,7 @@ class _AllCardsPageState extends State<AllCardsPage>
   TextEditingController _textEditingController;
   ScrollController _scrollController;
 
+  /// Overwritten method to build the [_tabController] and [_scrollController]
   @override
   void initState() {
     super.initState();
@@ -502,7 +539,7 @@ class _AllCardsPageState extends State<AllCardsPage>
       vsync: this,
     );
     _scrollController = ScrollController(
-      keepScrollOffset: true,
+      keepScrollOffset: false,
     );
   }
 
@@ -520,7 +557,7 @@ class _AllCardsPageState extends State<AllCardsPage>
         body: NotificationListener<OverscrollNotification>(
           onNotification: (notification) {
             if (notification.dragDetails?.delta?.dy != null &&
-                notification.dragDetails.delta.dy > 20) {
+                notification.dragDetails.delta.dy > 80) {
               Navigator.of(context).pop();
               return true;
             } else {
@@ -531,31 +568,24 @@ class _AllCardsPageState extends State<AllCardsPage>
             controller: _scrollController,
             slivers: <Widget>[
               SliverAppBar(
+                automaticallyImplyLeading: false,
                 pinned: true,
+                expandedHeight: 110,
                 bottom: AppBar(
-                    backgroundColor: Colors.white,
-                    elevation: 0,
-                    automaticallyImplyLeading: false,
-                    leading: null,
-                    title: TextField(
-                      controller: _textEditingController,
-                      decoration: InputDecoration(
-                          hintText: "SEARCH...",
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20.0))),
-                    )),
-                backgroundColor: Colors.white,
-                leading: IconButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  padding: EdgeInsets.all(4.0),
-                  iconSize: 32.0,
-                  icon: Icon(
-                    Icons.arrow_back,
-                    color: Theme.of(context).primaryColor,
+                  centerTitle: true,
+                  automaticallyImplyLeading: false,
+                  backgroundColor: Colors.white,
+                  title: TextField(
+                    controller: _textEditingController,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.all(12.0),
+                      hintText: "SEARCH...",
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.0)),
+                    ),
                   ),
                 ),
+                backgroundColor: Colors.white,
                 title: Text(
                   "Puntos",
                   style: TextStyle(
@@ -586,13 +616,23 @@ class _AllCardsPageState extends State<AllCardsPage>
                     (context, index) {
                       if (index.isOdd) {
                         int heroNumber = index ~/ 2;
-                        return Consumer<CardCounter>(
-                          builder: (context, counter, _) => Hero(
-                            tag: counter.getOneCard(heroNumber).cardKey,
-                            child:
-                                _buildMembership(counter, heroNumber, context),
-                          ),
-                        );
+                        try {
+                          return Consumer<CardCounter>(
+                            builder: (context, counter, _) => Hero(
+                              tag: counter.getOneCard(heroNumber).cardKey,
+                              child: _cardDesign(counter, heroNumber,
+                                  _getCardDesignByIndex(index)),
+                            ),
+                          );
+                        } on Exception {
+                          return Consumer<CardCounter>(
+                            builder: (context, counter, _) => Hero(
+                              tag: counter.getOneCard(index).cardKey,
+                              child:
+                                  buildMembership(counter, index, context, 6),
+                            ),
+                          );
+                        }
                       } else {
                         return Divider(
                           height: 5,
@@ -611,23 +651,26 @@ class _AllCardsPageState extends State<AllCardsPage>
             AllCardsMainPageState.buildTabBar(context, _tabController));
   }
 
-  static Widget _buildMembership(
-      CardCounter counter, int heroNumber, BuildContext context) {
-    return Consumer<CardCounter>(
-      builder: (context, counter, _) => GestureDetector(
+  /// Method In order to build a Membership-Type Card.
+  /// Contains design of building a membership card which has
+  /// [_buildRewardPlace] to build a ListView Widget to show the reward point
+  /// the user has of this card.
+  static Widget buildMembership(CardCounter counter, int index,
+          BuildContext context, int rewardMaxPoint) =>
+      GestureDetector(
         onTap: () {
           Navigator.of(context).pushNamed("/cardinfo", arguments: {
-            "herotag": counter.getOneCard(heroNumber).cardKey,
-            "cardId": counter.getOneCard(heroNumber).cardId,
-            "eName": counter.getOneCard(heroNumber).eName,
-            "cardType": counter.getOneCard(heroNumber).cardType,
+            "herotag": counter.getOneCard(index).cardKey,
+            "cardId": counter.getOneCard(index).cardId,
+            "eName": counter.getOneCard(index).eName,
+            "cardType": counter.getOneCard(index).cardType,
           });
         },
         child: Container(
           decoration: BoxDecoration(
-              color: counter.getCardColor(heroNumber),
+              color: counter.getCardColor(index),
               borderRadius: BorderRadius.circular(10.0)),
-          constraints: BoxConstraints(minHeight: 150),
+          constraints: BoxConstraints(minHeight: 160),
           child: Stack(
             fit: StackFit.passthrough,
             children: <Widget>[
@@ -638,22 +681,23 @@ class _AllCardsPageState extends State<AllCardsPage>
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.white, width: 1.0),
                     shape: BoxShape.circle,
-                    color: Theme.of(context).primaryColor,
+                    image: DecorationImage(
+                      image: AssetImage("assets/backgrounds/numCoupon.png"),
+                    ),
                   ),
                   padding: EdgeInsets.all(8.0),
-                  child:
-                      Text(counter.getOneCard(heroNumber).cardCoupon.toString(),
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            color: Colors.white,
-                          )),
+                  child: Text(counter.getOneCard(index).cardCoupon.toString(),
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        color: Theme.of(context).primaryColor,
+                      )),
                 ),
               ),
               Container(
                 margin: EdgeInsets.all(16.0),
                 alignment: Alignment.topLeft,
                 child: Text(
-                  counter.getOneCard(heroNumber).eName,
+                  counter.getOneCard(index).eName,
                   style: TextStyle(
                     fontSize: 20.0,
                     fontWeight: FontWeight.bold,
@@ -685,7 +729,7 @@ class _AllCardsPageState extends State<AllCardsPage>
                   margin: EdgeInsets.all(16.0),
                   alignment: Alignment(-1, 0.6),
                   child: Text(
-                      "${5 - counter.getOneCard(heroNumber).cardCoupon} "
+                      "${5 - counter.getOneCard(index).cardCoupon} "
                       "More to go",
                       style: TextStyle(
                           fontSize: 18.0,
@@ -695,45 +739,187 @@ class _AllCardsPageState extends State<AllCardsPage>
                 height: 30,
                 child: ListView(
                   padding: EdgeInsets.only(
-                      left: 16.0, right: 16.0, top: 115.0, bottom: 2.0),
+                      left: 16.0, right: 16.0, top: 125.0, bottom: 2.0),
                   scrollDirection: Axis.horizontal,
-                  children: _buildRewardPlace(heroNumber, 6, context),
+                  children: _buildRewardPlace(index, rewardMaxPoint, context),
                 ),
               )
             ],
           ),
         ),
-      ),
-    );
-  }
+      );
 
+  /// Method used in [buildMembership], to build the ListView Widget to show
+  /// the reward point one user has of one card
   static List<Widget> _buildRewardPlace(
-      int heroNumber, int number, BuildContext context) {
+      int index, int rewardPoint, BuildContext context) {
     var rewardList = List<Widget>();
-    for (int i = 1; i <= number; i++) {
+    for (int i = 1; i <= rewardPoint; i++) {
       rewardList.add(Container(
         constraints: BoxConstraints.tightFor(
             height: 33.0,
-            width: (MediaQuery.of(context).size.width - 64.0) / 5),
+            width: (MediaQuery.of(context).size.width - 64.0) / 6),
         decoration: BoxDecoration(
           border: Border.all(color: Colors.white),
         ),
         alignment: Alignment.center,
-        child: i >
-                Provider.of<CardCounter>(context)
-                    .getOneCard(heroNumber)
-                    .cardCoupon
-            ? Text(i.toString(),
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14.0,
-                ))
-            : Image(
-                image: AssetImage("assets/points/Polygon.png"),
-              ),
+        child:
+            i > Provider.of<CardCounter>(context).getOneCard(index).cardCoupon
+                ? Text(i.toString(),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14.0,
+                    ))
+                : Image(
+                    image: AssetImage("assets/points/Polygon.png"),
+                  ),
       ));
     }
     return rewardList;
   }
+
+  static Widget buildBarcodeScan(
+          CardCounter counter, int index, BuildContext context) =>
+      GestureDetector(
+        onTap: () {
+          Navigator.of(context).pushNamed("/cardinfo", arguments: {
+            "herotag": counter.getOneCard(index).cardKey,
+            "cardId": counter.getOneCard(index).cardId,
+            "eName": counter.getOneCard(index).eName,
+            "cardType": counter.getOneCard(index).cardType,
+          });
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: counter.getCardColor(index),
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          constraints: BoxConstraints(minHeight: 160),
+          child: Stack(
+            fit: StackFit.passthrough,
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.all(16.0),
+                alignment: Alignment(-1, -0.7),
+                child: Text(
+                  counter.getOneCard(index).eName,
+                  style: TextStyle(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              Container(
+                  margin: EdgeInsets.all(16.0),
+                  alignment: Alignment(-1, -0.1),
+                  child: Text(counter.getOneCard(index).cardId,
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.white,
+                      ))),
+              Container(
+                margin: EdgeInsets.all(16.0),
+                alignment: Alignment.bottomRight,
+                child: BarCodeImage(
+                  padding: EdgeInsets.symmetric(vertical: 6.0),
+                  params: ITFBarCodeParams(
+                    counter.getOneCard(index).cardId,
+                    barHeight: 30.0,
+                    withBearerBars: false,
+                    wideBarRatio: 2.25,
+                  ),
+                  backgroundColor: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+
+  static Widget buildQrScan(
+          CardCounter counter, int index, BuildContext context) =>
+      GestureDetector(
+        onTap: () {
+          Navigator.of(context).pushNamed("/cardinfo", arguments: {
+            "herotag": counter.getOneCard(index).cardKey,
+            "cardId": counter.getOneCard(index).cardId,
+            "eName": counter.getOneCard(index).eName,
+            "cardType": counter.getOneCard(index).cardType,
+          });
+        },
+        child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+              color: counter.getCardColor(index),
+            ),
+            constraints: BoxConstraints(minHeight: 160.0),
+            child: Stack(
+              fit: StackFit.passthrough,
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.all(16.0),
+                  alignment: Alignment.topRight,
+                  child: QrImage(
+                    version: QrVersions.auto,
+                    backgroundColor: Colors.white,
+                    data: counter.getOneCard(index).cardId,
+                    size: 60.0,
+                    padding: EdgeInsets.all(4.0),
+                  ),
+                ),
+              ],
+            )),
+      );
+
+  Widget _cardDesign(CardCounter counter, int index, CardDesign cardDesign) {
+    Widget design;
+    switch (cardDesign) {
+      case CardDesign.membership:
+        design = buildMembership(counter, index, context, 6);
+        break;
+      case CardDesign.barcode:
+        design = buildBarcodeScan(counter, index, context);
+        break;
+      case CardDesign.qrCode:
+        design = buildQrScan(counter, index, context);
+        break;
+      default:
+        throw Exception("Card Design Not Found");
+    }
+    return design;
+  }
+
+  _getCardDesignByIndex(int index) {
+    CardDesign design;
+    switch (index % 3) {
+      case 0:
+        design = CardDesign.membership;
+        break;
+      case 1:
+        design = CardDesign.barcode;
+        break;
+      case 2:
+        design = CardDesign.qrCode;
+        break;
+    }
+    return design;
+  }
+}
+
+/// Enumeration of all the card designs
+/// Every design will be used in the [_cardDesign] method
+enum CardDesign {
+  /// use [AllCardsMainPageState.buildMembership] to build a membership card
+  /// with reward points shown in the bottom
+  membership,
+
+  /// use [AllCardsMainPageState.buildBarcodeScan] to build a card showing its
+  /// barcode
+  barcode,
+
+  /// use [AllCardsMainPageState.buildQrCodeScan] to build a card showing its
+  /// QR Code in the bottom
+  qrCode,
 }
