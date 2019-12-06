@@ -16,17 +16,20 @@ class AddCardWithNumberPage extends StatefulWidget {
   State<StatefulWidget> createState() => AddCardWithNumberPageState();
 }
 
-class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
-  ///Force the page to remain vertical
+class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
+    with TickerProviderStateMixin {
+  TabController _tabController;
+
   void initState() {
+    _tabController = TabController(
+      length: 2,
+      vsync: this,
+    );
     super.initState();
-    SystemChrome.setPreferredOrientations(
-        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   }
 
-  ///Destroy vertical lock
   void dispose() {
-    SystemChrome.setPreferredOrientations([]);
+    _tabController.dispose();
     super.dispose();
   }
 
@@ -34,31 +37,29 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
   TextEditingController cardController = TextEditingController();
 
   ///card type control
-  TextEditingController cardTypeController = TextEditingController();
+  TextEditingController cardStoreController = TextEditingController();
 
-  ///card remark control
-  TextEditingController cardRemarkController = TextEditingController();
+
 
   String result="Hey!";
 
-  Future _scanQR() async{
-    try{
+  Future _scanQR() async {
+    try {
       String qrResult = await BarcodeScanner.scan();
       setState(() {
-        result= qrResult;
+        result = qrResult;
       });
-    }on PlatformException catch(e){
-      if(e.code== BarcodeScanner.CameraAccessDenied){
+    } on PlatformException catch (e) {
+      if (e.code == BarcodeScanner.CameraAccessDenied) {
         setState(() {
-          result="CameraAccessDenied ";
+          result = "CameraAccessDenied ";
         });
-      }
-      else{
+      } else {
         setState(() {
           result = "Unknown Error $e";
         });
       }
-    }catch(e) {
+    } catch (e) {
       setState(() {
         result = "Unknown Error $e";
       });
@@ -66,6 +67,9 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
   }
 
   @override
+  GlobalKey _formKey = GlobalKey<FormState>();
+
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -76,7 +80,10 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
           icon: Icon(Icons.arrow_back),
           color: Colors.orange,
         ),
-        title:Text('Back',style: TextStyle(color: Colors.orange,fontSize: 20.0),) ,
+        title: Text(
+          'Back',
+          style: TextStyle(color: Colors.orange, fontSize: 20.0),
+        ),
         backgroundColor: Colors.white,
         actions: <Widget>[
           Consumer<CardCounter>(
@@ -85,74 +92,80 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
                 Navigator.pop(context);
                 counter.addCard(CardInfo(
                   cardController.value.text,
-                  cardTypeController.value.text,
-                  cardRemarkController.value.text,
+                  cardStoreController.value.text,
+
                 ));
               },
-              child: Text('Save',style: TextStyle(color: Colors.orange),),
+              child: Text(
+                'Save',
+                style: TextStyle(color: Colors.orange),
+              ),
             ),
           ),
         ],
       ),
-      body: Column(
+      body: Form(
+        key: _formKey,
+        autovalidate: true,
+        child: Column(
+
         children: <Widget>[
           // card input
-          TextField(
+          TextFormField(
             controller: cardController,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
               contentPadding: EdgeInsets.all(10.0),
               icon: Icon(Icons.credit_card),
-              labelText: 'Please enter you cardID',
+              labelText: 'Please enter you cardNumber',
             ),
+            //limit MAX input=20
+            inputFormatters:[WhitelistingTextInputFormatter(RegExp("[a-zA-Z0-9]")),LengthLimitingTextInputFormatter(20)] ,
+            validator: (value) {// 校验用户名
+              return value.trim().length > 0 ? null : 'Card Number can not be null';
+            },
+
             autofocus: false,
           ),
           //card type input
-          TextField(
-            controller: cardTypeController,
+          TextFormField(
+            controller: cardStoreController,
             keyboardType: TextInputType.text,
             decoration: InputDecoration(
               contentPadding: EdgeInsets.all(10.0),
               icon: Icon(Icons.calendar_view_day),
-              labelText: 'Please enter your cardtype',
+              labelText: 'Please enter the storeName',
             ),
+              //limit MAX input=20
+            inputFormatters:[WhitelistingTextInputFormatter(RegExp("[a-zA-Z0-9_\u4e00-\u9fa5]")),LengthLimitingTextInputFormatter(20)] ,
+            validator: (value) {// 校验用户名
+              return value.trim().length > 0 ? null : 'Store Name can not be null';
+            },
             autofocus: false,
           ),
-          TextField(
-            controller: cardRemarkController,
-            keyboardType: TextInputType.text,
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.all(10.0),
-              icon: Icon(Icons.rate_review),
-              labelText: 'Please enter you card remark',
-            ),
-            autofocus: false,
-          ),
+
           RaisedButton(
-            child: Text(
-              'Use Camera',
-              style: TextStyle(fontSize: 20.0),
-
-            ),
-            color: Colors.orange,
-            colorBrightness: Brightness.dark,
-            disabledColor: Colors.grey,
-            disabledTextColor: Colors.grey,
-            padding: new EdgeInsets.only(
-              bottom: 5.0,
-              top: 5.0,
-              left: 20.0,
-              right: 20.0,
-            ),
-            onPressed: _scanQR,
-
+              child: Text(
+                'Use Camera',
+                style: TextStyle(fontSize: 20.0),
+              ),
+              color: Colors.orange,
+              colorBrightness: Brightness.dark,
+              disabledColor: Colors.grey,
+              disabledTextColor: Colors.grey,
+              padding: new EdgeInsets.only(
+                bottom: 5.0,
+                top: 5.0,
+                left: 20.0,
+                right: 20.0,
+              ),
+              onPressed: _scanQR,
               shape: RoundedRectangleBorder(
                 side: new BorderSide(
                   width: 2.0,
                   color: Colors.white,
                   style: BorderStyle.solid,
                 ),
-
                 borderRadius: BorderRadius.only(
                   topRight: Radius.circular(10.0),
                   topLeft: Radius.circular(10.0),
@@ -163,8 +176,9 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
           )
         ],
       ),
+      ),
       bottomNavigationBar: TabBar(
-
+        controller: _tabController,
         tabs: <Widget>[
           Container(
             height: MediaQuery.of(context).size.height * 0.066,
@@ -184,7 +198,6 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
           )
         ],
       ),
-
     );
   }
 }
