@@ -4,21 +4,20 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/cupertino.dart' as prefix1;
 import 'package:flutter/material.dart';
-import 'package:barcode_flutter/barcode_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:membership_card/model/card_count.dart';
-import 'package:membership_card/network/client.dart';
+
 
 /// This is the Card_Info Page showing one card's information.
 /// It should include one card's all the information here.
-class CardInfoPage extends StatefulWidget {
+class CardInfo1Page extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return CardInfoState();
+    return CardInfo1State();
   }
 }
 
-class CardInfoState extends State<CardInfoPage> {
+class CardInfo1State extends State<CardInfo1Page> {
   @override
   Widget build(BuildContext context) {
     dynamic args = ModalRoute.of(context).settings.arguments;
@@ -29,25 +28,44 @@ class CardInfoState extends State<CardInfoPage> {
             backgroundColor: Colors.white,
             title: Container(
               child: GestureDetector(
-                child: Text(
-                  "﹤Back",
-                  style: TextStyle(
-                    decoration: TextDecoration.none,
-                    fontSize: 25.0,
-                    color: Theme.of(context).primaryColor,
-                    //fontWeight: FontWeight.bold,
-                    fontWeight: FontWeight.w500,
+                child: Padding(
+                  padding: const EdgeInsets.all(0),
+                  child: Text(
+                    "< Back",
+                    style: TextStyle(
+                      decoration: TextDecoration.none,
+                      fontSize: 25.0,
+                      color: Theme.of(context).primaryColor,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
                 onTap: () {
                   Navigator.pop(context);
                 },
               ),
-            )
-
-            //Todo: Add more UI for App bar from here
-
             ),
+          actions: <Widget>[
+            GestureDetector(
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Text(
+                  "Edit",
+                  style: TextStyle(
+                    decoration: TextDecoration.none,
+                    fontSize: 25.0,
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              onTap: (){
+                Navigator.of(context).pushNamed("/addnumber");
+              },
+            ),
+          ],
+        ),
+
         //Todo: Add more UI about Card Info body from here
         body: new ListView.builder(
             itemCount: 1,
@@ -69,15 +87,67 @@ class CardInfoState extends State<CardInfoPage> {
                         TextStyle(color: Colors.grey, fontSize: 15, height: 2),
                     textAlign: TextAlign.left,
                   ),
-                  Hero(
-                    tag: "first",
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15.0),
-                        border: Border.all(color: Colors.white, width: 3),
-                        color: Colors.yellow,
-                      ),
-                      constraints: BoxConstraints(minHeight: 150),
+                  Container(
+                    decoration: BoxDecoration(
+                        color: args["cardcolor"],
+                        borderRadius: BorderRadius.circular(10.0)),
+                    constraints: BoxConstraints(minHeight: 160),
+                    child: Stack(
+                      fit: StackFit.passthrough,
+                      alignment: Alignment.center,
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.all(16.0),
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            args["eName"],
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.all(16.0),
+                          alignment: Alignment(-1.0, -0.3),
+                          child: Text(
+                            "Buy 5 Get 1 Free",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Container(
+                            margin: EdgeInsets.all(16.0),
+                            alignment: Alignment(-1, 0.1),
+                            child: Text("Offer expires at 31/12/2019",
+                                style: TextStyle(
+                                  fontSize: 14.0,
+                                  color: Colors.white,
+                                ))),
+                        Container(
+                            margin: EdgeInsets.all(16.0),
+                            alignment: Alignment(-1, 0.6),
+                            child: Text(
+                                "${5 - args["cardCoupon"]} "
+                                    "More to go",
+                                style: TextStyle(
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white))),
+                        Container(
+                          height: 30,
+                          child: ListView(
+                            padding: EdgeInsets.only(
+                                left: 16.0, right: 16.0, top: 125.0, bottom: 2.0),
+                            scrollDirection: Axis.horizontal,
+                            children: _buildRewardPlace(args["cardCoupon"], 5, context),
+                          ),
+                        )
+                      ],
                     ),
                   ),
                   Padding(
@@ -260,8 +330,6 @@ class CardInfoState extends State<CardInfoPage> {
                   Stack(
                     children: <Widget>[
                       Image(
-
-
                         image: AssetImage("assets/coupon/orange.png"),
                         //height: 300,
                         fit: BoxFit.fitWidth,
@@ -345,9 +413,39 @@ class CardInfoState extends State<CardInfoPage> {
                   ),
                 ],
               );
-            }));
+            }
+            )
+    );
+  }
+
+  static List<Widget> _buildRewardPlace(int cardCoupon, int rewardPoint, BuildContext context){
+    var rewardList = List<Widget>();
+    for (int i = 1; i <= rewardPoint; i++) {
+      rewardList.add(Container(
+        constraints: BoxConstraints.tightFor(
+            height: 33.0,
+            width: (MediaQuery.of(context).size.width - 64.0) / 5),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.white),
+        ),
+        alignment: Alignment.center,
+        child:
+        i > cardCoupon
+            ? Text(i.toString(),
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 14.0,
+            ))
+            : Image(
+          image: AssetImage("assets/points/Polygon.png"),
+        ),
+      ));
+    }
+    return rewardList;
   }
 }
+
 
 //Container(
 //            child: Image(

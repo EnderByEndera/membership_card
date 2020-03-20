@@ -7,7 +7,7 @@ import 'package:membership_card/model/card_count.dart';
 import 'package:membership_card/model/card_model.dart';
 import 'package:membership_card/pages/add_cards_with_camera.dart';
 import 'package:membership_card/pages/add_cards_with_number.dart';
-import 'package:membership_card/pages/card_info.dart';
+import 'package:membership_card/pages/card_info_membership.dart';
 import 'package:membership_card/pages/help.dart';
 import 'package:provider/provider.dart';
 import 'package:barcode_flutter/barcode_flutter.dart';
@@ -48,6 +48,7 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
   /// If NFC not open, will push a [_nfcAlertDialog] to remind of users to open
   /// NFC.
   void _intoNFC() async {
+    WidgetsFlutterBinding.ensureInitialized();
     showDialog(
       context: context,
       builder: (_) => Container(
@@ -232,7 +233,7 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
 
     return GestureDetector(
       onTap: () {
-        FocusScope.of(context).requestFocus(FocusNode());
+        FocusScope.of(context).requestFocus(FocusNode());    //Shift the focus to new FocusNode
       },
       child: Scaffold(
         appBar: _buildAppBar(context, _textEditingController),
@@ -443,7 +444,7 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
         elevation: 0,
         title: TextField(
           controller: textEditingController,
-          autofocus: true,
+          autofocus: false,
           decoration: InputDecoration(
             contentPadding: EdgeInsets.all(12.0),
             hintText: "SEARCH...",
@@ -509,6 +510,7 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
               ),
             ),
           ),
+          //transitionOnUserGestures: true,
         ),
       ));
     }
@@ -577,6 +579,7 @@ class _AllCardsPageState extends State<AllCardsPage>
                   backgroundColor: Colors.white,
                   title: TextField(
                     controller: _textEditingController,
+                    autofocus: false,
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.all(12.0),
                       hintText: "SEARCH...",
@@ -629,7 +632,7 @@ class _AllCardsPageState extends State<AllCardsPage>
                             builder: (context, counter, _) => Hero(
                               tag: counter.getOneCard(index).cardKey,
                               child:
-                                  buildMembership(counter, index, context, 6),
+                                  buildMembership(counter, index, context, 5),
                             ),
                           );
                         }
@@ -659,11 +662,13 @@ class _AllCardsPageState extends State<AllCardsPage>
           BuildContext context, int rewardMaxPoint) =>
       GestureDetector(
         onTap: () {
-          Navigator.of(context).pushNamed("/cardinfo", arguments: {
+          Navigator.of(context).pushNamed("/cardinfo_membership", arguments: {
             "herotag": counter.getOneCard(index).cardKey,
             "cardId": counter.getOneCard(index).cardId,
             "eName": counter.getOneCard(index).eName,
             "cardType": counter.getOneCard(index).cardType,
+            "cardcolor": counter.getCardColor(index),
+            "cardCoupon": counter.getOneCard(index).cardCoupon,
           });
         },
         child: Container(
@@ -741,7 +746,7 @@ class _AllCardsPageState extends State<AllCardsPage>
                   padding: EdgeInsets.only(
                       left: 16.0, right: 16.0, top: 125.0, bottom: 2.0),
                   scrollDirection: Axis.horizontal,
-                  children: _buildRewardPlace(index, rewardMaxPoint, context),
+                  children: _buildRewardPlace(counter.getOneCard(index).cardCoupon, rewardMaxPoint, context),
                 ),
               )
             ],
@@ -751,20 +756,19 @@ class _AllCardsPageState extends State<AllCardsPage>
 
   /// Method used in [buildMembership], to build the ListView Widget to show
   /// the reward point one user has of one card
-  static List<Widget> _buildRewardPlace(
-      int index, int rewardPoint, BuildContext context) {
+  static List<Widget> _buildRewardPlace(int cardCoupon, int rewardPoint, BuildContext context) {
     var rewardList = List<Widget>();
-    for (int i = 1; i <= rewardPoint; i++) {
+    for (int i = 1; i < rewardPoint; i++) {
       rewardList.add(Container(
         constraints: BoxConstraints.tightFor(
             height: 33.0,
-            width: (MediaQuery.of(context).size.width - 64.0) / 6),
+            width: (MediaQuery.of(context).size.width - 64.0) / 5),
         decoration: BoxDecoration(
           border: Border.all(color: Colors.white),
         ),
         alignment: Alignment.center,
         child:
-            i > Provider.of<CardCounter>(context).getOneCard(index).cardCoupon
+            i > cardCoupon
                 ? Text(i.toString(),
                     style: TextStyle(
                       color: Colors.white,
@@ -779,15 +783,16 @@ class _AllCardsPageState extends State<AllCardsPage>
     return rewardList;
   }
 
-  static Widget buildBarcodeScan(
+  static Widget buildBarcode(
           CardCounter counter, int index, BuildContext context) =>
       GestureDetector(
         onTap: () {
-          Navigator.of(context).pushNamed("/cardinfo", arguments: {
+          Navigator.of(context).pushNamed("/cardinfo_barcode", arguments: {
             "herotag": counter.getOneCard(index).cardKey,
             "cardId": counter.getOneCard(index).cardId,
             "eName": counter.getOneCard(index).eName,
             "cardType": counter.getOneCard(index).cardType,
+            "cardcolor": counter.getCardColor(index),
           });
         },
         child: Container(
@@ -838,15 +843,16 @@ class _AllCardsPageState extends State<AllCardsPage>
         ),
       );
 
-  static Widget buildQrScan(
+  static Widget buildqrCode(
           CardCounter counter, int index, BuildContext context) =>
       GestureDetector(
         onTap: () {
-          Navigator.of(context).pushNamed("/cardinfo", arguments: {
+          Navigator.of(context).pushNamed("/cardinfo_qrcode", arguments: {
             "herotag": counter.getOneCard(index).cardKey,
             "cardId": counter.getOneCard(index).cardId,
             "eName": counter.getOneCard(index).eName,
             "cardType": counter.getOneCard(index).cardType,
+            "cardcolor": counter.getCardColor(index),
           });
         },
         child: Container(
@@ -880,10 +886,10 @@ class _AllCardsPageState extends State<AllCardsPage>
         design = buildMembership(counter, index, context, 6);
         break;
       case CardDesign.barcode:
-        design = buildBarcodeScan(counter, index, context);
+        design = buildBarcode(counter, index, context);
         break;
       case CardDesign.qrCode:
-        design = buildQrScan(counter, index, context);
+        design = buildqrCode(counter, index, context);
         break;
       default:
         throw Exception("Card Design Not Found");

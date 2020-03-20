@@ -15,9 +15,13 @@ import 'model/card_model.dart';
 import 'model/user_model.dart';
 import 'pages/add_cards_with_number.dart';
 import 'pages/forget_password.dart';
-import 'pages/card_info.dart';
+import 'pages/card_info_membership.dart';
+import 'pages/card_info_barcode.dart';
+import 'pages/card_info_qrcode.dart';
+
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) {
     runApp(GoWallet());
@@ -56,7 +60,9 @@ class GoWallet extends StatelessWidget {
           routes: {
             "/addnumber": (_) => AddCardWithNumberPage(),
             "/addcamera": (_) => AddCardWithCameraPage(),
-            "/cardinfo": (_) => CardInfoPage(),
+            "/cardinfo_membership": (_) => CardInfo1Page(),
+            "/cardinfo_barcode": (_) => CardInfo2Page(),
+            "/cardinfo_qrcode": (_) => CardInfo3Page(),
             "/settings": (_) => SettingsPage(),
             "/search": (_) => SearchPage(),
             "/help": (_) => HelpPage(),
