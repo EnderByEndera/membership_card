@@ -46,6 +46,15 @@ class CardInfo extends ChangeNotifier{
   Color _cardColor = Color.fromARGB(255, Random().nextInt(255),
       Random().nextInt(255), Random().nextInt(255));
 
+  void setCardId(String cardId){
+    this._cardId=cardId;
+  }
+
+  void setCardStore(String cardStore){
+    this._eName=cardStore;
+  }
+
+
   String get cardId     => _cardId;
   String get cardType   => _eName;
   String get remark     => _remark;
@@ -86,3 +95,5 @@ class CardInfo extends ChangeNotifier{
     _isChosen = _isChosen? false : true;
   }
 }
+
+

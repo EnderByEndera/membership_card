@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:membership_card/model/card_model.dart';
+import 'package:membership_card/pages/edit_card.dart';
 
 class CardCounter extends ChangeNotifier {
 
@@ -30,8 +31,9 @@ class CardCounter extends ChangeNotifier {
     }
   }
 
-  void editCard(CardInfo cardInfo){
-
+  void editCard(CardInfo cardInfo, String number, String store){
+    cardInfo.setCardId(number);
+    cardInfo.setCardStore(store);
     notifyListeners();
   }
 

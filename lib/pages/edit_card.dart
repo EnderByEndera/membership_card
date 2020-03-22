@@ -72,11 +72,7 @@ class EditCardPageState extends  State<EditCardPage>
             builder: (context, counter, child) => FlatButton(
               onPressed: () {
                 Navigator.pop(context);
-                counter.editCard(CardInfo(
-                  cardController.value.text,
-                  cardStoreController.value.text,
-
-                ));
+                counter.editCard(CardInfo(),cardController.value.text,cardStoreController.value.text);
               },
               child: Text(
                 'Save',
