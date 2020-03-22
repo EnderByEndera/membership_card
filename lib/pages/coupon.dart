@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:membership_card/pages/card_info.dart';
+import 'package:membership_card/pages/card_info_membership.dart';
 
 class CouponPage extends StatefulWidget {
   @override

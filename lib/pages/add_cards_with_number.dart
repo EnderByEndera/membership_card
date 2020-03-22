@@ -66,25 +66,34 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
     }
   }
 
-  @override
   GlobalKey _formKey = GlobalKey<FormState>();
+  @override
+
 
 
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: Icon(Icons.arrow_back),
-          color: Colors.orange,
-        ),
-        title: Text(
-          'Back',
-          style: TextStyle(color: Colors.orange, fontSize: 20.0),
-        ),
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
+        title: Container(
+          child: GestureDetector(
+            child: Text(
+              "﹤Back",
+              style: TextStyle(
+                decoration: TextDecoration.none,
+                fontSize: 25.0,
+                color: Theme.of(context).primaryColor,
+                //fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+        ),
+
         actions: <Widget>[
           Consumer<CardCounter>(
             builder: (context, counter, child) => FlatButton(

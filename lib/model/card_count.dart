@@ -30,6 +30,11 @@ class CardCounter extends ChangeNotifier {
     }
   }
 
+  void editCard(CardInfo cardInfo){
+
+    notifyListeners();
+  }
+
   Color getCardColor(int index) {
     return _cardList.elementAt(index).cardColor;
   }

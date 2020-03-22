@@ -54,7 +54,7 @@ class CardInfo2State extends State<CardInfo2Page>{
                 ),
               ),
               onTap: (){
-                Navigator.of(context).pushNamed("/addnumber");
+                Navigator.of(context).pushNamed("/edit");
               },
             ),
         ],
