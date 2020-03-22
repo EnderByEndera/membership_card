@@ -71,6 +71,7 @@ class CardInfo extends ChangeNotifier{
   int    get cardCoupon => _cardCoupon;
 
   set isChosen(bool isChosen) => this._isChosen = isChosen;
+  void addCoupon(int cardCoupon)=> this._cardCoupon=cardCoupon;
 
   CardInfo([this._cardId, this._eName, this._remark]);
 
