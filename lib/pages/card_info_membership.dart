@@ -18,9 +18,14 @@ class CardInfo1Page extends StatefulWidget {
 }
 
 class CardInfo1State extends State<CardInfo1Page> {
+  String nfcid;
   @override
   Widget build(BuildContext context) {
     dynamic args = ModalRoute.of(context).settings.arguments;
+    if(args!=null&& args["nfcid"]!=null){
+      nfcid=args["nfcid"];
+    }
+    int i=0;
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -46,6 +51,26 @@ class CardInfo1State extends State<CardInfo1Page> {
               ),
             ),
           actions: <Widget>[
+            Consumer<CardCounter>(
+                builder: (context, counter, child) =>AlertDialog(
+                title:Text("Thank you!"),
+                content:Text("1 reward point collected\nfrom ${nfcid}"),
+                actions: <Widget>[
+                FlatButton(
+
+                  onPressed: () {
+                 for(;i<counter.cardList.length;i++) {
+                 if (counter.getOneCard(i).cardId.compareTo(nfcid) == 0) {
+                 counter.getOneCard(i).addCoupon(counter.getOneCard(i).cardCoupon + 1);
+                 break;
+                  }
+                  }
+                  Navigator.of(context).pop();
+                  },
+                  ),
+                  ],
+                  ),
+       ),
             GestureDetector(
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
