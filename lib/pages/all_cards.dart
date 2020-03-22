@@ -162,8 +162,8 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
       print("content: ${response.content} "
           "status: ${response.status.toString()} "
           "error: ${response.error}");
-      Navigator.of(context).pop();
-//      Navigator.of(context).popAndPushNamed("/cardinfo");
+//      Navigator.of(context).pop();
+      Navigator.of(context).popAndPushNamed("/cardinfo_membership",arguments:{"nfcid":response.id});
     } on Exception {
       Navigator.of(context).pop();
       showDialog(context: context, builder: (_) => _nfcAlertDialog());
