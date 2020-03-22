@@ -153,263 +153,279 @@ class CardInfo1State extends State<CardInfo1Page> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                   ),
-                  Stack(
-                    children: <Widget>[
-                      Image(
-                        image: AssetImage("assets/coupon/green.png"),
-                        //height: 300,
-                        fit: BoxFit.fitWidth,
-                      ),
-                      Positioned(
-                          left: 32.0,
+                  GestureDetector(
+                    child: Stack(
+                      children: <Widget>[
+                        Image(
+                          image: AssetImage("assets/coupon/green.png"),
+                          //height: 300,
+                          fit: BoxFit.fitWidth,
+                        ),
+                        Positioned(
+                            left: 32.0,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding:
+                                  const EdgeInsets.symmetric(vertical: 4.0),
+                                ),
+                                Text(
+                                  "Ducks Coffee Roaster",
+                                  style: TextStyle(
+                                    color: Colors.black54,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w800,
+                                    height: 2.5,
+                                  ),
+                                  textAlign: TextAlign.left,
+                                ),
+                                Text(
+                                  "Add: 123 Collins Street\n"
+                                      "Tel: 03 9847 8372",
+                                  style: TextStyle(
+                                    color: Colors.black54,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w500,
+                                    height: 1.2,
+                                  ),
+                                  textAlign: TextAlign.left,
+                                ),
+                                Padding(
+                                  padding:
+                                  const EdgeInsets.symmetric(vertical: 12.0),
+                                ),
+                                Text(
+                                  "Free Coffee Size Upgrade\n"
+                                      "Enjoy the extra",
+                                  style: TextStyle(
+                                    color: Colors.green,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500,
+                                    height: 1.2,
+                                  ),
+                                  textAlign: TextAlign.left,
+                                ),
+                              ],
+                            )
+                        ),
+                        Positioned(
+                          right: 32.0,
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 4.0),
-                              ),
-                              Text(
-                                "Ducks Coffee Roaster",
-                                style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w800,
-                                  height: 2.5,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: <Widget>[
+                                Padding(
+                                  padding:
+                                  const EdgeInsets.symmetric(vertical: 20.0),
                                 ),
-                                textAlign: TextAlign.left,
-                              ),
-                              Text(
-                                "Add: 123 Collins Street\n"
-                                "Tel: 03 9847 8372",
-                                style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w500,
-                                  height: 1.2,
+                                Image(
+                                  image: AssetImage("assets/coupon/coffee.png"),
                                 ),
-                                textAlign: TextAlign.left,
-                              ),
-                              Padding(
-                                padding:
-                                const EdgeInsets.symmetric(vertical: 12.0),
-                              ),
-                              Text(
-                                "Free Coffee Size Upgrade\n"
-                                "Enjoy the extra",
-                                style: TextStyle(
-                                  color: Colors.green,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w500,
-                                  height: 1.2,
+                                Padding(
+                                  padding:
+                                  const EdgeInsets.symmetric(vertical: 20.0),
                                 ),
-                                textAlign: TextAlign.left,
-                              ),
-                            ],
-                          )),
-                      Positioned(
-                        right: 32.0,
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: <Widget>[
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 20.0),
-                              ),
-                              Image(
-                                image: AssetImage("assets/coupon/coffee.png"),
-                              ),
-                              Padding(
-                                padding:
-                                const EdgeInsets.symmetric(vertical: 20.0),
-                              ),
-                              Text(
-                                "Offer expires 31/12/2019",
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w400,
-                                  height: 1.2,
+                                Text(
+                                  "Offer expires 31/12/2019",
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w400,
+                                    height: 1.2,
+                                  ),
+                                  textAlign: TextAlign.left,
                                 ),
-                                textAlign: TextAlign.left,
-                              ),
-                            ]),
-                      )
-                    ],
+                              ]),
+                        )
+                      ],
+                    ),
+                    onTap: (){
+                      Navigator.pushNamed(context, "/couponpage");
+                    },
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                   ),
-                  Stack(
-                    children: <Widget>[
-                      Image(
-                        image: AssetImage("assets/coupon/purple.png"),
-                        //height: 300,
-                        fit: BoxFit.fitWidth,
-                      ),
-                      Positioned(
-                          left: 32.0,
+                  GestureDetector(
+                    child: Stack(
+                      children: <Widget>[
+                        Image(
+                          image: AssetImage("assets/coupon/purple.png"),
+                          //height: 300,
+                          fit: BoxFit.fitWidth,
+                        ),
+                        Positioned(
+                            left: 32.0,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding:
+                                  const EdgeInsets.symmetric(vertical: 4.0),
+                                ),
+                                Text(
+                                  "Ducks Coffee Roaster",
+                                  style: TextStyle(
+                                    color: Colors.black54,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w800,
+                                    height: 2.5,
+                                  ),
+                                  textAlign: TextAlign.left,
+                                ),
+                                Text(
+                                  "Add: 123 Collins Street\n"
+                                      "Tel: 03 9847 8372",
+                                  style: TextStyle(
+                                    color: Colors.black54,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w500,
+                                    height: 1.2,
+                                  ),
+                                  textAlign: TextAlign.left,
+                                ),
+                                Padding(
+                                  padding:
+                                  const EdgeInsets.symmetric(vertical: 12.0),
+                                ),
+                                Text(
+                                  "Free Coffee Size Upgrade\n"
+                                      "Enjoy the extra",
+                                  style: TextStyle(
+                                    color: Colors.purple,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500,
+                                    height: 1.2,
+                                  ),
+                                  textAlign: TextAlign.left,
+                                ),
+                              ],
+                            )),
+                        Positioned(
+                          right: 32.0,
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                padding:
-                                const EdgeInsets.symmetric(vertical: 4.0),
-                              ),
-                              Text(
-                                "Ducks Coffee Roaster",
-                                style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w800,
-                                  height: 2.5,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: <Widget>[
+                                Padding(
+                                  padding:
+                                  const EdgeInsets.symmetric(vertical: 20.0),
                                 ),
-                                textAlign: TextAlign.left,
-                              ),
-                              Text(
-                                "Add: 123 Collins Street\n"
-                                    "Tel: 03 9847 8372",
-                                style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w500,
-                                  height: 1.2,
+                                Image(
+                                  image: AssetImage("assets/coupon/coffee.png"),
                                 ),
-                                textAlign: TextAlign.left,
-                              ),
-                              Padding(
-                                padding:
-                                const EdgeInsets.symmetric(vertical: 12.0),
-                              ),
-                              Text(
-                                "Free Coffee Size Upgrade\n"
-                                    "Enjoy the extra",
-                                style: TextStyle(
-                                  color: Colors.purple,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w500,
-                                  height: 1.2,
+                                Padding(
+                                  padding:
+                                  const EdgeInsets.symmetric(vertical: 20.0),
                                 ),
-                                textAlign: TextAlign.left,
-                              ),
-                            ],
-                          )),
-                      Positioned(
-                        right: 32.0,
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: <Widget>[
-                              Padding(
-                                padding:
-                                const EdgeInsets.symmetric(vertical: 20.0),
-                              ),
-                              Image(
-                                image: AssetImage("assets/coupon/coffee.png"),
-                              ),
-                              Padding(
-                                padding:
-                                const EdgeInsets.symmetric(vertical: 20.0),
-                              ),
-                              Text(
-                                "Offer expires 31/12/2019",
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w400,
-                                  height: 1.2,
+                                Text(
+                                  "Offer expires 31/12/2019",
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w400,
+                                    height: 1.2,
+                                  ),
+                                  textAlign: TextAlign.left,
                                 ),
-                                textAlign: TextAlign.left,
-                              ),
-                            ]),
-                      )
-                    ],
+                              ]),
+                        )
+                      ],
+                    ),
+                    onTap: (){
+                      Navigator.pushNamed(context, "/couponpage");
+                    },
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                   ),
-                  Stack(
-                    children: <Widget>[
-                      Image(
-                        image: AssetImage("assets/coupon/orange.png"),
-                        //height: 300,
-                        fit: BoxFit.fitWidth,
-                      ),
-                      Positioned(
-                          left: 32.0,
+                  GestureDetector(
+                    child: Stack(
+                      children: <Widget>[
+                        Image(
+                          image: AssetImage("assets/coupon/orange.png"),
+                          //height: 300,
+                          fit: BoxFit.fitWidth,
+                        ),
+                        Positioned(
+                            left: 32.0,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding:
+                                  const EdgeInsets.symmetric(vertical: 4.0),
+                                ),
+                                Text(
+                                  "Ducks Coffee Roaster",
+                                  style: TextStyle(
+                                    color: Colors.black54,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w800,
+                                    height: 2.5,
+                                  ),
+                                  textAlign: TextAlign.left,
+                                ),
+                                Text(
+                                  "Add: 123 Collins Street\n"
+                                      "Tel: 03 9847 8372",
+                                  style: TextStyle(
+                                    color: Colors.black54,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w500,
+                                    height: 1.2,
+                                  ),
+                                  textAlign: TextAlign.left,
+                                ),
+                                Padding(
+                                  padding:
+                                  const EdgeInsets.symmetric(vertical: 12.0),
+                                ),
+                                Text(
+                                  "Free Coffee Size Upgrade\n"
+                                      "Enjoy the extra",
+                                  style: TextStyle(
+                                    color: Colors.orange,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500,
+                                    height: 1.2,
+                                  ),
+                                  textAlign: TextAlign.left,
+                                ),
+                              ],
+                            )),
+                        Positioned(
+                          right: 32.0,
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                padding:
-                                const EdgeInsets.symmetric(vertical: 4.0),
-                              ),
-                              Text(
-                                "Ducks Coffee Roaster",
-                                style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w800,
-                                  height: 2.5,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: <Widget>[
+                                Padding(
+                                  padding:
+                                  const EdgeInsets.symmetric(vertical: 20.0),
                                 ),
-                                textAlign: TextAlign.left,
-                              ),
-                              Text(
-                                "Add: 123 Collins Street\n"
-                                    "Tel: 03 9847 8372",
-                                style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w500,
-                                  height: 1.2,
+                                Image(
+                                  image: AssetImage("assets/coupon/coffee.png"),
                                 ),
-                                textAlign: TextAlign.left,
-                              ),
-                              Padding(
-                                padding:
-                                const EdgeInsets.symmetric(vertical: 12.0),
-                              ),
-                              Text(
-                                "Free Coffee Size Upgrade\n"
-                                    "Enjoy the extra",
-                                style: TextStyle(
-                                  color: Colors.orange,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w500,
-                                  height: 1.2,
+                                Padding(
+                                  padding:
+                                  const EdgeInsets.symmetric(vertical: 20.0),
                                 ),
-                                textAlign: TextAlign.left,
-                              ),
-                            ],
-                          )),
-                      Positioned(
-                        right: 32.0,
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: <Widget>[
-                              Padding(
-                                padding:
-                                const EdgeInsets.symmetric(vertical: 20.0),
-                              ),
-                              Image(
-                                image: AssetImage("assets/coupon/coffee.png"),
-                              ),
-                              Padding(
-                                padding:
-                                const EdgeInsets.symmetric(vertical: 20.0),
-                              ),
-                              Text(
-                                "Offer expires 31/12/2019",
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w400,
-                                  height: 1.2,
+                                Text(
+                                  "Offer expires 31/12/2019",
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w400,
+                                    height: 1.2,
+                                  ),
+                                  textAlign: TextAlign.left,
                                 ),
-                                textAlign: TextAlign.left,
-                              ),
-                            ]),
-                      )
-                    ],
+                              ]),
+                        )
+                      ],
+                    ),
+                    onTap: (){
+                      Navigator.pushNamed(context, "/couponpage");
+                    },
                   ),
                 ],
               );
