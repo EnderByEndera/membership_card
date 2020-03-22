@@ -98,16 +98,23 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
           Consumer<CardCounter>(
             builder: (context, counter, child) => FlatButton(
               onPressed: () {
-                Navigator.pop(context);
-                counter.addCard(CardInfo(
-                  cardController.value.text,
-                  cardStoreController.value.text,
+                if((_formKey.currentState as FormState).validate()) {
+                  Navigator.pop(context);
+                  counter.addCard(CardInfo(
+                    cardController.value.text,
+                    cardStoreController.value.text,
 
-                ));
+                  ));
+                }
+
               },
               child: Text(
                 'Save',
-                style: TextStyle(color: Colors.orange),
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 25.0,
+                  ),
               ),
             ),
           ),
