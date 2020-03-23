@@ -164,6 +164,7 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
           "error: ${response.error}");
 //      Navigator.of(context).pop();
       Navigator.of(context).popAndPushNamed("/cardinfo_membership",arguments:{"nfcid":response.id});
+
     } on Exception {
       Navigator.of(context).pop();
       showDialog(context: context, builder: (_) => _nfcAlertDialog());
@@ -669,6 +670,7 @@ class _AllCardsPageState extends State<AllCardsPage>
             "cardType": counter.getOneCard(index).cardType,
             "cardcolor": counter.getCardColor(index),
             "cardCoupon": counter.getOneCard(index).cardCoupon,
+            "card": counter.getOneCard(index)
           });
         },
         child: Container(
@@ -793,6 +795,7 @@ class _AllCardsPageState extends State<AllCardsPage>
             "eName": counter.getOneCard(index).eName,
             "cardType": counter.getOneCard(index).cardType,
             "cardcolor": counter.getCardColor(index),
+            "card": counter.getOneCard(index)
           });
         },
         child: Container(
@@ -853,6 +856,7 @@ class _AllCardsPageState extends State<AllCardsPage>
             "eName": counter.getOneCard(index).eName,
             "cardType": counter.getOneCard(index).cardType,
             "cardcolor": counter.getCardColor(index),
+            "card": counter.getOneCard(index)
           });
         },
         child: Container(

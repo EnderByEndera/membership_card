@@ -34,6 +34,8 @@ class EditCardPageState extends  State<EditCardPage>
     super.dispose();
   }
 
+  //final CardInfo card;
+   //EditCardPageState(this.card) ;
 
   ///card control
   TextEditingController cardController = TextEditingController();
@@ -46,6 +48,7 @@ class EditCardPageState extends  State<EditCardPage>
 
 
   Widget build(BuildContext context){
+    dynamic args = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -73,7 +76,7 @@ class EditCardPageState extends  State<EditCardPage>
               onPressed: () {
                if((_formKey.currentState as FormState).validate()) {
                  Navigator.pop(context);
-                 counter.editCard(CardInfo(), cardController.value.text,
+                 counter.editCard(args["card"], cardController.value.text,
                      cardStoreController.value.text);
                }
               },
@@ -151,7 +154,7 @@ class EditCardPageState extends  State<EditCardPage>
                 ),
                 onPressed: (){
                   Navigator.of(context).popUntil(ModalRoute.withName('/allcardspage'));
-                  counter.deleteCard(CardInfo());
+                  counter.deleteCard(args["card"]);
                 },
                 shape: RoundedRectangleBorder(
                   side: new BorderSide(

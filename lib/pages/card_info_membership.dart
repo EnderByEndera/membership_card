@@ -51,26 +51,6 @@ class CardInfo1State extends State<CardInfo1Page> {
               ),
             ),
           actions: <Widget>[
-            Consumer<CardCounter>(
-                builder: (context, counter, child) =>AlertDialog(
-                title:Text("Thank you!"),
-                content:Text("1 reward point collected\nfrom ${nfcid}"),
-                actions: <Widget>[
-                FlatButton(
-
-                  onPressed: () {
-                 for(;i<counter.cardList.length;i++) {
-                 if (counter.getOneCard(i).cardId.compareTo(nfcid) == 0) {
-                 counter.getOneCard(i).addCoupon(counter.getOneCard(i).cardCoupon + 1);
-                 break;
-                  }
-                  }
-                  Navigator.of(context).pop();
-                  },
-                  ),
-                  ],
-                  ),
-       ),
             GestureDetector(
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
@@ -85,7 +65,9 @@ class CardInfo1State extends State<CardInfo1Page> {
                 ),
               ),
               onTap: (){
-                Navigator.of(context).pushNamed("/edit");
+                Navigator.of(context).pushNamed("/edit", arguments: {
+                  "card": args["card"],
+                });
               },
             ),
           ],
@@ -105,8 +87,8 @@ class CardInfo1State extends State<CardInfo1Page> {
                     fit: BoxFit.fitWidth,
                   ),
                   Text(
-                    " Add: 123 Conllins Street,Melbourne (3.1km)\n "
-                    "Tel: (03) - 9883 8373\n "
+                   // " Add: " + args["factoryNum"] + "\n"
+                    //"Tel: "+ args[""] + "\n"
                     "BH: Mon Wed Thur Fri Sat Sun (9am to 6pm)",
                     style:
                         TextStyle(color: Colors.grey, fontSize: 15, height: 2),
@@ -148,7 +130,7 @@ class CardInfo1State extends State<CardInfo1Page> {
                         Container(
                             margin: EdgeInsets.all(16.0),
                             alignment: Alignment(-1, 0.1),
-                            child: Text("Offer expires at 31/12/2019",
+                            child: Text("Offer expires at " ,//+ args["expiretime"],
                                 style: TextStyle(
                                   fontSize: 14.0,
                                   color: Colors.white,
@@ -206,8 +188,8 @@ class CardInfo1State extends State<CardInfo1Page> {
                                   textAlign: TextAlign.left,
                                 ),
                                 Text(
-                                  "Add: 123 Collins Street\n"
-                                      "Tel: 03 9847 8372",
+                                  " Add: " ,//+ args["factoryNum"] + "\n"
+                                 // " Tel: "+ args[""] + "\n",
                                   style: TextStyle(
                                     color: Colors.black54,
                                     fontSize: 10,
@@ -251,7 +233,7 @@ class CardInfo1State extends State<CardInfo1Page> {
                                   const EdgeInsets.symmetric(vertical: 20.0),
                                 ),
                                 Text(
-                                  "Offer expires 31/12/2019",
+                                  "Offer expires at",// + args["expiretime"],
                                   style: TextStyle(
                                     color: Colors.grey,
                                     fontSize: 10,
@@ -299,8 +281,8 @@ class CardInfo1State extends State<CardInfo1Page> {
                                   textAlign: TextAlign.left,
                                 ),
                                 Text(
-                                  "Add: 123 Collins Street\n"
-                                      "Tel: 03 9847 8372",
+                                  " Add: ",// + args["factoryNum"] + "\n"
+                                     // " Tel: " + args[""] + "\n",
                                   style: TextStyle(
                                     color: Colors.black54,
                                     fontSize: 10,
@@ -343,7 +325,7 @@ class CardInfo1State extends State<CardInfo1Page> {
                                   const EdgeInsets.symmetric(vertical: 20.0),
                                 ),
                                 Text(
-                                  "Offer expires 31/12/2019",
+                                  "Offer expires at", //+ args["expiretime"],
                                   style: TextStyle(
                                     color: Colors.grey,
                                     fontSize: 10,
@@ -391,8 +373,8 @@ class CardInfo1State extends State<CardInfo1Page> {
                                   textAlign: TextAlign.left,
                                 ),
                                 Text(
-                                  "Add: 123 Collins Street\n"
-                                      "Tel: 03 9847 8372",
+                                  " Add: " ,//+ args["factoryNum"] + "\n"
+                                     // " Tel: "+ args[""] + "\n",
                                   style: TextStyle(
                                     color: Colors.black54,
                                     fontSize: 10,
@@ -435,7 +417,7 @@ class CardInfo1State extends State<CardInfo1Page> {
                                   const EdgeInsets.symmetric(vertical: 20.0),
                                 ),
                                 Text(
-                                  "Offer expires 31/12/2019",
+                                  "Offer expires at" ,//+ args["expiretime"],
                                   style: TextStyle(
                                     color: Colors.grey,
                                     fontSize: 10,

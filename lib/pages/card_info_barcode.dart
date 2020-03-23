@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:barcode_flutter/barcode_flutter.dart';
-
+//import 'package:membership_card/pages/edit_card.dart';
 /// This is the Card_Info Page showing one card's information with barcode.
 class CardInfo2Page extends StatefulWidget {
   @override
@@ -54,7 +54,9 @@ class CardInfo2State extends State<CardInfo2Page>{
                 ),
               ),
               onTap: (){
-                Navigator.of(context).pushNamed("/edit");
+                Navigator.of(context).pushNamed("/edit",arguments: {
+                  "card": args["card"],
+                });
               },
             ),
         ],
