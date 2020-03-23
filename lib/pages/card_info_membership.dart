@@ -247,7 +247,9 @@ class CardInfo1State extends State<CardInfo1Page> {
                       ],
                     ),
                     onTap: (){
-                      Navigator.pushNamed(context, "/couponpage");
+                      Navigator.pushNamed(context, "/couponpage", arguments: {
+                        "card": args["card"]
+                      });
                     },
                   ),
                   Padding(
@@ -339,7 +341,9 @@ class CardInfo1State extends State<CardInfo1Page> {
                       ],
                     ),
                     onTap: (){
-                      Navigator.pushNamed(context, "/couponpage");
+                      Navigator.pushNamed(context, "/couponpage" , arguments: {
+                      "card": args["card"]
+                      });
                     },
                   ),
                   Padding(
@@ -431,7 +435,9 @@ class CardInfo1State extends State<CardInfo1Page> {
                       ],
                     ),
                     onTap: (){
-                      Navigator.pushNamed(context, "/couponpage");
+                      Navigator.pushNamed(context, "/couponpage",  arguments: {
+                        "card": args["card"]
+                      });
                     },
                   ),
                 ],

@@ -34,6 +34,7 @@ class CouponPageState extends State with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    dynamic args = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: AppBar(
           title: Text(
