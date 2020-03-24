@@ -20,26 +20,41 @@ import 'package:membership_card/pages/all_cards.dart';
 /// CardInfo cardInfo = CardInfo.fromJson(jsonDecoder.convert(jsonInput));
 /// ```
 class CardInfo extends ChangeNotifier{
-  static const String CARD_ID_JSON     = "id";
-  static const String E_NAME_JSON      = "e_name";
-  static const String REMARK_JSON      = "remark";
+  static const String CARD_COUPON_JSON = "card_coupon";
+  static const String MAX_COUPON_JSON  = "max_coupon";
+  static const String ADDRESS_JSON     = "address";
   static const String BATCH_NUM_JSON   = "batch_num";
+  static const String CARD_ID_JSON     = "id";
   static const String CITY_JSON        = "city";
+  static const String DESCRIPTION_JSON = "description";
+  static const String E_NAME_JSON      = "e_name";
   static const String FACTORY_NUM_JSON = "factory_num";
+  static const String REMARK_JSON      = "remark";
   static const String STYLE_JSON       = "style";
-  static const String TYPE_JSON        = "style";
+  static const String TEL_JSON         = "tel";
+  static const String TYPE_JSON        = "type";
   static const String USER_ID_JSON     = "user_id";
+  static const String WORK_TIME_JSON   = "work_time";
+  static const String BACKGROUND_JSON  = "background";
+  static const String ICON_JSON        = "icon";
 
-  String _cardId;
-  String _eName;
-  String _remark;
+  int    _cardCoupon = 3;
+  int    _maxCoupon;
+  String _address;
   String _batchNum;
+  String _cardId;
   String _city;
+  String _description;
+  String _eName;
   String _factoryNum;
+  String _remark;
   String _style;
+  String _tel;
   String _type;
   String _userId;
-  int    _cardCoupon = 3;
+  String _workTime;
+  Image  _background;
+  Image  _icon;
 
   bool _isChosen = false;
   Key _cardKey = UniqueKey();
@@ -55,20 +70,25 @@ class CardInfo extends ChangeNotifier{
   }
 
 
-  String get cardId     => _cardId;
-  String get cardType   => _eName;
-  String get remark     => _remark;
-  Key    get cardKey    => _cardKey;
-  String get batchNum   => _batchNum;
-  String get city       => _city;
-  String get factoryNum => _factoryNum;
-  String get style      => _style;
-  String get type       => _type;
-  String get userId     => _userId;
-  String get eName      => _eName;
-  bool   get isChosen   => _isChosen;
-  Color  get cardColor  => _cardColor;
-  int    get cardCoupon => _cardCoupon;
+  String get cardId      => _cardId;
+  String get cardType    => _eName;
+  String get remark      => _remark;
+  Key    get cardKey     => _cardKey;
+  String get batchNum    => _batchNum;
+  String get city        => _city;
+  String get factoryNum  => _factoryNum;
+  String get style       => _style;
+  String get type        => _type;
+  String get userId      => _userId;
+  String get eName       => _eName;
+  bool   get isChosen    => _isChosen;
+  Color  get cardColor   => _cardColor;
+  int    get cardCoupon  => _cardCoupon;
+  int    get maxCoupon   => _maxCoupon;
+  String get address     => _address;
+  String get description => _description;
+  String get tel         => _tel;
+  String get workTime    => _workTime;
 
   set isChosen(bool isChosen) => this._isChosen = isChosen;
   void addCoupon(int cardCoupon)=> this._cardCoupon=cardCoupon;
