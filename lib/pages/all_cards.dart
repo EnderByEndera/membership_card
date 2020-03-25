@@ -163,14 +163,64 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
           "status: ${response.status.toString()} "
           "error: ${response.error}");
 //      Navigator.of(context).pop();
-      Navigator.of(context).popAndPushNamed("/cardinfo_membership",arguments:{"nfcid":response.id});
+      int index=0;
+      for(int i=0;i<Provider.of<CardCounter>(context).cardList.length;i++) {
+        if (Provider.of<CardCounter>(context).getOneCard(i).cardId.compareTo("11") == 0) {
+          index=i;
+          break;
+        }
+      }
+      Navigator.of(context).pushNamed("/cardinfo_membership", arguments: {
+        "herotag": Provider.of<CardCounter>(context).getOneCard(index).cardKey,
+        "cardId": Provider.of<CardCounter>(context).getOneCard(index).cardId,
+        "eName": Provider.of<CardCounter>(context).getOneCard(index).eName,
+        "cardType": Provider.of<CardCounter>(context).getOneCard(index).cardType,
+        "cardcolor": Provider.of<CardCounter>(context).getCardColor(index),
+        "cardCoupon": Provider.of<CardCounter>(context).getOneCard(index).cardCoupon,
+      });
+      int i=0;
+      for(;i<Provider.of<CardCounter>(context).cardList.length;i++) {
+        if (Provider.of<CardCounter>(context).getOneCard(i).cardId.compareTo("11") == 0) {
+          Provider.of<CardCounter>(context).getOneCard(i).addCoupon(Provider.of<CardCounter>(context).getOneCard(i).cardCoupon + 1);
+          break;
+        }
+      }
+
+      showDialog(context: context, builder: (_) => nfcsuccessDialog());
 
     } on Exception {
       Navigator.of(context).pop();
       showDialog(context: context, builder: (_) => _nfcAlertDialog());
     }
   }
+CupertinoAlertDialog nfcsuccessDialog(){
+    return CupertinoAlertDialog(
+      title:Text("Thank you!",style: TextStyle(color: Colors.blue,fontWeight: FontWeight.w700)),
+      content: SizedBox(
+        height: 45.0,
+        child: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Divider(),
+              Text("1 Reward point collected \nfrom 11",style: TextStyle(color: Colors.blue),
+                  ),
 
+            ],
+          ),
+        ),
+      ),
+      actions:<Widget>[
+        FlatButton(
+          onPressed: (){
+            Navigator.of(context).pop();
+
+          },
+          child: Text("OK",
+              style: TextStyle(color: Colors.blue,fontWeight: FontWeight.w700)),
+        ),
+      ],
+    );
+  }
   /// Push a [AlertDialog] noticing users NFC not open.
   AlertDialog _nfcAlertDialog() {
     return AlertDialog(

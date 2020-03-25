@@ -22,10 +22,6 @@ class CardInfo1State extends State<CardInfo1Page> {
   @override
   Widget build(BuildContext context) {
     dynamic args = ModalRoute.of(context).settings.arguments;
-    if(args!=null&& args["nfcid"]!=null){
-      nfcid=args["nfcid"];
-    }
-    int i=0;
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
