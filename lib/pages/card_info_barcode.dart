@@ -78,12 +78,7 @@ class CardInfo2State extends State<CardInfo2Page>{
             Expanded(
               child: Stack(
                 children: <Widget>[
-                  Image(
-                    image: AssetImage("assets/backgrounds/nfcIllu.jpg"),
-                    alignment: Alignment.center,
-                    color: Colors.white,
-                    colorBlendMode: BlendMode.color,
-                  ),
+
                   Positioned(
                     left: 10.0,
                     top: 10.0,
