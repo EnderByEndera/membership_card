@@ -82,6 +82,7 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
             child: Text(
               "﹤Back",
               style: TextStyle(
+
                 decoration: TextDecoration.none,
                 fontSize: 25.0,
                 color: Theme.of(context).primaryColor,

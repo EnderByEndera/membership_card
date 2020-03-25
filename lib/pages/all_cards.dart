@@ -12,6 +12,8 @@ import 'package:membership_card/pages/help.dart';
 import 'package:provider/provider.dart';
 import 'package:barcode_flutter/barcode_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:dio/dio.dart';
+import 'package:membership_card/network/client.dart';
 
 /// This is the All_Cards Page [AllCardsMainPage] which is the home of the App.
 /// It shows all the cards users created and users can also add cards
@@ -41,6 +43,8 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
   TabController _tabController;
   ScrollController _scrollController;
   TextEditingController _textEditingController;
+  Response res;
+  Dio dio = initDio();
 
   NfcData response = new NfcData(content: "");
 
@@ -176,7 +180,7 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
         "eName": Provider.of<CardCounter>(context).getOneCard(index).eName,
         "cardType": Provider.of<CardCounter>(context).getOneCard(index).cardType,
         "cardcolor": Provider.of<CardCounter>(context).getCardColor(index),
-        "cardCoupon": Provider.of<CardCounter>(context).getOneCard(index).cardCoupon,
+        "currentscore": Provider.of<CardCounter>(context).getOneCard(index).currentScore,
       });
       int i=0;
       for(;i<Provider.of<CardCounter>(context).cardList.length;i++) {
@@ -674,8 +678,9 @@ class _AllCardsPageState extends State<AllCardsPage>
                           return Consumer<CardCounter>(
                             builder: (context, counter, _) => Hero(
                               tag: counter.getOneCard(heroNumber).cardKey,
-                              child: _cardDesign(counter, heroNumber,
-                                  _getCardDesignByIndex(index)),
+                              child:
+                              //_cardDesign(counter, heroNumber,  _getCardDesignByType(counter.getOneCard(index).cardType)),
+                              _cardDesign(counter, heroNumber,  _getCardDesignByIndex(index)),
                             ),
                           );
                         } on Exception {
@@ -720,6 +725,14 @@ class _AllCardsPageState extends State<AllCardsPage>
             "cardType": counter.getOneCard(index).cardType,
             "cardcolor": counter.getCardColor(index),
             "cardCoupon": counter.getOneCard(index).cardCoupon,
+            "currentscore": counter.getOneCard(index).currentScore,
+            "maxScore": counter.getOneCard(index).maxScore,
+            //"maxCoupon": counter.getOneCard(index).maxCoupon,
+            "address": counter.getOneCard(index).address,
+            "tel": counter.getOneCard(index).tel,
+            "workTime": counter.getOneCard(index).workTime,
+            "expireTime": counter.getOneCard(index).expireTime,
+            "description": counter.getOneCard(index).description,
             "card": counter.getOneCard(index)
           });
         },
@@ -743,7 +756,7 @@ class _AllCardsPageState extends State<AllCardsPage>
                     ),
                   ),
                   padding: EdgeInsets.all(8.0),
-                  child: Text(counter.getOneCard(index).cardCoupon.toString(),
+                  child: Text(counter.getOneCard(index).currentScore.toString(),
                       style: TextStyle(
                         fontSize: 20.0,
                         color: Theme.of(context).primaryColor,
@@ -786,7 +799,7 @@ class _AllCardsPageState extends State<AllCardsPage>
                   margin: EdgeInsets.all(16.0),
                   alignment: Alignment(-1, 0.6),
                   child: Text(
-                      "${5 - counter.getOneCard(index).cardCoupon} "
+                      "${counter.getOneCard(index).currentScore % 5} "
                       "More to go",
                       style: TextStyle(
                           fontSize: 18.0,
@@ -798,7 +811,7 @@ class _AllCardsPageState extends State<AllCardsPage>
                   padding: EdgeInsets.only(
                       left: 16.0, right: 16.0, top: 125.0, bottom: 2.0),
                   scrollDirection: Axis.horizontal,
-                  children: _buildRewardPlace(counter.getOneCard(index).cardCoupon, rewardMaxPoint, context),
+                  children: _buildRewardPlace(counter.getOneCard(index).currentScore, rewardMaxPoint, context),
                 ),
               )
             ],
@@ -808,7 +821,7 @@ class _AllCardsPageState extends State<AllCardsPage>
 
   /// Method used in [buildMembership], to build the ListView Widget to show
   /// the reward point one user has of one card
-  static List<Widget> _buildRewardPlace(int cardCoupon, int rewardPoint, BuildContext context) {
+  static List<Widget> _buildRewardPlace(int score, int rewardPoint, BuildContext context) {
     var rewardList = List<Widget>();
     for (int i = 1; i < rewardPoint; i++) {
       rewardList.add(Container(
@@ -820,7 +833,7 @@ class _AllCardsPageState extends State<AllCardsPage>
         ),
         alignment: Alignment.center,
         child:
-            i > cardCoupon
+            i > score
                 ? Text(i.toString(),
                     style: TextStyle(
                       color: Colors.white,
@@ -961,6 +974,21 @@ class _AllCardsPageState extends State<AllCardsPage>
         design = CardDesign.barcode;
         break;
       case 2:
+        design = CardDesign.qrCode;
+        break;
+    }
+    return design;
+  }
+  _getCardDesignByType(String cardType) {
+    CardDesign design;
+    switch (cardType) {
+      case "membership":
+        design = CardDesign.membership;
+        break;
+      case "barcode":
+        design = CardDesign.barcode;
+        break;
+      case "qrCode":
         design = CardDesign.qrCode;
         break;
     }
