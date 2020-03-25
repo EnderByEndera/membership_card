@@ -180,7 +180,7 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
         "eName": Provider.of<CardCounter>(context).getOneCard(index).eName,
         "cardType": Provider.of<CardCounter>(context).getOneCard(index).cardType,
         "cardcolor": Provider.of<CardCounter>(context).getCardColor(index),
-        "cardCoupon": Provider.of<CardCounter>(context).getOneCard(index).cardCoupon,
+        "currentscore": Provider.of<CardCounter>(context).getOneCard(index).currentscore,
       });
       int i=0;
       for(;i<Provider.of<CardCounter>(context).cardList.length;i++) {
@@ -726,6 +726,7 @@ class _AllCardsPageState extends State<AllCardsPage>
             "cardcolor": counter.getCardColor(index),
             "cardCoupon": counter.getOneCard(index).cardCoupon,
             "currentscore": counter.getOneCard(index).currentscore,
+            "maxScore": counter.getOneCard(index).maxScore,
             //"maxCoupon": counter.getOneCard(index).maxCoupon,
             "address": counter.getOneCard(index).address,
             "tel": counter.getOneCard(index).tel,

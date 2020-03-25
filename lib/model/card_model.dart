@@ -46,7 +46,7 @@ class CardInfo extends ChangeNotifier{
   int    _cardCoupon;
   int    _maxCoupon;
   int    _currentScore = 3;
-  int    _maxScore;
+  int    _maxScore = 5;
   String _address;
   String _batchNum;
   String _cardId;
