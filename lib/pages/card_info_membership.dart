@@ -1,12 +1,8 @@
 import 'dart:ui';
 import 'dart:ui' as prefix0;
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/cupertino.dart' as prefix1;
 import 'package:flutter/material.dart';
-import 'package:membership_card/model/card_model.dart';
-import 'package:provider/provider.dart';
-import 'package:membership_card/model/card_count.dart';
 import 'package:dio/dio.dart';
 import 'package:membership_card/network/client.dart';
 import 'dart:async';
@@ -41,7 +37,7 @@ class CardInfo1State extends State<CardInfo1Page> {
   @override
   Widget build(BuildContext context) {
     dynamic args = ModalRoute.of(context).settings.arguments;
-    //int rewardpoint = args["maxCoupon"];
+
     return Scaffold(
         backgroundColor: Colors.white,
         //Todo: Add more UI about Card Info body from here
@@ -166,7 +162,7 @@ class CardInfo1State extends State<CardInfo1Page> {
                                   margin: EdgeInsets.all(20.0),
                                   alignment: Alignment(-1, 0.6),
                                   child: Text(
-                                      "${args["cardCoupon"] % 5} "
+                                      "${args["currentscore"] % 5} "
                                           "More to go",
                                       style: TextStyle(
                                           fontSize: 18.0,
@@ -178,7 +174,7 @@ class CardInfo1State extends State<CardInfo1Page> {
                                   padding: EdgeInsets.only(
                                       left: 20.0, right: 20.0, top: 125.0, bottom: 2.0),
                                   scrollDirection: Axis.horizontal,
-                                  children: _buildRewardPlace(args["cardCoupon"] % 5 , 5, context),
+                                  children: _buildRewardPlace(args["currentscore"] % 5 , 5, context),
                                 ),
                               )
                             ],
@@ -284,7 +280,7 @@ class CardInfo1State extends State<CardInfo1Page> {
                         );
                       };
                     },
-                    //childCount: 3 + args["couponNum"] * 2,
+                    //childCount: 3 + args["cardCoupon"] * 2,
                     childCount: 3 + 1 * 2,
                   ),
                 ),
@@ -295,7 +291,7 @@ class CardInfo1State extends State<CardInfo1Page> {
     );
   }
 
-  static List<Widget> _buildRewardPlace(int cardCoupon, int rewardPoint, BuildContext context){
+  static List<Widget> _buildRewardPlace(int score, int rewardPoint, BuildContext context){
     var rewardList = List<Widget>();
     for (int i = 1; i <= rewardPoint; i++) {
       rewardList.add(Container(
@@ -307,7 +303,7 @@ class CardInfo1State extends State<CardInfo1Page> {
         ),
         alignment: Alignment.center,
         child:
-        i > cardCoupon
+        i > score
             ? Text(i.toString(),
             style: TextStyle(
               color: Colors.white,

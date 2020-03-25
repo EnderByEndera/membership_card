@@ -26,6 +26,7 @@ class CardInfo extends ChangeNotifier{
   static const String ADDRESS_JSON     = "address";
   static const String BATCH_NUM_JSON   = "batch_num";
   static const String CARD_ID_JSON     = "id";
+  static const String CARD_TYPE_JSON     = "card_type";
   static const String CITY_JSON        = "city";
   static const String DESCRIPTION_JSON = "description";
   static const String E_NAME_JSON      = "e_name";
@@ -39,16 +40,21 @@ class CardInfo extends ChangeNotifier{
   static const String BACKGROUND_JSON  = "background";
   static const String ICON_JSON        = "icon";
   static const String EXPIRE_TIME_JSON = "expire_time";
+  static const String CURRENT_SCORE_JSON = "current_score";
+  static const String MAX_SCORE_JSON     = "max_score";
 
-  int    _cardCoupon = 3;
-  int    _maxCoupon = 5;
-  int    _couponNum ;
+  int    _cardCoupon;
+  int    _maxCoupon;
+  int    _currentScore = 3;
+  int    _maxScore;
   String _address;
   String _batchNum;
   String _cardId;
+  String _cardType;
   String _city;
   String _description;
   String _eName;
+  String _expireTime;
   String _factoryNum;
   String _remark;
   String _style;
@@ -58,7 +64,6 @@ class CardInfo extends ChangeNotifier{
   String _workTime;
   Image  _background;
   Image  _icon;
-  String _expireTime;
 
   bool _isChosen = false;
   Key _cardKey = UniqueKey();
@@ -75,7 +80,7 @@ class CardInfo extends ChangeNotifier{
 
 
   String get cardId      => _cardId;
-  String get cardType    => _eName;
+  String get cardType    => _cardType;
   String get remark      => _remark;
   Key    get cardKey     => _cardKey;
   String get batchNum    => _batchNum;
@@ -94,10 +99,19 @@ class CardInfo extends ChangeNotifier{
   String get description => _description;
   String get tel         => _tel;
   String get workTime    => _workTime;
-  String get expireTime    => _expireTime;
+  String get expireTime  => _expireTime;
+  int    get currentscore=>_currentScore;
+  int    get maxScore    => _maxScore;
 
   set isChosen(bool isChosen) => this._isChosen = isChosen;
-  void addCoupon(int cardCoupon)=> this._cardCoupon=cardCoupon;
+  void addscore(int score){
+    if(this._currentScore<=5)
+    this._currentScore=score;
+  else this._currentScore=0;
+   }
+  
+  
+  void redeemCoupon() => this._cardCoupon--;
 
   CardInfo([this._cardId, this._eName, this._remark]);
 

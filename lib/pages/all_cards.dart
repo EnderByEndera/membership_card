@@ -167,14 +167,64 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
           "status: ${response.status.toString()} "
           "error: ${response.error}");
 //      Navigator.of(context).pop();
-      Navigator.of(context).popAndPushNamed("/cardinfo_membership",arguments:{"nfcid":response.id});
+      int index=0;
+      for(int i=0;i<Provider.of<CardCounter>(context).cardList.length;i++) {
+        if (Provider.of<CardCounter>(context).getOneCard(i).cardId.compareTo(response.content) == 0) {
+          index=i;
+          break;
+        }
+      }
+      Navigator.of(context).pushNamed("/cardinfo_membership", arguments: {
+        "herotag": Provider.of<CardCounter>(context).getOneCard(index).cardKey,
+        "cardId": Provider.of<CardCounter>(context).getOneCard(index).cardId,
+        "eName": Provider.of<CardCounter>(context).getOneCard(index).eName,
+        "cardType": Provider.of<CardCounter>(context).getOneCard(index).cardType,
+        "cardcolor": Provider.of<CardCounter>(context).getCardColor(index),
+        "cardCoupon": Provider.of<CardCounter>(context).getOneCard(index).cardCoupon,
+      });
+      int i=0;
+      for(;i<Provider.of<CardCounter>(context).cardList.length;i++) {
+        if (Provider.of<CardCounter>(context).getOneCard(i).cardId.compareTo(response.content) == 0) {
+          Provider.of<CardCounter>(context).getOneCard(i).addscore(Provider.of<CardCounter>(context).getOneCard(i).currentscore + 1);
+          break;
+        }
+      }
+
+      showDialog(context: context, builder: (_) => nfcsuccessDialog(response.content));
 
     } on Exception {
       Navigator.of(context).pop();
       showDialog(context: context, builder: (_) => _nfcAlertDialog());
     }
   }
+CupertinoAlertDialog nfcsuccessDialog(String name){
+    return CupertinoAlertDialog(
+      title:Text("Thank you!",style: TextStyle(color: Colors.blue,fontWeight: FontWeight.w700)),
+      content: SizedBox(
+        height: 45.0,
+        child: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Divider(),
+              Text("1 Reward point collected \nfrom "+name,style: TextStyle(color: Colors.blue),
+                  ),
 
+            ],
+          ),
+        ),
+      ),
+      actions:<Widget>[
+        FlatButton(
+          onPressed: (){
+            Navigator.of(context).pop();
+
+          },
+          child: Text("OK",
+              style: TextStyle(color: Colors.blue,fontWeight: FontWeight.w700)),
+        ),
+      ],
+    );
+  }
   /// Push a [AlertDialog] noticing users NFC not open.
   AlertDialog _nfcAlertDialog() {
     return AlertDialog(
@@ -628,8 +678,9 @@ class _AllCardsPageState extends State<AllCardsPage>
                           return Consumer<CardCounter>(
                             builder: (context, counter, _) => Hero(
                               tag: counter.getOneCard(heroNumber).cardKey,
-                              child: _cardDesign(counter, heroNumber,
-                                  _getCardDesignByIndex(index)),
+                              child:
+                              //_cardDesign(counter, heroNumber,  _getCardDesignByType(counter.getOneCard(index).cardType)),
+                              _cardDesign(counter, heroNumber,  _getCardDesignByIndex(index)),
                             ),
                           );
                         } on Exception {
@@ -674,13 +725,13 @@ class _AllCardsPageState extends State<AllCardsPage>
             "cardType": counter.getOneCard(index).cardType,
             "cardcolor": counter.getCardColor(index),
             "cardCoupon": counter.getOneCard(index).cardCoupon,
-            "maxCoupon": counter.getOneCard(index).maxCoupon,
+            "currentscore": counter.getOneCard(index).currentscore,
+            //"maxCoupon": counter.getOneCard(index).maxCoupon,
             "address": counter.getOneCard(index).address,
             "tel": counter.getOneCard(index).tel,
             "workTime": counter.getOneCard(index).workTime,
             "expireTime": counter.getOneCard(index).expireTime,
             "description": counter.getOneCard(index).description,
-            //"couponNum": counter.getOneCard(index).couponNum,
             "card": counter.getOneCard(index)
           });
         },
@@ -704,7 +755,7 @@ class _AllCardsPageState extends State<AllCardsPage>
                     ),
                   ),
                   padding: EdgeInsets.all(8.0),
-                  child: Text(counter.getOneCard(index).cardCoupon.toString(),
+                  child: Text(counter.getOneCard(index).currentscore.toString(),
                       style: TextStyle(
                         fontSize: 20.0,
                         color: Theme.of(context).primaryColor,
@@ -747,7 +798,7 @@ class _AllCardsPageState extends State<AllCardsPage>
                   margin: EdgeInsets.all(16.0),
                   alignment: Alignment(-1, 0.6),
                   child: Text(
-                      "${counter.getOneCard(index).cardCoupon % 5} "
+                      "${counter.getOneCard(index).currentscore % 5} "
                       "More to go",
                       style: TextStyle(
                           fontSize: 18.0,
@@ -759,7 +810,7 @@ class _AllCardsPageState extends State<AllCardsPage>
                   padding: EdgeInsets.only(
                       left: 16.0, right: 16.0, top: 125.0, bottom: 2.0),
                   scrollDirection: Axis.horizontal,
-                  children: _buildRewardPlace(counter.getOneCard(index).cardCoupon, rewardMaxPoint, context),
+                  children: _buildRewardPlace(counter.getOneCard(index).currentscore, rewardMaxPoint, context),
                 ),
               )
             ],
@@ -769,7 +820,7 @@ class _AllCardsPageState extends State<AllCardsPage>
 
   /// Method used in [buildMembership], to build the ListView Widget to show
   /// the reward point one user has of one card
-  static List<Widget> _buildRewardPlace(int cardCoupon, int rewardPoint, BuildContext context) {
+  static List<Widget> _buildRewardPlace(int score, int rewardPoint, BuildContext context) {
     var rewardList = List<Widget>();
     for (int i = 1; i < rewardPoint; i++) {
       rewardList.add(Container(
@@ -781,7 +832,7 @@ class _AllCardsPageState extends State<AllCardsPage>
         ),
         alignment: Alignment.center,
         child:
-            i > cardCoupon
+            i > score
                 ? Text(i.toString(),
                     style: TextStyle(
                       color: Colors.white,
@@ -922,6 +973,21 @@ class _AllCardsPageState extends State<AllCardsPage>
         design = CardDesign.barcode;
         break;
       case 2:
+        design = CardDesign.qrCode;
+        break;
+    }
+    return design;
+  }
+  _getCardDesignByType(String cardType) {
+    CardDesign design;
+    switch (cardType) {
+      case "membership":
+        design = CardDesign.membership;
+        break;
+      case "barcode":
+        design = CardDesign.barcode;
+        break;
+      case "qrCode":
         design = CardDesign.qrCode;
         break;
     }
