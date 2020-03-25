@@ -165,7 +165,7 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
 //      Navigator.of(context).pop();
       int index=0;
       for(int i=0;i<Provider.of<CardCounter>(context).cardList.length;i++) {
-        if (Provider.of<CardCounter>(context).getOneCard(i).cardId.compareTo("11") == 0) {
+        if (Provider.of<CardCounter>(context).getOneCard(i).cardId.compareTo(response.content) == 0) {
           index=i;
           break;
         }
@@ -180,20 +180,20 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
       });
       int i=0;
       for(;i<Provider.of<CardCounter>(context).cardList.length;i++) {
-        if (Provider.of<CardCounter>(context).getOneCard(i).cardId.compareTo("11") == 0) {
-          Provider.of<CardCounter>(context).getOneCard(i).addCoupon(Provider.of<CardCounter>(context).getOneCard(i).cardCoupon + 1);
+        if (Provider.of<CardCounter>(context).getOneCard(i).cardId.compareTo(response.content) == 0) {
+          Provider.of<CardCounter>(context).getOneCard(i).addscore(Provider.of<CardCounter>(context).getOneCard(i).currentscore + 1);
           break;
         }
       }
 
-      showDialog(context: context, builder: (_) => nfcsuccessDialog());
+      showDialog(context: context, builder: (_) => nfcsuccessDialog(response.content));
 
     } on Exception {
       Navigator.of(context).pop();
       showDialog(context: context, builder: (_) => _nfcAlertDialog());
     }
   }
-CupertinoAlertDialog nfcsuccessDialog(){
+CupertinoAlertDialog nfcsuccessDialog(String name){
     return CupertinoAlertDialog(
       title:Text("Thank you!",style: TextStyle(color: Colors.blue,fontWeight: FontWeight.w700)),
       content: SizedBox(
@@ -202,7 +202,7 @@ CupertinoAlertDialog nfcsuccessDialog(){
           child: ListBody(
             children: <Widget>[
               Divider(),
-              Text("1 Reward point collected \nfrom 11",style: TextStyle(color: Colors.blue),
+              Text("1 Reward point collected \nfrom "+name,style: TextStyle(color: Colors.blue),
                   ),
 
             ],
