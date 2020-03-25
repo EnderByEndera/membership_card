@@ -3,11 +3,14 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:membership_card/model/user_model.dart';
 
+const SERVER_URL = "http://106.15.198.136";
+const PORT       = "8080";
+
 Dio initDio() {
   Dio dio = Dio(
     // This is the base options for Dio client to connect to server
     BaseOptions(
-      baseUrl: "http://101.37.27.155:8080",
+      baseUrl: "http://106.15.198.136:8080",
       connectTimeout: 3000,
       receiveTimeout: 3000,
       receiveDataWhenStatusError: false,

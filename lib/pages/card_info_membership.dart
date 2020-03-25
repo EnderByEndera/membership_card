@@ -229,7 +229,7 @@ class CardInfo1State extends State<CardInfo1Page> {
                                   const EdgeInsets.symmetric(vertical: 20.0),
                                 ),
                                 Text(
-                                  "Offer expires at",// + args["expiretime"],
+                                  "Offer expires at",// args["expiretime"],
                                   style: TextStyle(
                                     color: Colors.grey,
                                     fontSize: 10,
