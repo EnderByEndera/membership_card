@@ -4,8 +4,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/cupertino.dart' as prefix1;
 import 'package:flutter/material.dart';
+import 'package:membership_card/model/card_model.dart';
 import 'package:provider/provider.dart';
 import 'package:membership_card/model/card_count.dart';
+import 'package:dio/dio.dart';
+import 'package:membership_card/network/client.dart';
+import 'dart:async';
 
 
 /// This is the Card_Info Page showing one card's information.
@@ -18,432 +22,276 @@ class CardInfo1Page extends StatefulWidget {
 }
 
 class CardInfo1State extends State<CardInfo1Page> {
-  String nfcid;
+  //Response res;
+  //Dio dio = initDio();
+  ScrollController _scrollController;
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController(
+      keepScrollOffset: false,
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     dynamic args = ModalRoute.of(context).settings.arguments;
-    if(args!=null&& args["nfcid"]!=null){
-      nfcid=args["nfcid"];
-    }
-    int i=0;
+    //int rewardpoint = args["maxCoupon"];
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-            automaticallyImplyLeading: false,
-            backgroundColor: Colors.white,
-            title: Container(
-              child: GestureDetector(
-                child: Padding(
-                  padding: const EdgeInsets.all(0),
-                  child: Text(
-                    "< Back",
-                    style: TextStyle(
-                      decoration: TextDecoration.none,
-                      fontSize: 25.0,
-                      color: Theme.of(context).primaryColor,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ),
-          actions: <Widget>[
-            GestureDetector(
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Text(
-                  "Edit",
-                  style: TextStyle(
-                    decoration: TextDecoration.none,
-                    fontSize: 25.0,
-                    color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              onTap: (){
-                Navigator.of(context).pushNamed("/edit", arguments: {
-                  "card": args["card"],
-                });
-              },
-            ),
-          ],
-        ),
-
         //Todo: Add more UI about Card Info body from here
-        body: new ListView.builder(
-            itemCount: 1,
-            itemBuilder: (BuildContext context, int index) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Image(
-                    image: AssetImage(
-                        "assets/backgrounds/starbucksBackground.jpg"),
-                    //height: 300,
-                    fit: BoxFit.fitWidth,
-                  ),
-                  Text(
-                   // " Add: " + args["factoryNum"] + "\n"
-                    //"Tel: "+ args[""] + "\n"
-                    "BH: Mon Wed Thur Fri Sat Sun (9am to 6pm)",
-                    style:
-                        TextStyle(color: Colors.grey, fontSize: 15, height: 2),
-                    textAlign: TextAlign.left,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                        color: args["cardcolor"],
-                        borderRadius: BorderRadius.circular(10.0)),
-                    constraints: BoxConstraints(minHeight: 160),
-                    child: Stack(
-                      fit: StackFit.passthrough,
-                      alignment: Alignment.center,
-                      children: <Widget>[
-                        Container(
-                          margin: EdgeInsets.all(16.0),
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            args["eName"],
-                            style: TextStyle(
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
+        body: SafeArea(
+          child: CustomScrollView(
+            controller: _scrollController,
+            slivers: <Widget>[
+              SliverAppBar(
+                automaticallyImplyLeading: false,
+                pinned: true,
+                backgroundColor: Colors.white,
+                title: Container(
+                  child: GestureDetector(
+                    child: Padding(
+                      padding: const EdgeInsets.all(0),
+                      child: Text(
+                        "< Back",
+                        style: TextStyle(
+                          decoration: TextDecoration.none,
+                          fontSize: 25.0,
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.w500,
                         ),
-                        Container(
-                          margin: EdgeInsets.all(16.0),
-                          alignment: Alignment(-1.0, -0.3),
-                          child: Text(
-                            "Buy 5 Get 1 Free",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        Container(
-                            margin: EdgeInsets.all(16.0),
-                            alignment: Alignment(-1, 0.1),
-                            child: Text("Offer expires at " ,//+ args["expiretime"],
-                                style: TextStyle(
-                                  fontSize: 14.0,
-                                  color: Colors.white,
-                                ))),
-                        Container(
-                            margin: EdgeInsets.all(16.0),
-                            alignment: Alignment(-1, 0.6),
-                            child: Text(
-                                "${5 - args["cardCoupon"]} "
-                                    "More to go",
-                                style: TextStyle(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white))),
-                        Container(
-                          height: 30,
-                          child: ListView(
-                            padding: EdgeInsets.only(
-                                left: 16.0, right: 16.0, top: 125.0, bottom: 2.0),
-                            scrollDirection: Axis.horizontal,
-                            children: _buildRewardPlace(args["cardCoupon"], 5, context),
-                          ),
-                        )
-                      ],
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  ),
-                  GestureDetector(
-                    child: Stack(
-                      children: <Widget>[
-                        Image(
-                          image: AssetImage("assets/coupon/green.png"),
-                          //height: 300,
-                          fit: BoxFit.fitWidth,
-                        ),
-                        Positioned(
-                            left: 32.0,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding:
-                                  const EdgeInsets.symmetric(vertical: 4.0),
-                                ),
-                                Text(
-                                  "Ducks Coffee Roaster",
-                                  style: TextStyle(
-                                    color: Colors.black54,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w800,
-                                    height: 2.5,
-                                  ),
-                                  textAlign: TextAlign.left,
-                                ),
-                                Text(
-                                  " Add: " ,//+ args["factoryNum"] + "\n"
-                                 // " Tel: "+ args[""] + "\n",
-                                  style: TextStyle(
-                                    color: Colors.black54,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w500,
-                                    height: 1.2,
-                                  ),
-                                  textAlign: TextAlign.left,
-                                ),
-                                Padding(
-                                  padding:
-                                  const EdgeInsets.symmetric(vertical: 12.0),
-                                ),
-                                Text(
-                                  "Free Coffee Size Upgrade\n"
-                                      "Enjoy the extra",
-                                  style: TextStyle(
-                                    color: Colors.green,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500,
-                                    height: 1.2,
-                                  ),
-                                  textAlign: TextAlign.left,
-                                ),
-                              ],
-                            )
-                        ),
-                        Positioned(
-                          right: 32.0,
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: <Widget>[
-                                Padding(
-                                  padding:
-                                  const EdgeInsets.symmetric(vertical: 20.0),
-                                ),
-                                Image(
-                                  image: AssetImage("assets/coupon/coffee.png"),
-                                ),
-                                Padding(
-                                  padding:
-                                  const EdgeInsets.symmetric(vertical: 20.0),
-                                ),
-                                Text(
-                                  "Offer expires at",// + args["expiretime"],
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w400,
-                                    height: 1.2,
-                                  ),
-                                  textAlign: TextAlign.left,
-                                ),
-                              ]),
-                        )
-                      ],
-                    ),
-                    onTap: (){
-                      Navigator.pushNamed(context, "/couponpage", arguments: {
-                        "card": args["card"]
-                      });
+                    onTap: () {
+                      Navigator.pop(context);
                     },
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  ),
+                ),
+                actions: <Widget>[
                   GestureDetector(
-                    child: Stack(
-                      children: <Widget>[
-                        Image(
-                          image: AssetImage("assets/coupon/purple.png"),
-                          //height: 300,
-                          fit: BoxFit.fitWidth,
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Text(
+                        "Edit",
+                        style: TextStyle(
+                          decoration: TextDecoration.none,
+                          fontSize: 25.0,
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.w500,
                         ),
-                        Positioned(
-                            left: 32.0,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding:
-                                  const EdgeInsets.symmetric(vertical: 4.0),
-                                ),
-                                Text(
-                                  "Ducks Coffee Roaster",
-                                  style: TextStyle(
-                                    color: Colors.black54,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w800,
-                                    height: 2.5,
-                                  ),
-                                  textAlign: TextAlign.left,
-                                ),
-                                Text(
-                                  " Add: ",// + args["factoryNum"] + "\n"
-                                     // " Tel: " + args[""] + "\n",
-                                  style: TextStyle(
-                                    color: Colors.black54,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w500,
-                                    height: 1.2,
-                                  ),
-                                  textAlign: TextAlign.left,
-                                ),
-                                Padding(
-                                  padding:
-                                  const EdgeInsets.symmetric(vertical: 12.0),
-                                ),
-                                Text(
-                                  "Free Coffee Size Upgrade\n"
-                                      "Enjoy the extra",
-                                  style: TextStyle(
-                                    color: Colors.purple,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500,
-                                    height: 1.2,
-                                  ),
-                                  textAlign: TextAlign.left,
-                                ),
-                              ],
-                            )),
-                        Positioned(
-                          right: 32.0,
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: <Widget>[
-                                Padding(
-                                  padding:
-                                  const EdgeInsets.symmetric(vertical: 20.0),
-                                ),
-                                Image(
-                                  image: AssetImage("assets/coupon/coffee.png"),
-                                ),
-                                Padding(
-                                  padding:
-                                  const EdgeInsets.symmetric(vertical: 20.0),
-                                ),
-                                Text(
-                                  "Offer expires at", //+ args["expiretime"],
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w400,
-                                    height: 1.2,
-                                  ),
-                                  textAlign: TextAlign.left,
-                                ),
-                              ]),
-                        )
-                      ],
+                      ),
                     ),
                     onTap: (){
-                      Navigator.pushNamed(context, "/couponpage" , arguments: {
-                      "card": args["card"]
-                      });
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  ),
-                  GestureDetector(
-                    child: Stack(
-                      children: <Widget>[
-                        Image(
-                          image: AssetImage("assets/coupon/orange.png"),
-                          //height: 300,
-                          fit: BoxFit.fitWidth,
-                        ),
-                        Positioned(
-                            left: 32.0,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding:
-                                  const EdgeInsets.symmetric(vertical: 4.0),
-                                ),
-                                Text(
-                                  "Ducks Coffee Roaster",
-                                  style: TextStyle(
-                                    color: Colors.black54,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w800,
-                                    height: 2.5,
-                                  ),
-                                  textAlign: TextAlign.left,
-                                ),
-                                Text(
-                                  " Add: " ,//+ args["factoryNum"] + "\n"
-                                     // " Tel: "+ args[""] + "\n",
-                                  style: TextStyle(
-                                    color: Colors.black54,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w500,
-                                    height: 1.2,
-                                  ),
-                                  textAlign: TextAlign.left,
-                                ),
-                                Padding(
-                                  padding:
-                                  const EdgeInsets.symmetric(vertical: 12.0),
-                                ),
-                                Text(
-                                  "Free Coffee Size Upgrade\n"
-                                      "Enjoy the extra",
-                                  style: TextStyle(
-                                    color: Colors.orange,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500,
-                                    height: 1.2,
-                                  ),
-                                  textAlign: TextAlign.left,
-                                ),
-                              ],
-                            )),
-                        Positioned(
-                          right: 32.0,
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: <Widget>[
-                                Padding(
-                                  padding:
-                                  const EdgeInsets.symmetric(vertical: 20.0),
-                                ),
-                                Image(
-                                  image: AssetImage("assets/coupon/coffee.png"),
-                                ),
-                                Padding(
-                                  padding:
-                                  const EdgeInsets.symmetric(vertical: 20.0),
-                                ),
-                                Text(
-                                  "Offer expires at" ,//+ args["expiretime"],
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w400,
-                                    height: 1.2,
-                                  ),
-                                  textAlign: TextAlign.left,
-                                ),
-                              ]),
-                        )
-                      ],
-                    ),
-                    onTap: (){
-                      Navigator.pushNamed(context, "/couponpage",  arguments: {
-                        "card": args["card"]
+                      Navigator.of(context).pushNamed("/edit", arguments: {
+                        "card": args["card"],
                       });
                     },
                   ),
                 ],
-              );
-            }
-            )
+              ),
+
+              SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 0),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                      if (index == 0) {
+                        return Image(
+                          image: AssetImage("assets/backgrounds/starbucksBackground.jpg"),   //args["background"]
+                          //height: 300,
+                          fit: BoxFit.fitWidth,
+                        );
+                      }
+                      if(index == 1){
+                        return  Text(
+                          //" Add: " + args["address"] + "\n"
+                          " Add: "  "\n"
+                          //"Tel: " + args["tel"] + "\n"
+                              " Tel: "  "\n"
+                          //"BH: " + args["workTime"] + "\n",
+                              " BH: "  "\n",
+                          style:
+                          TextStyle(color: Colors.grey, fontSize: 15, height: 2),
+                          textAlign: TextAlign.left,
+                        );
+                      }
+                      if(index == 2){
+                        return Container(
+                          decoration: BoxDecoration(
+                              color: args["cardcolor"],
+                              borderRadius: BorderRadius.circular(10.0)),
+                          constraints: BoxConstraints(minHeight: 160),
+                          child: Stack(
+                            fit: StackFit.passthrough,
+                            alignment: Alignment.center,
+                            children: <Widget>[
+                              Container(
+                                margin: EdgeInsets.all(20.0),
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  args["eName"],
+                                  style: TextStyle(
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                margin: EdgeInsets.all(20.0),
+                                alignment: Alignment(-1.0, -0.3),
+                                child: Text(
+                                  "Buy 5 Get 1 Free",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                  margin: EdgeInsets.all(20.0),
+                                  alignment: Alignment(-1, 0.1),
+                                  child: Text("Offer expires at " ,//+ args["expireTime"],
+                                      style: TextStyle(
+                                        fontSize: 14.0,
+                                        color: Colors.white,
+                                      ))),
+                              Container(
+                                  margin: EdgeInsets.all(20.0),
+                                  alignment: Alignment(-1, 0.6),
+                                  child: Text(
+                                      "${args["cardCoupon"] % 5} "
+                                          "More to go",
+                                      style: TextStyle(
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white))),
+                              Container(
+                                height: 30,
+                                child: ListView(
+                                  padding: EdgeInsets.only(
+                                      left: 20.0, right: 20.0, top: 125.0, bottom: 2.0),
+                                  scrollDirection: Axis.horizontal,
+                                  children: _buildRewardPlace(args["cardCoupon"] % 5 , 5, context),
+                                ),
+                              )
+                            ],
+                          ),
+                        );
+                      }
+                      else if ((index-3) % 2 == 0) {
+                        return GestureDetector(
+                          child: Stack(
+                            children: <Widget>[
+                              _buildCouponWithColor(context, index),
+
+                              Positioned(
+                                  left: 32.0,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Padding(
+                                        padding:
+                                        const EdgeInsets.symmetric(vertical: 4.0),
+                                      ),
+                                      Text(
+                                        args["eName"],
+                                        style: TextStyle(
+                                          color: Colors.black54,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w800,
+                                          height: 2.5,
+                                        ),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                      Text(
+                                        //" Add: " + args["address"] + "\n"
+                                        "Add: "  "\n"
+                                        //"Tel: " + args["tel"] + "\n"
+                                            "Tel: "  "\n",
+                                        style: TextStyle(
+                                          color: Colors.black54,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w500,
+                                          height: 1.2,
+                                        ),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                      Padding(
+                                        padding:
+                                        const EdgeInsets.symmetric(vertical: 12.0),
+                                      ),
+                                      Text(
+                                        //args["description"}+"\n"
+                                        "\n"
+                                            "Enjoy the extra",
+                                        style: TextStyle(
+                                          color: Colors.orange,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w500,
+                                          height: 1.2,
+                                        ),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ],
+                                  )),
+                              Positioned(
+                                right: 32.0,
+                                child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: <Widget>[
+                                      Padding(
+                                        padding:
+                                        const EdgeInsets.symmetric(vertical: 20.0),
+                                      ),
+                                      Image(
+                                        image: AssetImage("assets/coupon/coffee.png"),   //args["icon"]
+                                      ),
+                                      Padding(
+                                        padding:
+                                        const EdgeInsets.symmetric(vertical: 20.0),
+                                      ),
+                                      Text(
+                                        "Offer expires at" , //+ args["expireTime"],
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w400,
+                                          height: 1.2,
+                                        ),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ]),
+                              )
+                            ],
+                          ),
+                          onTap: (){
+                            Navigator.pushNamed(context, "/couponpage",  arguments: {
+                              "card": args["card"]
+                            });
+                          },
+                        ) ;
+                      }
+                      else {
+                        return  Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        );
+                      };
+                    },
+                    //childCount: 3 + args["couponNum"] * 2,
+                    childCount: 3 + 1 * 2,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
     );
   }
 
@@ -472,6 +320,30 @@ class CardInfo1State extends State<CardInfo1Page> {
       ));
     }
     return rewardList;
+  }
+
+  Widget _buildCouponWithColor(BuildContext context, int index){
+    if((index-3) % 6 == 0){          //for color green
+      return Image(
+        image: AssetImage("assets/coupon/green.png"),
+        //height: 300,
+        fit: BoxFit.fitWidth,
+      );
+    }
+    else if((index-3) % 6 == 2){          //for color purple
+      return Image(
+        image: AssetImage("assets/coupon/purple.png"),
+        //height: 300,
+        fit: BoxFit.fitWidth,
+      );
+    }
+    else if((index-3) % 6 == 4){          //for color orange
+      return Image(
+        image: AssetImage("assets/coupon/orange.png"),
+        //height: 300,
+        fit: BoxFit.fitWidth,
+      );
+    }
   }
 }
 

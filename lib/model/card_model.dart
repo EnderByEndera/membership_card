@@ -22,6 +22,7 @@ import 'package:membership_card/pages/all_cards.dart';
 class CardInfo extends ChangeNotifier{
   static const String CARD_COUPON_JSON = "card_coupon";
   static const String MAX_COUPON_JSON  = "max_coupon";
+  static const String COUPON_NUM_JSON = "coupon_num";
   static const String ADDRESS_JSON     = "address";
   static const String BATCH_NUM_JSON   = "batch_num";
   static const String CARD_ID_JSON     = "id";
@@ -37,9 +38,11 @@ class CardInfo extends ChangeNotifier{
   static const String WORK_TIME_JSON   = "work_time";
   static const String BACKGROUND_JSON  = "background";
   static const String ICON_JSON        = "icon";
+  static const String EXPIRE_TIME_JSON = "expire_time";
 
   int    _cardCoupon = 3;
-  int    _maxCoupon;
+  int    _maxCoupon = 5;
+  int    _couponNum ;
   String _address;
   String _batchNum;
   String _cardId;
@@ -55,6 +58,7 @@ class CardInfo extends ChangeNotifier{
   String _workTime;
   Image  _background;
   Image  _icon;
+  String _expireTime;
 
   bool _isChosen = false;
   Key _cardKey = UniqueKey();
@@ -85,10 +89,12 @@ class CardInfo extends ChangeNotifier{
   Color  get cardColor   => _cardColor;
   int    get cardCoupon  => _cardCoupon;
   int    get maxCoupon   => _maxCoupon;
+  //int    get couponNum   => _cardCoupon ~/ _maxCoupon;
   String get address     => _address;
   String get description => _description;
   String get tel         => _tel;
   String get workTime    => _workTime;
+  String get expireTime    => _expireTime;
 
   set isChosen(bool isChosen) => this._isChosen = isChosen;
   void addCoupon(int cardCoupon)=> this._cardCoupon=cardCoupon;

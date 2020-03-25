@@ -12,6 +12,8 @@ import 'package:membership_card/pages/help.dart';
 import 'package:provider/provider.dart';
 import 'package:barcode_flutter/barcode_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:dio/dio.dart';
+import 'package:membership_card/network/client.dart';
 
 /// This is the All_Cards Page [AllCardsMainPage] which is the home of the App.
 /// It shows all the cards users created and users can also add cards
@@ -41,6 +43,8 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
   TabController _tabController;
   ScrollController _scrollController;
   TextEditingController _textEditingController;
+  Response res;
+  Dio dio = initDio();
 
   NfcData response = new NfcData(content: "");
 
@@ -670,6 +674,13 @@ class _AllCardsPageState extends State<AllCardsPage>
             "cardType": counter.getOneCard(index).cardType,
             "cardcolor": counter.getCardColor(index),
             "cardCoupon": counter.getOneCard(index).cardCoupon,
+            "maxCoupon": counter.getOneCard(index).maxCoupon,
+            "address": counter.getOneCard(index).address,
+            "tel": counter.getOneCard(index).tel,
+            "workTime": counter.getOneCard(index).workTime,
+            "expireTime": counter.getOneCard(index).expireTime,
+            "description": counter.getOneCard(index).description,
+            //"couponNum": counter.getOneCard(index).couponNum,
             "card": counter.getOneCard(index)
           });
         },
@@ -736,7 +747,7 @@ class _AllCardsPageState extends State<AllCardsPage>
                   margin: EdgeInsets.all(16.0),
                   alignment: Alignment(-1, 0.6),
                   child: Text(
-                      "${5 - counter.getOneCard(index).cardCoupon} "
+                      "${counter.getOneCard(index).cardCoupon % 5} "
                       "More to go",
                       style: TextStyle(
                           fontSize: 18.0,
