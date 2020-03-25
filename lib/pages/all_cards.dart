@@ -181,7 +181,7 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
       int i=0;
       for(;i<Provider.of<CardCounter>(context).cardList.length;i++) {
         if (Provider.of<CardCounter>(context).getOneCard(i).cardId.compareTo(response.content) == 0) {
-          Provider.of<CardCounter>(context).getOneCard(i).addscore(Provider.of<CardCounter>(context).getOneCard(i).currentscore + 1);
+          Provider.of<CardCounter>(context).getOneCard(i).addScore(Provider.of<CardCounter>(context).getOneCard(i).currentScore + 1);
           break;
         }
       }

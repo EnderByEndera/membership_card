@@ -103,6 +103,7 @@ class CouponPageState extends State<CouponPage> with SingleTickerProviderStateMi
                       .of(context)
                       .size
                       .height * 0.245,
+
                   margin: EdgeInsets.symmetric(horizontal: 32.0),
                   alignment: Alignment(-1, 0.3),
                   child: Text(
@@ -197,7 +198,7 @@ class CouponPageState extends State<CouponPage> with SingleTickerProviderStateMi
                           ),
                           FlatButton(
                             onPressed: () {
-
+                              args["card"]._redeemCoupon();
                               Navigator.of(context).popUntil(ModalRoute.withName("/cardinfo"));
                             },
                             child: Text(

@@ -72,11 +72,12 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
 
 
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
-        title: Container(
+        leading: Container(
           child: GestureDetector(
             child: Text(
               "﹤Back",
@@ -120,11 +121,18 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
           ),
         ],
       ),
-      body: Form(
+      body:
+          GestureDetector(
+    behavior: HitTestBehavior.translucent,
+    onTap: () {
+
+    FocusScope.of(context).requestFocus(FocusNode());
+    },
+    child:
+      Form(
         key: _formKey,
         autovalidate: true,
         child: Column(
-
         children: <Widget>[
           // card input
           TextFormField(
@@ -193,6 +201,10 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
         ],
       ),
       ),
+          ),
+
+
+
       bottomNavigationBar: TabBar(
         controller: _tabController,
         tabs: <Widget>[
