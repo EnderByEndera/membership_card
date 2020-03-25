@@ -97,7 +97,12 @@ class CardInfo extends ChangeNotifier{
   String get workTime    => _workTime;
 
   set isChosen(bool isChosen) => this._isChosen = isChosen;
-  void addscore(int score)=> this._currentScore=score;
+  void addscore(int score){
+    if(this._currentScore<=5)
+    this._currentScore=score;
+  else this._currentScore=0;
+   }
+  
   void redeemCoupon() => this._cardCoupon--;
 
   CardInfo([this._cardId, this._eName, this._remark]);
