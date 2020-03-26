@@ -122,87 +122,87 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
           ),
         ],
       ),
-      body:
-          GestureDetector(
-    behavior: HitTestBehavior.translucent,
-    onTap: () {
+      body: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
 
-    FocusScope.of(context).requestFocus(FocusNode());
-    },
-    child:
-      Form(
-        key: _formKey,
-        autovalidate: true,
-        child: Column(
-        children: <Widget>[
-          // card input
-          TextFormField(
-            controller: cardController,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.all(10.0),
-              icon: Icon(Icons.credit_card),
-              labelText: 'Please enter you cardNumber',
-            ),
-            //limit MAX input=20
-            inputFormatters:[WhitelistingTextInputFormatter(RegExp("[a-zA-Z0-9]")),LengthLimitingTextInputFormatter(20)] ,
-            validator: (value) {// 校验用户名
-              return value.trim().length > 0 ? null : 'Card Number can not be null';
-            },
-
-            autofocus: false,
-          ),
-          //card type input
-          TextFormField(
-            controller: cardStoreController,
-            keyboardType: TextInputType.text,
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.all(10.0),
-              icon: Icon(Icons.calendar_view_day),
-              labelText: 'Please enter the storeName',
-            ),
-              //limit MAX input=20
-            inputFormatters:[WhitelistingTextInputFormatter(RegExp("[a-zA-Z0-9_\u4e00-\u9fa5]")),LengthLimitingTextInputFormatter(20)] ,
-            validator: (value) {// 校验用户名
-              return value.trim().length > 0 ? null : 'Store Name can not be null';
-            },
-            autofocus: false,
-          ),
-
-          RaisedButton(
-              child: Text(
-                'Use Camera',
-                style: TextStyle(fontSize: 20.0),
-              ),
-              color: Colors.orange,
-              colorBrightness: Brightness.dark,
-              disabledColor: Colors.grey,
-              disabledTextColor: Colors.grey,
-              padding: new EdgeInsets.only(
-                bottom: 5.0,
-                top: 5.0,
-                left: 20.0,
-                right: 20.0,
-              ),
-              onPressed: _scanQR,
-              shape: RoundedRectangleBorder(
-                side: new BorderSide(
-                  width: 2.0,
-                  color: Colors.white,
-                  style: BorderStyle.solid,
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child:Form(
+          key: _formKey,
+          autovalidate: true,
+          child: Column(
+            children: <Widget>[
+              // card input
+              TextFormField(
+                controller: cardController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(10.0),
+                  icon: Icon(Icons.credit_card),
+                  labelText: 'Please enter you cardNumber',
                 ),
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(10.0),
-                  topLeft: Radius.circular(10.0),
-                  bottomLeft: Radius.circular(10.0),
-                  bottomRight: Radius.circular(10.0),
+                //limit MAX input=20
+                inputFormatters:[WhitelistingTextInputFormatter(RegExp("[a-zA-Z0-9]")),LengthLimitingTextInputFormatter(20)] ,
+                validator: (value) {// 校验用户名
+                  return value.trim().length > 0 ? null : 'Card Number can not be null';
+                },
+
+                autofocus: false,
+              ),
+              //card type input
+              TextFormField(
+                controller: cardStoreController,
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(10.0),
+                  icon: Icon(Icons.calendar_view_day),
+                  labelText: 'Please enter the storeName',
                 ),
+                //limit MAX input=20
+                inputFormatters:[WhitelistingTextInputFormatter(RegExp("[a-zA-Z0-9_\u4e00-\u9fa5]")),LengthLimitingTextInputFormatter(20)] ,
+                validator: (value) {// 校验用户名
+                  return value.trim().length > 0 ? null : 'Store Name can not be null';
+                },
+                autofocus: false,
+              ),
+
+              RaisedButton(
+                  child: Text(
+                    'Use Camera',
+                    style: TextStyle(fontSize: 20.0),
+                  ),
+                  color: Colors.orange,
+                  colorBrightness: Brightness.dark,
+                  disabledColor: Colors.grey,
+                  disabledTextColor: Colors.grey,
+                  padding: new EdgeInsets.only(
+                    bottom: 5.0,
+                    top: 5.0,
+                    left: 20.0,
+                    right: 20.0,
+                  ),
+                  onPressed: _scanQR,
+                  shape: RoundedRectangleBorder(
+                    side: new BorderSide(
+                      width: 2.0,
+                      color: Colors.white,
+                      style: BorderStyle.solid,
+                    ),
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(10.0),
+                      topLeft: Radius.circular(10.0),
+                      bottomLeft: Radius.circular(10.0),
+                      bottomRight: Radius.circular(10.0),
+                    ),
+                  )
               )
-          )
-        ],
-      ),
-      ),
+            ],
           ),
+        ),
+
+      ),
+
 
 
 

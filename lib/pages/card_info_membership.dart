@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:membership_card/network/client.dart';
 import 'dart:async';
+import 'edit_card.dart';
 
 
 /// This is the Card_Info Page showing one card's information.
@@ -20,6 +21,7 @@ class CardInfo1Page extends StatefulWidget {
 class CardInfo1State extends State<CardInfo1Page> {
   //Response res;
   //Dio dio = initDio();
+  String eName;
   ScrollController _scrollController;
   void initState() {
     super.initState();
@@ -37,7 +39,7 @@ class CardInfo1State extends State<CardInfo1Page> {
   @override
   Widget build(BuildContext context) {
     dynamic args = ModalRoute.of(context).settings.arguments;
-
+    eName = args["eName"];
     return Scaffold(
         backgroundColor: Colors.white,
         //Todo: Add more UI about Card Info body from here
@@ -82,11 +84,15 @@ class CardInfo1State extends State<CardInfo1Page> {
                         ),
                       ),
                     ),
-                    onTap: (){
+                    onTap: () {
                       Navigator.of(context).pushNamed("/edit", arguments: {
-                        "card": args["card"],
-                      });
-                    },
+                        "card": args["card"]
+                      });//.then((data){
+                      //  setState(() {          //这个方法要加不然数据看不到刷新数据
+                      //    this.eName = data;
+                      //  });
+                     // });
+                    }
                   ),
                 ],
               ),
@@ -130,7 +136,7 @@ class CardInfo1State extends State<CardInfo1Page> {
                                 margin: EdgeInsets.all(20.0),
                                 alignment: Alignment.topLeft,
                                 child: Text(
-                                  args["eName"],
+                                  "$eName",
                                   style: TextStyle(
                                     fontSize: 20.0,
                                     fontWeight: FontWeight.bold,
@@ -142,7 +148,7 @@ class CardInfo1State extends State<CardInfo1Page> {
                                 margin: EdgeInsets.all(20.0),
                                 alignment: Alignment(-1.0, -0.3),
                                 child: Text(
-                                  "Buy 5 Get 1 Free",
+                                  "Buy "+args["maxScore"].toString()+" Get 1 Free",
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 20.0,
@@ -269,7 +275,8 @@ class CardInfo1State extends State<CardInfo1Page> {
                           ),
                           onTap: (){
                             Navigator.pushNamed(context, "/couponpage",  arguments: {
-                              "card": args["card"]
+                              "card": args["card"],
+                              "coupon": _buildCouponWithColor(context, index),
                             });
                           },
                         ) ;
@@ -281,7 +288,7 @@ class CardInfo1State extends State<CardInfo1Page> {
                       };
                     },
                     //childCount: 3 + args["cardCoupon"] * 2,
-                    childCount: 3 + 1 * 2,
+                    childCount: 3 + 4 * 2,
                   ),
                 ),
               ),
@@ -342,7 +349,6 @@ class CardInfo1State extends State<CardInfo1Page> {
     }
   }
 }
-
 
 //Container(
 //            child: Image(

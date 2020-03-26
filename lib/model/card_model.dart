@@ -43,10 +43,11 @@ class CardInfo extends ChangeNotifier{
   static const String CURRENT_SCORE_JSON = "current_score";
   static const String MAX_SCORE_JSON     = "max_score";
 
-  int    _cardCoupon;
-  int    _maxCoupon;
   int    _currentScore = 3;
   int    _maxScore = 5;
+  int    _cardCoupon;
+  //int    _maxCoupon = _currentScore ~/ _maxCoupon;
+  int    _maxCoupon;
   String _address;
   String _batchNum;
   String _cardId;
@@ -94,7 +95,6 @@ class CardInfo extends ChangeNotifier{
   Color  get cardColor   => _cardColor;
   int    get cardCoupon  => _cardCoupon;
   int    get maxCoupon   => _maxCoupon;
-  //int    get couponNum   => _cardCoupon ~/ _maxCoupon;
   String get address     => _address;
   String get description => _description;
   String get tel         => _tel;
