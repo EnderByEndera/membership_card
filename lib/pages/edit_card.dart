@@ -55,14 +55,16 @@ class EditCardPageState extends  State<EditCardPage>
         backgroundColor: Colors.white,
         title: Container(
           child: GestureDetector(
-            child: Text(
-              "﹤Back",
-              style: TextStyle(
-                decoration: TextDecoration.none,
-                fontSize: 25.0,
-                color: Theme.of(context).primaryColor,
-                //fontWeight: FontWeight.bold,
-                fontWeight: FontWeight.w500,
+            child: Padding(
+              padding: const EdgeInsets.all(0),
+              child: Text(
+                "< Back",
+                style: TextStyle(
+                  decoration: TextDecoration.none,
+                  fontSize: 25.0,
+                  color: Theme.of(context).primaryColor,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
             onTap: () {
@@ -141,47 +143,58 @@ class EditCardPageState extends  State<EditCardPage>
               ),
 
 
-              Consumer<CardCounter>(
-                builder: (context, counter, child) => FlatButton(
-                  child: Text(
-                    'Delete Card',
-                    style: TextStyle(fontSize: 20.0),
-                  ),
-                  color: Colors.orange,
-                  colorBrightness: Brightness.dark,
-                  disabledColor: Colors.grey,
-                  disabledTextColor: Colors.grey,
-                  padding: new EdgeInsets.only(
-                    bottom: 5.0,
-                    top: 5.0,
-                    left: 20.0,
-                    right: 20.0,
-                  ),
-                  onPressed: (){
-                    Navigator.of(context).popUntil(ModalRoute.withName('/allcardspage'));
-                    counter.deleteCard(args["card"]);
-                  },
-                  shape: RoundedRectangleBorder(
-                    side: new BorderSide(
-                      width: 2.0,
-                      color: Colors.transparent,
-                      style: BorderStyle.solid,
-                    ),
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(10.0),
-                      topLeft: Radius.circular(10.0),
-                      bottomLeft: Radius.circular(10.0),
-                      bottomRight: Radius.circular(10.0),
-                    ),
-                  ),
+
+         Stack(
+             alignment: Alignment.bottomCenter,
+           children:<Widget>[
+
+             Positioned(
+
+             child:Consumer<CardCounter>(
+            builder: (context, counter, child) =>FlatButton(
+              child: Text(
+                'Delete Card',
+                style: TextStyle(fontSize: 20.0,color:Colors.orange
                 ),
               ),
-            ],
+              color: Colors.transparent,
+              colorBrightness: Brightness.dark,
+              disabledColor: Colors.grey,
+              disabledTextColor: Colors.grey,
+              padding: new EdgeInsets.only(
+                bottom: 5.0,
+                top: 5.0,
+                left: 20.0,
+                right: 20.0,
+              ),
+              onPressed: (){
+                Navigator.of(context).popUntil(ModalRoute.withName('/allcardspage'));
+                counter.deleteCard(args["card"]);
+              },
+              shape: RoundedRectangleBorder(
+                side: new BorderSide(
+                  width: 2.0,
+                  color: Colors.transparent,
+                  style: BorderStyle.solid,
+                ),
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(10.0),
+                  topLeft: Radius.circular(10.0),
+                  bottomLeft: Radius.circular(10.0),
+                  bottomRight: Radius.circular(10.0),
+                ),
+              ),
+            ),
+
           ),
-        ),
+    ),
+            ],
+         ),
+          ],
+              ),
+
+          ),
       ),
-
-
 
 
       bottomNavigationBar: TabBar(

@@ -79,15 +79,16 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
         backgroundColor: Colors.white,
         title: Container(
           child: GestureDetector(
-            child: Text(
-              "﹤Back",
-              style: TextStyle(
-
-                decoration: TextDecoration.none,
-                fontSize: 25.0,
-                color: Theme.of(context).primaryColor,
-                //fontWeight: FontWeight.bold,
-                fontWeight: FontWeight.w500,
+            child: Padding(
+              padding: const EdgeInsets.all(0),
+              child: Text(
+                "< Back",
+                style: TextStyle(
+                  decoration: TextDecoration.none,
+                  fontSize: 25.0,
+                  color: Theme.of(context).primaryColor,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
             onTap: () {
