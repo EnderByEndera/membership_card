@@ -1,6 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:membership_card/model/card_model.dart';
+import 'package:membership_card/network/client.dart';
 import 'package:membership_card/pages/card_info_membership.dart';
 
 class CouponPage extends StatefulWidget {
@@ -17,6 +19,7 @@ class CouponPage extends StatefulWidget {
 /// This should be the upper-stack page of [CardInfoPage]
 class CouponPageState extends State<CouponPage> with SingleTickerProviderStateMixin {
   TabController _tabController;
+  Dio dio = initDio();
 
   @override
   void initState() {
@@ -51,25 +54,7 @@ class CouponPageState extends State<CouponPage> with SingleTickerProviderStateMi
             child: Stack(
               fit: StackFit.passthrough,
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey,
-                          spreadRadius: 2.0,
-                          blurRadius: 2.0,
-                          offset: Offset(2.0, 2.0),
-                        )
-                      ],
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: Image(
-                      image: AssetImage("assets/coupon/green.png"),
-                    ),
-                  ),
-                ),
+                args["coupon"],
                 Container(
                   height: MediaQuery
                       .of(context)
@@ -78,7 +63,8 @@ class CouponPageState extends State<CouponPage> with SingleTickerProviderStateMi
                   margin: EdgeInsets.symmetric(horizontal: 32.0),
                   alignment: Alignment(-1, -0.7),
                   child: Text(
-                    args["card"]._eName,
+                    '\n',
+                    //args["card"]._eName,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.grey[600],
@@ -93,8 +79,10 @@ class CouponPageState extends State<CouponPage> with SingleTickerProviderStateMi
                   margin: EdgeInsets.symmetric(horizontal: 32.0),
                   alignment: Alignment(-1, -0.4),
                   child: Text(
-                    "Add: " + args["card"]._address + "\n"
-                        + "Tel: " + args["card"]._tel,
+                    "Add:\n"
+                      "Tel:\n",
+                    //"Add: " + args["card"]._address + "\n"
+                    //    + "Tel: " + args["card"]._tel,
                     style: TextStyle(color: Colors.grey[500], fontSize: 12.0),
                   ),
                 ),
@@ -107,7 +95,9 @@ class CouponPageState extends State<CouponPage> with SingleTickerProviderStateMi
                   margin: EdgeInsets.symmetric(horizontal: 32.0),
                   alignment: Alignment(-1, 0.3),
                   child: Text(
-                    args["card"]._description,
+                    '\n'
+                      "Enjoy your Extra",
+                    //args["card"]._description,
                     style: TextStyle(
                         color: Color.fromARGB(255, 59, 157, 9),
                         fontSize: 14.0),
@@ -121,7 +111,9 @@ class CouponPageState extends State<CouponPage> with SingleTickerProviderStateMi
                   margin: EdgeInsets.symmetric(horizontal: 32.0),
                   alignment: Alignment(1, 0.8),
                   child: Text(
-                    "Offer expires " + args["card"]._expireTime,
+                    "Offer expires "
+                      '\n',
+                      //+ args["card"]._expireTime,
                     style: TextStyle(color: Colors.grey[500], fontSize: 12.0),
                   ),
                 ),
@@ -198,8 +190,15 @@ class CouponPageState extends State<CouponPage> with SingleTickerProviderStateMi
                           ),
                           FlatButton(
                             onPressed: () {
-                              args["card"]._redeemCoupon();
-                              Navigator.of(context).popUntil(ModalRoute.withName("/cardinfo"));
+                              try {
+                                useCoupon(dio, args["card"].cardId, -1);
+                                args["card"].redeemCoupon();
+                                Navigator.of(context).popUntil(
+                                    ModalRoute.withName(
+                                        "/cardinfo_membership"));
+                              } catch (e) {
+                                print(e);
+                              }
                             },
                             child: Text(
                                 "Redeem Now", style: TextStyle(color: Theme

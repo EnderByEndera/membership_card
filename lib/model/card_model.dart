@@ -45,7 +45,7 @@ class CardInfo extends ChangeNotifier{
 
   int    _currentScore = 3;
   int    _maxScore = 5;
-  int    _cardCoupon;
+  int    _cardCoupon = 3;
   //int    _maxCoupon = _currentScore ~/ _maxCoupon;
   int    _maxCoupon;
   String _address;
@@ -112,7 +112,10 @@ class CardInfo extends ChangeNotifier{
     else this._currentScore = 0;
    }
 
-  void redeemCoupon() => this._cardCoupon--;
+  void redeemCoupon() {
+    this._cardCoupon--;
+    notifyListeners();
+  }
 
   CardInfo([this._cardId, this._eName, this._remark]);
 
