@@ -2,6 +2,9 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:membership_card/model/card_count.dart';
+import 'package:membership_card/model/card_model.dart';
 
 /// This is the Card_Info Page showing one card's information with qrcode.
 class CardInfo3Page extends StatefulWidget {
@@ -15,6 +18,7 @@ class CardInfo3State extends State<CardInfo3Page>{
   @override
   Widget build(BuildContext context) {
     dynamic args = ModalRoute.of(context).settings.arguments;
+    CardInfo card = Provider.of<CardCounter>(context,listen:false).getCard(args["card"]);
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -74,7 +78,7 @@ class CardInfo3State extends State<CardInfo3Page>{
                   padding: EdgeInsets.all(60),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5.0),
-                    color: args["cardcolor"],
+                    color: card.cardColor,
                   ),
                   height: 180.0,
                 ),
@@ -84,7 +88,7 @@ class CardInfo3State extends State<CardInfo3Page>{
                   child: QrImage(
                     version: QrVersions.auto,
                     backgroundColor: Colors.white,
-                    data: args["cardId"],
+                    data: card.cardId,
                     size: 60.0,
                     padding: EdgeInsets.all(4.0),
                   ),
@@ -93,7 +97,7 @@ class CardInfo3State extends State<CardInfo3Page>{
                   bottom: 20.0,
                   left: 20.0,
                   child: Text(
-                    args["eName"],
+                    card.eName,
                     style: TextStyle(fontSize: 20, color: Colors.white),
                   ),
                 ),
@@ -116,7 +120,7 @@ class CardInfo3State extends State<CardInfo3Page>{
                     child: QrImage(
                       version: QrVersions.auto,
                       backgroundColor: Colors.white,
-                      data: args["cardId"],
+                      data: card.cardId,
                       size: 200.0,
                       padding: EdgeInsets.all(4.0),
                     ),

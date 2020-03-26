@@ -71,14 +71,12 @@ class EditCardPageState extends  State<EditCardPage>
           ),
         ),
         actions: <Widget>[
-          Consumer<CardCounter>(
-            builder: (context, counter, child) => FlatButton(
+          FlatButton(
               onPressed: () {
                if((_formKey.currentState as FormState).validate()) {
-                 //Navigator.pop(context, cardStoreController.value.text);
                  Navigator.pop(context);
-                 counter.editCard(args["card"], cardController.value.text,
-                     cardStoreController.value.text);
+                 Provider.of<CardCounter>(context,listen:false).editCard(args["card"],
+                     cardController.value.text, cardStoreController.value.text);
                }
               },
               child: Text(
@@ -89,7 +87,7 @@ class EditCardPageState extends  State<EditCardPage>
                   fontSize: 25.0,),
               ),
             ),
-          ),
+
         ],
       ),
 

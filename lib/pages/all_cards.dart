@@ -720,19 +720,6 @@ class _AllCardsPageState extends State<AllCardsPage>
         onTap: () {
           Navigator.of(context).pushNamed("/cardinfo_membership", arguments: {
             "herotag": counter.getOneCard(index).cardKey,
-            "cardId": counter.getOneCard(index).cardId,
-            "eName": counter.getOneCard(index).eName,
-            "cardType": counter.getOneCard(index).cardType,
-            "cardcolor": counter.getCardColor(index),
-            "cardCoupon": counter.getOneCard(index).cardCoupon,
-            "currentscore": counter.getOneCard(index).currentscore,
-            "maxScore": counter.getOneCard(index).maxScore,
-            //"maxCoupon": counter.getOneCard(index).maxCoupon,
-            "address": counter.getOneCard(index).address,
-            "tel": counter.getOneCard(index).tel,
-            "workTime": counter.getOneCard(index).workTime,
-            "expireTime": counter.getOneCard(index).expireTime,
-            "description": counter.getOneCard(index).description,
             "card": counter.getOneCard(index)
           });
         },
@@ -854,10 +841,6 @@ class _AllCardsPageState extends State<AllCardsPage>
         onTap: () {
           Navigator.of(context).pushNamed("/cardinfo_barcode", arguments: {
             "herotag": counter.getOneCard(index).cardKey,
-            "cardId": counter.getOneCard(index).cardId,
-            "eName": counter.getOneCard(index).eName,
-            "cardType": counter.getOneCard(index).cardType,
-            "cardcolor": counter.getCardColor(index),
             "card": counter.getOneCard(index)
           });
         },
@@ -915,10 +898,6 @@ class _AllCardsPageState extends State<AllCardsPage>
         onTap: () {
           Navigator.of(context).pushNamed("/cardinfo_qrcode", arguments: {
             "herotag": counter.getOneCard(index).cardKey,
-            "cardId": counter.getOneCard(index).cardId,
-            "eName": counter.getOneCard(index).eName,
-            "cardType": counter.getOneCard(index).cardType,
-            "cardcolor": counter.getCardColor(index),
             "card": counter.getOneCard(index)
           });
         },

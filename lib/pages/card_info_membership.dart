@@ -4,9 +4,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/cupertino.dart' as prefix1;
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:membership_card/model/card_model.dart';
 import 'package:membership_card/network/client.dart';
 import 'dart:async';
 import 'edit_card.dart';
+import 'package:provider/provider.dart';
+import 'package:membership_card/model/card_count.dart';
 
 
 /// This is the Card_Info Page showing one card's information.
@@ -21,7 +24,7 @@ class CardInfo1Page extends StatefulWidget {
 class CardInfo1State extends State<CardInfo1Page> {
   //Response res;
   //Dio dio = initDio();
-  String eName;
+
   ScrollController _scrollController;
   void initState() {
     super.initState();
@@ -39,7 +42,7 @@ class CardInfo1State extends State<CardInfo1Page> {
   @override
   Widget build(BuildContext context) {
     dynamic args = ModalRoute.of(context).settings.arguments;
-    eName = args["eName"];
+    CardInfo card = Provider.of<CardCounter>(context,listen:false).getCard(args["card"]);
     return Scaffold(
         backgroundColor: Colors.white,
         //Todo: Add more UI about Card Info body from here
@@ -86,12 +89,8 @@ class CardInfo1State extends State<CardInfo1Page> {
                     ),
                     onTap: () {
                       Navigator.of(context).pushNamed("/edit", arguments: {
-                        "card": args["card"]
-                      });//.then((data){
-                      //  setState(() {          //这个方法要加不然数据看不到刷新数据
-                      //    this.eName = data;
-                      //  });
-                     // });
+                        "card": card,
+                      });
                     }
                   ),
                 ],
@@ -102,20 +101,21 @@ class CardInfo1State extends State<CardInfo1Page> {
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate(
                         (context, index) {
+                         // return Consumer<CardCounter>();
                       if (index == 0) {
                         return Image(
-                          image: AssetImage("assets/backgrounds/starbucksBackground.jpg"),   //args["background"]
+                          image: AssetImage("assets/backgrounds/starbucksBackground.jpg"),   //card.background
                           //height: 300,
                           fit: BoxFit.fitWidth,
                         );
                       }
                       if(index == 1){
                         return  Text(
-                          //" Add: " + args["address"] + "\n"
+                          //" Add: " + card.address + "\n"
                           " Add: "  "\n"
-                          //"Tel: " + args["tel"] + "\n"
+                          //"Tel: " + card.tel + "\n"
                               " Tel: "  "\n"
-                          //"BH: " + args["workTime"] + "\n",
+                          //"BH: " + card.workTime + "\n",
                               " BH: "  "\n",
                           style:
                           TextStyle(color: Colors.grey, fontSize: 15, height: 2),
@@ -125,7 +125,7 @@ class CardInfo1State extends State<CardInfo1Page> {
                       if(index == 2){
                         return Container(
                           decoration: BoxDecoration(
-                              color: args["cardcolor"],
+                              color: card.cardColor,
                               borderRadius: BorderRadius.circular(10.0)),
                           constraints: BoxConstraints(minHeight: 160),
                           child: Stack(
@@ -136,7 +136,7 @@ class CardInfo1State extends State<CardInfo1Page> {
                                 margin: EdgeInsets.all(20.0),
                                 alignment: Alignment.topLeft,
                                 child: Text(
-                                  "$eName",
+                                  card.eName,
                                   style: TextStyle(
                                     fontSize: 20.0,
                                     fontWeight: FontWeight.bold,
@@ -148,7 +148,7 @@ class CardInfo1State extends State<CardInfo1Page> {
                                 margin: EdgeInsets.all(20.0),
                                 alignment: Alignment(-1.0, -0.3),
                                 child: Text(
-                                  "Buy "+args["maxScore"].toString()+" Get 1 Free",
+                                  "Buy " + card.maxScore.toString()+" Get 1 Free",
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 20.0,
@@ -159,7 +159,7 @@ class CardInfo1State extends State<CardInfo1Page> {
                               Container(
                                   margin: EdgeInsets.all(20.0),
                                   alignment: Alignment(-1, 0.1),
-                                  child: Text("Offer expires at " ,//+ args["expireTime"],
+                                  child: Text("Offer expires at " ,//+ card.expireTime,
                                       style: TextStyle(
                                         fontSize: 14.0,
                                         color: Colors.white,
@@ -168,7 +168,7 @@ class CardInfo1State extends State<CardInfo1Page> {
                                   margin: EdgeInsets.all(20.0),
                                   alignment: Alignment(-1, 0.6),
                                   child: Text(
-                                      "${args["currentscore"] % args["maxScore"]} "
+                                      "${card.currentscore % card.maxScore} "
                                           "More to go",
                                       style: TextStyle(
                                           fontSize: 18.0,
@@ -180,7 +180,7 @@ class CardInfo1State extends State<CardInfo1Page> {
                                   padding: EdgeInsets.only(
                                       left: 20.0, right: 20.0, top: 125.0, bottom: 2.0),
                                   scrollDirection: Axis.horizontal,
-                                  children: _buildRewardPlace(args["currentscore"] % args["maxScore"] , args["maxScore"], context),
+                                  children: _buildRewardPlace(card.currentscore % card.maxScore , card.maxScore, context),
                                 ),
                               )
                             ],
@@ -203,7 +203,7 @@ class CardInfo1State extends State<CardInfo1Page> {
                                         const EdgeInsets.symmetric(vertical: 4.0),
                                       ),
                                       Text(
-                                        args["eName"],
+                                        card.eName,
                                         style: TextStyle(
                                           color: Colors.black54,
                                           fontSize: 15,
@@ -213,9 +213,9 @@ class CardInfo1State extends State<CardInfo1Page> {
                                         textAlign: TextAlign.left,
                                       ),
                                       Text(
-                                        //" Add: " + args["address"] + "\n"
+                                        //" Add: " + card.address + "\n"
                                         "Add: "  "\n"
-                                        //"Tel: " + args["tel"] + "\n"
+                                        //"Tel: " + card.tel + "\n"
                                             "Tel: "  "\n",
                                         style: TextStyle(
                                           color: Colors.black54,
@@ -230,7 +230,7 @@ class CardInfo1State extends State<CardInfo1Page> {
                                         const EdgeInsets.symmetric(vertical: 12.0),
                                       ),
                                       Text(
-                                        //args["description"}+"\n"
+                                        //card.description+"\n"
                                         "\n"
                                             "Enjoy the extra",
                                         style: TextStyle(
@@ -275,7 +275,7 @@ class CardInfo1State extends State<CardInfo1Page> {
                           ),
                           onTap: (){
                             Navigator.pushNamed(context, "/couponpage",  arguments: {
-                              "card": args["card"],
+                              "card": card,
                               "coupon": _buildCouponWithColor(context, index),
                             });
                           },
@@ -285,10 +285,10 @@ class CardInfo1State extends State<CardInfo1Page> {
                         return  Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8.0),
                         );
-                      };
+                      }
                     },
-                    //childCount: 3 + args["cardCoupon"] * 2,
-                    childCount: 3 + 4 * 2,
+                    //childCount: 3 + card.cardCoupon * 2,
+                    childCount: 3 + 1 * 2,
                   ),
                 ),
               ),
