@@ -2,6 +2,10 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:barcode_flutter/barcode_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:membership_card/model/card_count.dart';
+import 'package:membership_card/model/card_model.dart';
+
 //import 'package:membership_card/pages/edit_card.dart';
 /// This is the Card_Info Page showing one card's information with barcode.
 class CardInfo2Page extends StatefulWidget {
@@ -15,6 +19,7 @@ class CardInfo2State extends State<CardInfo2Page>{
   @override
   Widget build(BuildContext context) {
     dynamic args = ModalRoute.of(context).settings.arguments;
+    CardInfo card = Provider.of<CardCounter>(context,listen:false).getCard(args["card"]);
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -71,7 +76,7 @@ class CardInfo2State extends State<CardInfo2Page>{
               padding: EdgeInsets.all(60),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5.0),
-                color: args["cardcolor"],
+                color: card.cardColor,
               ),
               height: 180.0,
             ),
@@ -94,7 +99,7 @@ class CardInfo2State extends State<CardInfo2Page>{
                     left: 20.0,
                     child:Center(
                       child: BarCodeImage(
-                        data: args["cardId"],
+                        data: card.cardId,
                         codeType: BarCodeType.Code128,
                         lineWidth: 2.0,
                         barHeight: 140.0,
@@ -111,7 +116,7 @@ class CardInfo2State extends State<CardInfo2Page>{
                     left: 20.0,
                     child: Center(
                       child: Text(
-                        args["cardId"],
+                        card.cardId,
                         style: TextStyle(fontSize: 36, color: Colors.black),
                       ),
                     ),

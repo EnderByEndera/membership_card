@@ -24,6 +24,10 @@ class CardCounter extends ChangeNotifier {
     return _cardList.elementAt(index);
   }
 
+  CardInfo getCard(CardInfo card) {
+    return card;
+  }
+
   void chooseOneCard(int index) {
     if (index < _cardList.length) {
       _cardList.elementAt(index).chooseOrNotChoose();

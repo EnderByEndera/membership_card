@@ -47,6 +47,7 @@ Future<Response<T>> dioLogin<T>(Dio dio, User user) async {
       data: jsonEncode(user.toJson()),
     );
     print("${res.statusCode}");
+
   } on DioError catch (e) {
     if (e.response == null) {
       res.statusCode = 500;
@@ -59,14 +60,72 @@ Future<Response<T>> dioLogin<T>(Dio dio, User user) async {
   return res;
 }
 
-Future<Response<T>> dioDelete<T>(String url, Dio dio) async {
+Future<Response<T>> dioDelete<T>(CardInfo cardInfo, Dio dio) async {
   var res = Response();
-  res = await dio.delete(
-    "/api/user/card",
-    queryParameters: {
-      "id": 200,
-    },
-  );
+  try {
+    res = await dio.post(
+      "/v1/api/users/card/id/delete",
+      data: jsonEncode(cardInfo.idToJson()),
+      queryParameters: cardInfo.idToJson(),
+    );
+    return res;
+  }on DioError catch(e) {
+    if (e.response == null) {
+      res.statusCode = 500;
+      res.data = "Error from the server, meet 500 error";
+      return res;
+    }else {
+      res.statusCode = e.response.statusCode;
+      return res;
+    }
+  }
+
+}
+
+
+Future<Response<T>> dioAdd<T>(Dio dio,CardInfo cardInfo)async {
+  Response res=Response();
+
+  try{
+    res=await dio.post(
+   " /v1/api/users/card/:id",
+       data: jsonEncode(cardInfo.toJson()),
+      queryParameters: cardInfo.toJson(),
+    );
+    print("${res.statusCode}");
+  } on DioError catch(e) {
+    if (e.response == null) {
+      res.statusCode = 500;
+      res.data = "Error from the server, meet 500 error";
+      return res;
+    }else {
+      res.statusCode = e.response.statusCode;
+      return res;
+    }
+  }
+  return res;
+}
+
+Future<Response<T>> dioModify<T>(Dio dio,CardInfo cardInfo)async{
+  Response res=Response();
+
+  try{
+    res=await dio.put(
+      " /v1/api/users/card/:id/info",
+      data: jsonEncode(cardInfo.toJson()),
+      queryParameters: cardInfo.toJson(),
+    );
+    print("${res.statusCode}");
+  } on DioError catch(e) {
+    if (e.response == null) {
+      res.statusCode = 500;
+      res.data = "Error from the server, meet 500 error";
+      return res;
+    }else {
+      res.statusCode = e.response.statusCode;
+      return res;
+    }
+  }
   return res;
 }
 

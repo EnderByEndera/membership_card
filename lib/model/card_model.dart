@@ -132,7 +132,10 @@ class CardInfo extends ChangeNotifier{
   Map<String, dynamic> toJson() => {
     CARD_ID_JSON   : cardId,
     E_NAME_JSON : cardType,
-    REMARK_JSON    : remark,
+  };
+
+  Map<String, dynamic> idToJson()=>{
+    CARD_ID_JSON : cardId,
   };
 
 
