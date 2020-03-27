@@ -64,7 +64,7 @@ class EditCardPageState extends  State<EditCardPage>
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
-        title: Container(
+        leading: Container(
           child: GestureDetector(
             child: Padding(
               padding: const EdgeInsets.all(0),

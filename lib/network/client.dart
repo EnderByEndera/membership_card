@@ -1,15 +1,17 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:membership_card/model/card_model.dart';
 import 'package:membership_card/model/user_model.dart';
+
+const SERVER_URL = "http://106.15.198.136";
+const PORT       = "8080";
 
 Dio initDio() {
   Dio dio = Dio(
     // This is the base options for Dio client to connect to server
     BaseOptions(
-      baseUrl: "http://101.37.27.155:8080",
+      baseUrl: "http://106.15.198.136:8080",
       connectTimeout: 3000,
       receiveTimeout: 3000,
       receiveDataWhenStatusError: false,
@@ -125,4 +127,35 @@ Future<Response<T>> dioModify<T>(Dio dio,CardInfo cardInfo)async{
     }
   }
   return res;
+}
+
+Future<Response<T>> dioUseCoupon<T>(Dio dio, String cardId, int increment) async{
+  var res = Response();
+  try {
+    res = await dio.post(
+      "/v1/api/user/card/id/coupons",
+      queryParameters: {
+        "id": cardId,
+      },
+      data: {
+        "Increment": increment,
+      }
+    );
+    return res;
+  } on DioError catch (e) {
+    if (e.response == null) {
+      res.data = "Error occured before connection";
+      res.statusCode = 500;
+      return res;
+    } else {
+      res.statusCode = e.response.statusCode;
+      return res;
+    }
+  }
+}
+
+void useCoupon(Dio dio, String cardId, int increment) async {
+  var res = await dioUseCoupon(dio, cardId, increment);
+  if (res.statusCode != 200)
+    throw Exception(res.data);
 }

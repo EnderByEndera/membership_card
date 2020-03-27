@@ -180,12 +180,12 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
         "eName": Provider.of<CardCounter>(context).getOneCard(index).eName,
         "cardType": Provider.of<CardCounter>(context).getOneCard(index).cardType,
         "cardcolor": Provider.of<CardCounter>(context).getCardColor(index),
-        "currentscore": Provider.of<CardCounter>(context).getOneCard(index).currentscore,
+        "currentscore": Provider.of<CardCounter>(context).getOneCard(index).currentScore,
       });
       int i=0;
       for(;i<Provider.of<CardCounter>(context).cardList.length;i++) {
         if (Provider.of<CardCounter>(context).getOneCard(i).cardId.compareTo(response.content) == 0) {
-          Provider.of<CardCounter>(context).getOneCard(i).addscore(Provider.of<CardCounter>(context).getOneCard(i).currentscore + 1);
+          Provider.of<CardCounter>(context).getOneCard(i).addScore(Provider.of<CardCounter>(context).getOneCard(i).currentScore + 1);
           break;
         }
       }
@@ -743,7 +743,7 @@ class _AllCardsPageState extends State<AllCardsPage>
                     ),
                   ),
                   padding: EdgeInsets.all(8.0),
-                  child: Text(counter.getOneCard(index).currentscore.toString(),
+                  child: Text(counter.getOneCard(index).currentScore.toString(),
                       style: TextStyle(
                         fontSize: 20.0,
                         color: Theme.of(context).primaryColor,
@@ -786,7 +786,7 @@ class _AllCardsPageState extends State<AllCardsPage>
                   margin: EdgeInsets.all(16.0),
                   alignment: Alignment(-1, 0.6),
                   child: Text(
-                      "${counter.getOneCard(index).currentscore % 5} "
+                      "${counter.getOneCard(index).currentScore % 5} "
                       "More to go",
                       style: TextStyle(
                           fontSize: 18.0,
@@ -798,7 +798,7 @@ class _AllCardsPageState extends State<AllCardsPage>
                   padding: EdgeInsets.only(
                       left: 16.0, right: 16.0, top: 125.0, bottom: 2.0),
                   scrollDirection: Axis.horizontal,
-                  children: _buildRewardPlace(counter.getOneCard(index).currentscore, rewardMaxPoint, context),
+                  children: _buildRewardPlace(counter.getOneCard(index).currentScore, rewardMaxPoint, context),
                 ),
               )
             ],
