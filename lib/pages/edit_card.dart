@@ -1,8 +1,6 @@
 ///This page is the edit_card page
 ///which used to edit the information of a card
 ///it provide the delete function
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,26 +11,21 @@ import 'package:flutter/services.dart';
 import 'dart:async';
 import 'package:barcode_scan/barcode_scan.dart';
 class EditCardPage extends StatefulWidget{
+  final String cardId;
+  final String eName;
+  EditCardPage(this.cardId, this.eName);
   @override
-  State<StatefulWidget> createState() => EditCardPageState();
+  State<StatefulWidget> createState() => EditCardPageState(this.cardId, this.eName);
 }
 
 class EditCardPageState extends  State<EditCardPage>
   with TickerProviderStateMixin {
+
+  final String cardId;
+  final String eName;
+  EditCardPageState(this.cardId, this.eName);
+
   TabController _tabController;
-
-  void initState() {
-    _tabController = TabController(
-      length: 2,
-      vsync: this,
-    );
-    super.initState();
-  }
-
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
 
   //final CardInfo card;
    //EditCardPageState(this.card) ;
@@ -42,6 +35,24 @@ class EditCardPageState extends  State<EditCardPage>
 
   ///card type control
   TextEditingController cardStoreController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(
+      length: 2,
+      vsync: this,
+    );
+
+    cardController.text = cardId;
+    cardStoreController.text = eName;
+
+  }
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   GlobalKey _formKey = GlobalKey<FormState>();
   @override
@@ -168,7 +179,7 @@ class EditCardPageState extends  State<EditCardPage>
                 right: 20.0,
               ),
               onPressed: (){
-                Navigator.of(context).popUntil(ModalRoute.withName('/allcardspage'));
+                Navigator.of(context).popAndPushNamed('/allCardsPage');
                 counter.deleteCard(args["card"]);
               },
               shape: RoundedRectangleBorder(
