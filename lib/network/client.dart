@@ -138,7 +138,7 @@ Future<Response<T>> dioUseCoupon<T>(Dio dio, String cardId, int increment) async
         "id": cardId,
       },
       data: {
-        "Increment": increment,
+        jsonEncode({"increment": increment}),
       }
     );
     return res;
