@@ -38,6 +38,7 @@ void main() {
 class GoWallet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
     return MultiProvider(
 
         // This is the providers for out state management
@@ -67,12 +68,17 @@ class GoWallet extends StatelessWidget {
             "/settings": (_) => SettingsPage(),
             "/search": (_) => SearchPage(),
             "/help": (_) => HelpPage(),
-            "/allcardspage": (_) => AllCardsMainPage(),
+            "/allcardsmainpage": (_) => AllCardsMainPage(),
+            '/allCardsPage': (_) => AllCardsPage(),
             "/loginpage": (_) => LoginPage(),
             "/registerpage": (_) => RegisterPage(),
             "/forgetpage": (_) => ForgetPasswordPage(),
             "/couponpage": (_) => CouponPage(),
-            "/edit":(_) =>EditCardPage(),
+            "/edit":(BuildContext context) {
+              dynamic args = ModalRoute.of(context).settings.arguments;
+              CardInfo card = Provider.of<CardCounter>(context,listen:false).getCard(args["card"]);
+              return EditCardPage(card.cardId, card.eName);
+            }
           },
         ));
   }
