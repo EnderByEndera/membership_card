@@ -64,10 +64,12 @@ Future<Response<T>> dioDelete<T>(CardInfo cardInfo, Dio dio) async {
   var res = Response();
   try {
     res = await dio.post(
-      "/v1/api/users/card/id/delete",
+      "/v1/api/user/card/{id}/delete",
       data: jsonEncode(cardInfo.idToJson()),
       queryParameters: cardInfo.idToJson(),
     );
+    print("${res.statusCode}");
+
     return res;
   }on DioError catch(e) {
     if (e.response == null) {
@@ -79,8 +81,9 @@ Future<Response<T>> dioDelete<T>(CardInfo cardInfo, Dio dio) async {
       return res;
     }
   }
-
 }
+
+
 
 
 Future<Response<T>> dioAdd<T>(Dio dio,CardInfo cardInfo)async {
@@ -88,9 +91,9 @@ Future<Response<T>> dioAdd<T>(Dio dio,CardInfo cardInfo)async {
 
   try{
     res=await dio.post(
-   " /v1/api/users/card/:id",
-       data: jsonEncode(cardInfo.toJson()),
-      queryParameters: cardInfo.toJson(),
+   " /v1/api/user/card/add",
+       data: jsonEncode(cardInfo.idToJson()),
+      queryParameters: cardInfo.idToJson(),
     );
     print("${res.statusCode}");
   } on DioError catch(e) {
@@ -106,12 +109,15 @@ Future<Response<T>> dioAdd<T>(Dio dio,CardInfo cardInfo)async {
   return res;
 }
 
+
+
+
 Future<Response<T>> dioModify<T>(Dio dio,CardInfo cardInfo)async{
   Response res=Response();
 
   try{
     res=await dio.put(
-      " /v1/api/users/card/:id/info",
+      "/v1/api/user/card/{id}/info",
       data: jsonEncode(cardInfo.toJson()),
       queryParameters: cardInfo.toJson(),
     );
@@ -128,6 +134,9 @@ Future<Response<T>> dioModify<T>(Dio dio,CardInfo cardInfo)async{
   }
   return res;
 }
+
+
+
 
 Future<Response<T>> dioUseCoupon<T>(Dio dio, String cardId, int increment) async{
   var res = Response();

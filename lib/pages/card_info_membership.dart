@@ -170,7 +170,7 @@ class CardInfo1State extends State<CardInfo1Page> {
                                       margin: EdgeInsets.all(20.0),
                                       alignment: Alignment(-1, 0.6),
                                       child: Text(
-                                          "${card.currentscore % card.maxScore} "
+                                          "${card.currentScore % card.maxScore} "
                                               "More to go",
                                           style: TextStyle(
                                               fontSize: 18.0,
@@ -182,7 +182,7 @@ class CardInfo1State extends State<CardInfo1Page> {
                                       padding: EdgeInsets.only(
                                           left: 20.0, right: 20.0, top: 125.0, bottom: 2.0),
                                       scrollDirection: Axis.horizontal,
-                                      children: _buildRewardPlace(card.currentscore % card.maxScore , card.maxScore, context),
+                                      children: _buildRewardPlace(card.currentScore % card.maxScore , card.maxScore, context),
                                     ),
                                   )
                                 ],

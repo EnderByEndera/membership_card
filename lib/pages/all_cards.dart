@@ -173,7 +173,7 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
         for( ;i<Provider.of<CardCounter>(context).cardList.length;i++) {
           if (Provider.of<CardCounter>(context).getOneCard(i).cardId.compareTo(response.content) == 0) {
             index=i;
-            Provider.of<CardCounter>(context).getOneCard(i).addScore(Provider.of<CardCounter>(context).getOneCard(i).currentscore+1);
+            Provider.of<CardCounter>(context).getOneCard(i).addScore(Provider.of<CardCounter>(context).getOneCard(i).currentScore+1);
             break;
           }
         }
