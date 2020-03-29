@@ -159,3 +159,32 @@ void useCoupon(Dio dio, String cardId, int increment) async {
   if (res.statusCode != 200)
     throw Exception(res.data);
 }
+
+Future<Response<T>>  dioScore<T>(Dio dio, String cardId, int increment)async{
+  Response res=Response();
+
+  try{
+    res=await dio.put(
+      " /v1/api/users/card/:id/score",
+        queryParameters: {
+          "id": cardId,
+        },
+        data: {
+          "Increment": increment,
+        }
+    );
+    print("${res.statusCode}");
+
+
+  } on DioError catch(e) {
+    if (e.response == null) {
+      res.statusCode = 500;
+      res.data = "Error from the server, meet 500 error";
+      return res;
+    }else {
+      res.statusCode = e.response.statusCode;
+      return res;
+    }
+  }
+  return  res;
+}

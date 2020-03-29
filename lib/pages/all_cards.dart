@@ -168,28 +168,25 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
           "error: ${response.error}");
 //      Navigator.of(context).pop();
       int index=0;
-      for(int i=0;i<Provider.of<CardCounter>(context).cardList.length;i++) {
-        if (Provider.of<CardCounter>(context).getOneCard(i).cardId.compareTo(response.content) == 0) {
-          index=i;
-          break;
+      int i=0;
+      dioScore(dio,response.content,1).then((res){
+        for( ;i<Provider.of<CardCounter>(context).cardList.length;i++) {
+          if (Provider.of<CardCounter>(context).getOneCard(i).cardId.compareTo(response.content) == 0) {
+            index=i;
+            Provider.of<CardCounter>(context).getOneCard(i).addScore(Provider.of<CardCounter>(context).getOneCard(i).currentscore+1);
+            break;
+          }
         }
-      }
+        if (i==Provider.of<CardCounter>(context).cardList.length){
+          index=Provider.of<CardCounter>(context).cardList.length;
+          Provider.of<CardCounter>(context).addCard(CardInfo(res.data));
+        }
+
+      });
       Navigator.of(context).pushNamed("/cardinfo_membership", arguments: {
         "herotag": Provider.of<CardCounter>(context).getOneCard(index).cardKey,
-        "cardId": Provider.of<CardCounter>(context).getOneCard(index).cardId,
-        "eName": Provider.of<CardCounter>(context).getOneCard(index).eName,
-        "cardType": Provider.of<CardCounter>(context).getOneCard(index).cardType,
-        "cardcolor": Provider.of<CardCounter>(context).getCardColor(index),
-        "currentscore": Provider.of<CardCounter>(context).getOneCard(index).currentScore,
+        "card": Provider.of<CardCounter>(context).getOneCard(index)
       });
-      int i=0;
-      for(;i<Provider.of<CardCounter>(context).cardList.length;i++) {
-        if (Provider.of<CardCounter>(context).getOneCard(i).cardId.compareTo(response.content) == 0) {
-          Provider.of<CardCounter>(context).getOneCard(i).addScore(Provider.of<CardCounter>(context).getOneCard(i).currentScore + 1);
-          break;
-        }
-      }
-
       showDialog(context: context, builder: (_) => nfcsuccessDialog(response.content));
 
     } on Exception {
