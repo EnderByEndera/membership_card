@@ -11,7 +11,7 @@ import 'package:membership_card/pages/register.dart';
 import 'package:membership_card/pages/search.dart';
 import 'package:membership_card/pages/settings.dart';
 import 'package:provider/provider.dart';
-
+import 'pages/user_info.dart';
 import 'model/card_model.dart';
 import 'model/user_model.dart';
 import 'pages/add_cards_with_number.dart';
@@ -53,11 +53,15 @@ class GoWallet extends StatelessWidget {
         ],
         child: MaterialApp(
           title: 'GoWallet App',
-          home: AllCardsMainPage(),
           theme: ThemeData(
             primaryColor: Color.fromARGB(0xFF, 251, 108, 0),
           ),
-
+          home: Scaffold(
+            appBar: AppBar(
+              title: Text('Login'),
+            ),
+            body: new LoginPage(),
+          ),
           // routes defined all the page routes of our App
           routes: {
             "/addnumber": (_) => AddCardWithNumberPage(),
@@ -68,17 +72,18 @@ class GoWallet extends StatelessWidget {
             "/settings": (_) => SettingsPage(),
             "/search": (_) => SearchPage(),
             "/help": (_) => HelpPage(),
-            "/allcardsmainpage": (_) => AllCardsMainPage(),
+            "/allCardsMainPage": (_) => AllCardsMainPage(),
             '/allCardsPage': (_) => AllCardsPage(),
-            "/loginpage": (_) => LoginPage(),
-            "/registerpage": (_) => RegisterPage(),
-            "/forgetpage": (_) => ForgetPasswordPage(),
+            "/loginPage": (_) => LoginPage(),
+            "/registerPage": (_) => RegisterPage(),
+            "/forgetPage": (_) => ForgetPasswordPage(),
             "/couponpage": (_) => CouponPage(),
             "/edit":(BuildContext context) {
               dynamic args = ModalRoute.of(context).settings.arguments;
               CardInfo card = Provider.of<CardCounter>(context,listen:false).getCard(args["card"]);
               return EditCardPage(card.cardId, card.eName);
-            }
+            },
+            "/user": (_) => UserInfoPage(),
           },
         ));
   }

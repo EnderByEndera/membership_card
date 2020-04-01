@@ -60,6 +60,27 @@ Future<Response<T>> dioLogin<T>(Dio dio, User user) async {
   return res;
 }
 
+Future<Response<T>> dioRegister<T>(Dio dio, User user) async {
+  Response res = Response();
+  try {
+    res = await dio.post<String>(
+      "/v1/api/user/register",
+      data: jsonEncode(user.toJson()),
+    );
+    print("${res.statusCode}");
+
+  } on DioError catch (e) {
+    if (e.response == null) {
+      res.statusCode = 500;
+      res.data = "Error from the server, meet 500 error";
+      return res;
+    } else {
+      return e.response;
+    }
+  }
+  return res;
+}
+
 Future<Response<T>> dioDelete<T>(CardInfo cardInfo, Dio dio) async {
   var res = Response();
   try {

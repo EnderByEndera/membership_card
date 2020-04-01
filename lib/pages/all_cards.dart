@@ -41,7 +41,8 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
     with SingleTickerProviderStateMixin {
   /// Controlling the bottomTabBar
   TabController _tabController;
-  ScrollController _scrollController;
+  int _currentIndex = 1; //选中位置
+  //ScrollController _scrollController;
   TextEditingController _textEditingController;
   Response res;
   Dio dio = initDio();
@@ -173,7 +174,7 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
         for( ;i<Provider.of<CardCounter>(context).cardList.length;i++) {
           if (Provider.of<CardCounter>(context).getOneCard(i).cardId.compareTo(response.content) == 0) {
             index=i;
-            Provider.of<CardCounter>(context).getOneCard(i).addScore(Provider.of<CardCounter>(context).getOneCard(i).currentscore+1);
+            Provider.of<CardCounter>(context).getOneCard(i).addScore(Provider.of<CardCounter>(context).getOneCard(i).currentScore+1);
             break;
           }
         }
@@ -249,13 +250,19 @@ CupertinoAlertDialog nfcsuccessDialog(String name){
     );
   }
 
+  String tab1Res; //Tab1的图片资源
+  String tab2Res;  //Tab2的图片资源
+
   @override
   void initState() {
     super.initState();
+    tab1Res = "assets/backgrounds/tabCard.png";
+    tab2Res = 'assets/backgrounds/tabUser.png';
     _tabController = TabController(
       length: 2,
       vsync: this,
     );
+    _tabController.addListener(() => _onTabChanged());
   }
 
   /// Overwritten Method for disposing _tabController;
@@ -297,28 +304,49 @@ CupertinoAlertDialog nfcsuccessDialog(String name){
   }
 
   /// Build the tabBar in the very bottom of the [AllCardsMainPageState]
-  static TabBar buildTabBar(BuildContext context, TabController tabController) {
-    return TabBar(
-      controller: tabController,
-      tabs: <Widget>[
-        Container(
-          height: MediaQuery.of(context).size.height * 0.066,
-          padding: EdgeInsets.all(8.0),
-          alignment: Alignment.topCenter,
-          child: Image(
-            image: AssetImage("assets/backgrounds/tabCard.png"),
+  static Widget buildTabBar(BuildContext context, TabController tabController) {
+    return SafeArea(
+      child: TabBar(
+        controller: tabController,
+        tabs: <Widget>[
+          Container(
+            height: MediaQuery.of(context).size.height * 0.066,
+            padding: EdgeInsets.all(8.0),
+            alignment: Alignment.topCenter,
+            child: Image.asset("assets/backgrounds/tabCard.png"),
           ),
-        ),
-        Container(
-          padding: EdgeInsets.all(8.0),
-          alignment: Alignment.topCenter,
-          height: MediaQuery.of(context).size.height * 0.066,
-          child: Image(
-            image: AssetImage("assets/backgrounds/tabUser.png"),
-          ),
-        )
-      ],
+          Container(
+            padding: EdgeInsets.all(8.0),
+            alignment: Alignment.topCenter,
+            height: MediaQuery.of(context).size.height * 0.066,
+            child: Image(
+              image: AssetImage("assets/backgrounds/tabUser.png"),
+            ),
+          )
+        ],
+      ),
     );
+  }
+
+  _onTabChanged() {
+    if (_tabController.indexIsChanging) {
+      if (this.mounted) {
+        this.setState(() {
+          switch (_tabController.index) {
+            case 0:
+              tab1Res = 'assets/backgrounds/tabCard.png';
+              tab2Res = 'assets/backgrounds/tabUser.png';
+              Navigator.of(context).pushNamed("/user");
+              break;
+            case 1:
+              tab1Res = 'assets/backgrounds/tabUser.png';
+              tab2Res = 'assets/backgrounds/tabCard.png';
+              break;
+          }
+          _currentIndex = _tabController.index;
+        });
+      }
+    }
   }
 
   /// Build the body in the Scaffold of the [AllCardsMainPageState]

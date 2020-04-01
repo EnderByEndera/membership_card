@@ -114,7 +114,7 @@ class LoginPageState extends State<LoginPage> {
                 Spacer(),
                 FlatButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, "/forgetpage");
+                    Navigator.pushNamed(context, "/forgetPage");
                   },
                   child: Text("Forget password?"),
                 )
@@ -145,7 +145,9 @@ class LoginPageState extends State<LoginPage> {
                                     jsonDecode(res.data);
                                 if (json["loginInfo"] == "success") {
                                   _loginMsg = "Login Succeeded";
-                                  Navigator.pushNamed(context, "/allcardspage");
+                                  Navigator.pushNamed(context, "/allCardsPage",arguments: {
+                                    "user": user,
+                                  });
                                 } else {
                                   _loginMsg = "Login Failed!";
                                   showDialog(
@@ -189,7 +191,7 @@ class LoginPageState extends State<LoginPage> {
                   MaterialButton(
                     color: Colors.blue,
                     onPressed: () {
-                      Navigator.of(context).pushNamed("/registerpage");
+                      Navigator.of(context).pushNamed("/registerPage");
                     },
                     child: Container(
                       child: Text("Sign Up"),
