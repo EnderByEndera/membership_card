@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 ///This page is the add card page.
 ///The user can jump to this page by clicking the Add button in the main page, and enter the user's card number,
 ///card type and card notes here. After adding, click the back button
@@ -10,6 +11,9 @@ import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:membership_card/network/client.dart';
+
+
 
 class AddCardWithNumberPage extends StatefulWidget {
   @override
@@ -19,6 +23,8 @@ class AddCardWithNumberPage extends StatefulWidget {
 class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
     with TickerProviderStateMixin {
   TabController _tabController;
+   Dio dio=initDio();
+ Future<Response> res;
 
   void initState() {
     _tabController = TabController(
@@ -65,6 +71,8 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
       });
     }
   }
+ String cameraId;
+  String cameraEname;
 
   GlobalKey _formKey = GlobalKey<FormState>();
   @override
@@ -77,7 +85,7 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
-        leading: Container(
+        title:Container(
           child: GestureDetector(
             child: Padding(
               padding: const EdgeInsets.all(0),
@@ -102,14 +110,22 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
             builder: (context, counter, child) => FlatButton(
               onPressed: () {
                 if((_formKey.currentState as FormState).validate()) {
-                  Navigator.pop(context);
-                  counter.addCard(CardInfo(
-                    cardController.value.text,
-                    cardStoreController.value.text,
+            try {
+              dioAdd(dio, CardInfo(cardController.value.text,
+                cardStoreController.value.text,
+              )).then((res){
+                Navigator.pop(context);
+                counter.addCard(CardInfo(
+                  cardController.value.text,
+                  cardStoreController.value.text,
+                ));
+                print(res.statusCode);
+              });
 
-                  ));
+            }catch(e){
+              print(e);
+            }
                 }
-
               },
               child: Text(
                 'Save',
@@ -168,35 +184,48 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
                 autofocus: false,
               ),
 
-              RaisedButton(
-                  child: Text(
-                    'Use Camera',
-                    style: TextStyle(fontSize: 20.0),
-                  ),
-                  color: Colors.orange,
-                  colorBrightness: Brightness.dark,
-                  disabledColor: Colors.grey,
-                  disabledTextColor: Colors.grey,
-                  padding: new EdgeInsets.only(
-                    bottom: 5.0,
-                    top: 5.0,
-                    left: 20.0,
-                    right: 20.0,
-                  ),
-                  onPressed: _scanQR,
-                  shape: RoundedRectangleBorder(
-                    side: new BorderSide(
-                      width: 2.0,
-                      color: Colors.white,
-                      style: BorderStyle.solid,
-                    ),
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(10.0),
-                      topLeft: Radius.circular(10.0),
-                      bottomLeft: Radius.circular(10.0),
-                      bottomRight: Radius.circular(10.0),
-                    ),
-                  )
+              FutureBuilder(
+
+                builder: (context,snapshot) {
+                  if (snapshot.hasData) {
+                  Map card=snapshot.data;
+                  cameraId=card["_cardId"];
+                  cameraEname=card["_eName"];
+                  }
+
+                    return RaisedButton(
+                        child: Text(
+                          'Use Camera',
+                          style: TextStyle(fontSize: 20.0),
+                        ),
+                        color: Colors.orange,
+                        colorBrightness: Brightness.dark,
+                        disabledColor: Colors.grey,
+                        disabledTextColor: Colors.grey,
+                        padding: new EdgeInsets.only(
+                          bottom: 5.0,
+                          top: 5.0,
+                          left: 20.0,
+                          right: 20.0,
+                        ),
+                        onPressed: _scanQR,
+                        shape: RoundedRectangleBorder(
+                          side: new BorderSide(
+                            width: 2.0,
+                            color: Colors.white,
+                            style: BorderStyle.solid,
+                          ),
+                          borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(10.0),
+                            topLeft: Radius.circular(10.0),
+                            bottomLeft: Radius.circular(10.0),
+                            bottomRight: Radius.circular(10.0),
+                          ),
+                        )
+                    );
+
+
+                }
               )
             ],
           ),

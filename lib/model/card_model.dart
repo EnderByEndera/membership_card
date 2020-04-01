@@ -126,7 +126,7 @@ class CardInfo extends ChangeNotifier{
   }
 
   factory CardInfo.getJson(Map<String, dynamic> json) {
-    return CardInfo(json[CARD_ID_JSON], json[REMARK_JSON], json[E_NAME_JSON]);
+    return CardInfo(json[CARD_ID_JSON],json[E_NAME_JSON]);
   }
 
   Map<String, dynamic> toJson() => {
