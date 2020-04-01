@@ -42,9 +42,9 @@ Future<Response<T>> dioGetAllCards<T>(Dio dio) async {
 Future<Response<T>> dioLogin<T>(Dio dio, User user) async {
   Response res = Response();
   try {
-    res = await dio.put<String>(
+    res = await dio.get<String>(
       "/v1/api/user/login",
-      data: jsonEncode(user.toJson()),
+      //data: jsonEncode(user.toJson()),
     );
     print("${res.statusCode}");
 
@@ -104,9 +104,6 @@ Future<Response<T>> dioDelete<T>(CardInfo cardInfo, Dio dio) async {
   }
 }
 
-
-
-
 Future<Response<T>> dioAdd<T>(Dio dio,CardInfo cardInfo)async {
   Response res=Response();
 
@@ -155,9 +152,6 @@ Future<Response<T>> dioModify<T>(Dio dio,CardInfo cardInfo)async{
   }
   return res;
 }
-
-
-
 
 Future<Response<T>> dioUseCoupon<T>(Dio dio, String cardId, int increment) async{
   var res = Response();

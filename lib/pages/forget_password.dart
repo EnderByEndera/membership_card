@@ -67,24 +67,24 @@ class ForgetPasswordPageState extends State<ForgetPasswordPage> {
         padding: const EdgeInsets.all(24.0),
               child: Column(
               children: <Widget>[
-               _nameTextField,
+                _nameTextField,
                 Flex(
-                direction: Axis.horizontal,
-                children: <Widget>[
-                       Spacer(),
-                       FlatButton(
+                  direction: Axis.horizontal,
+                  children: <Widget>[
+                    Spacer(),
+                    FlatButton(
 
-                       onPressed: () {
-                         showDialog(context: context, builder: (_) => emaildialog());
+                      onPressed: () {
+                        showDialog(context: context, builder: (_) => emaildialog());
 
-                        },
-                        child: Text("确认",style: TextStyle(fontSize: 20.0),),
+                      },
+                      child: Text("确认",style: TextStyle(fontSize: 20.0),),
 
-                        )
-                       ],
-                       ),
-                       ],
-                        ),
+                    )
+                  ],
+              ),
+              ],
+              ),
     ),
     );
 
@@ -100,10 +100,15 @@ class ForgetPasswordPageState extends State<ForgetPasswordPage> {
           child: ListBody(
             children: <Widget>[
               Divider(),
-              TextField(controller:_textEditingController,decoration: InputDecoration(labelStyle: TextStyle(
-                fontSize: 14,
-                color: Colors.grey,
-              ),)),
+              TextField(
+                  controller:_textEditingController,
+                  decoration: InputDecoration(
+                    labelStyle: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey,
+                    ),
+                  )
+              ),
               Divider(),
             ],
           ),

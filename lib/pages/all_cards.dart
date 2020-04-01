@@ -39,10 +39,7 @@ class AllCardsMainPage extends StatefulWidget {
 /// It is the main state of the [AllCardsMainPage]
 class AllCardsMainPageState extends State<AllCardsMainPage>
     with SingleTickerProviderStateMixin {
-  /// Controlling the bottomTabBar
-  TabController _tabController;
-  int _currentIndex = 1; //选中位置
-  //ScrollController _scrollController;
+
   TextEditingController _textEditingController;
   Response res;
   Dio dio = initDio();
@@ -250,30 +247,10 @@ CupertinoAlertDialog nfcsuccessDialog(String name){
     );
   }
 
-  String tab1Res; //Tab1的图片资源
-  String tab2Res;  //Tab2的图片资源
-
-  @override
-  void initState() {
-    super.initState();
-    tab1Res = "assets/backgrounds/tabCard.png";
-    tab2Res = 'assets/backgrounds/tabUser.png';
-    _tabController = TabController(
-      length: 2,
-      vsync: this,
-    );
-    _tabController.addListener(() => _onTabChanged());
-  }
-
-  /// Overwritten Method for disposing _tabController;
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
+    //dynamic args = ModalRoute.of(context).settings.arguments;
+
     var _cardNumber = Provider.of<CardCounter>(context).cardList.length;
 
     Widget _randomColorContainer = Container(
@@ -297,56 +274,9 @@ CupertinoAlertDialog nfcsuccessDialog(String name){
       child: Scaffold(
         appBar: _buildAppBar(context, _textEditingController),
         body: buildBody(context, _cardNumber, _randomColorContainer),
-        bottomNavigationBar: buildTabBar(context, _tabController),
         resizeToAvoidBottomPadding: false,
       ),
     );
-  }
-
-  /// Build the tabBar in the very bottom of the [AllCardsMainPageState]
-  static Widget buildTabBar(BuildContext context, TabController tabController) {
-    return SafeArea(
-      child: TabBar(
-        controller: tabController,
-        tabs: <Widget>[
-          Container(
-            height: MediaQuery.of(context).size.height * 0.066,
-            padding: EdgeInsets.all(8.0),
-            alignment: Alignment.topCenter,
-            child: Image.asset("assets/backgrounds/tabCard.png"),
-          ),
-          Container(
-            padding: EdgeInsets.all(8.0),
-            alignment: Alignment.topCenter,
-            height: MediaQuery.of(context).size.height * 0.066,
-            child: Image(
-              image: AssetImage("assets/backgrounds/tabUser.png"),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  _onTabChanged() {
-    if (_tabController.indexIsChanging) {
-      if (this.mounted) {
-        this.setState(() {
-          switch (_tabController.index) {
-            case 0:
-              tab1Res = 'assets/backgrounds/tabCard.png';
-              tab2Res = 'assets/backgrounds/tabUser.png';
-              Navigator.of(context).pushNamed("/user");
-              break;
-            case 1:
-              tab1Res = 'assets/backgrounds/tabUser.png';
-              tab2Res = 'assets/backgrounds/tabCard.png';
-              break;
-          }
-          _currentIndex = _tabController.index;
-        });
-      }
-    }
   }
 
   /// Build the body in the Scaffold of the [AllCardsMainPageState]
@@ -731,8 +661,7 @@ class _AllCardsPageState extends State<AllCardsPage>
             ],
           ),
         ),
-        bottomNavigationBar:
-            AllCardsMainPageState.buildTabBar(context, _tabController));
+    );
   }
 
   /// Method In order to build a Membership-Type Card.

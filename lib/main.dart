@@ -19,7 +19,7 @@ import 'pages/forget_password.dart';
 import 'pages/card_info_membership.dart';
 import 'pages/card_info_barcode.dart';
 import 'pages/card_info_qrcode.dart';
-
+import 'package:membership_card/pages/bottom_menu.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -60,7 +60,7 @@ class GoWallet extends StatelessWidget {
             appBar: AppBar(
               title: Text('Login'),
             ),
-            body: new LoginPage(),
+            body: LoginPage(),
           ),
           // routes defined all the page routes of our App
           routes: {
@@ -84,6 +84,7 @@ class GoWallet extends StatelessWidget {
               return EditCardPage(card.cardId, card.eName);
             },
             "/user": (_) => UserInfoPage(),
+            "/bottomMenu": (_) => BottomMenuPage()
           },
         ));
   }

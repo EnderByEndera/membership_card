@@ -139,13 +139,14 @@ class LoginPageState extends State<LoginPage> {
                               isSent = false;
                             });
                             if (res.statusCode == 200) {
-                              print("${res.data}");
+                              //print("${res.data}");
                               try {
                                 Map<String, dynamic> json =
                                     jsonDecode(res.data);
+                                User.fromJson(json);
                                 if (json["loginInfo"] == "success") {
                                   _loginMsg = "Login Succeeded";
-                                  Navigator.pushNamed(context, "/allCardsPage",arguments: {
+                                  Navigator.pushNamed(context, "/bottomMenu",arguments: {
                                     "user": user,
                                   });
                                 } else {
