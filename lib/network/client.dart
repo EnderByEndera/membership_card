@@ -233,3 +233,46 @@ Future<Response<T>>  dioScore<T>(Dio dio, String cardId, int increment)async{
   }
   return  res;
 }
+
+
+
+Future<Response<T>> diogetenroll<T>(Dio dio,String email)async{
+  Response res = Response();
+  try {
+    res = await dio.get("/v1/api/user/enroll",
+        queryParameters:{'Mail':email}
+    );
+    return res;
+  } on DioError catch (e) {
+    if (e.response == null) {
+      res.data = "Error occured before connection";
+      res.statusCode = 500;
+      return res;
+    } else {
+      res.statusCode = e.response.statusCode;
+      return res;
+    }
+  }
+}
+
+Future<Response<T>> dioforgetpassword<T>(Dio dio,String userid,String password)async{
+  Response res=Response();
+
+  try{
+    res=await dio.put(
+      " /v1/api/user/ForgetPassword/New",
+      data: {'Id':userid,"Password":password},
+    );
+    print("${res.statusCode}");
+  } on DioError catch(e) {
+    if (e.response == null) {
+      res.statusCode = 500;
+      res.data = "Error from the server, meet 500 error";
+      return res;
+    }else {
+      res.statusCode = e.response.statusCode;
+      return res;
+    }
+  }
+  return res;
+}
