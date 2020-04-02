@@ -102,32 +102,37 @@ class LoginPageState extends State<LoginPage> {
     );
 
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          children: <Widget>[
-            _nameTextField,
-            _passwordTextField,
-            Flex(
-              direction: Axis.horizontal,
-              children: <Widget>[
-                Spacer(),
-                FlatButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, "/forgetPage");
-                  },
-                  child: Text("Forget password?"),
-                )
-              ],
-            ),
-            Consumer<User>(
-              builder: (context, user, child) => Flex(
-                mainAxisAlignment: MainAxisAlignment.center,
-                direction: Axis.horizontal,
+      appBar: AppBar(
+        title: Text('Login'),
+      ),
+      body: ListView(
+          children:<Widget>[
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
                 children: <Widget>[
-                  MaterialButton(
-                    onPressed: _usernameCorrect && _passwordCorrect
-                        ? () async {
+                  _nameTextField,
+                  _passwordTextField,
+                  Flex(
+                    direction: Axis.horizontal,
+                    children: <Widget>[
+                      Spacer(),
+                      FlatButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, "/forgetPage");
+                        },
+                        child: Text("Forget password?"),
+                      )
+                    ],
+                  ),
+                  Consumer<User>(
+                    builder: (context, user, child) => Flex(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      direction: Axis.horizontal,
+                      children: <Widget>[
+                        MaterialButton(
+                          onPressed: _usernameCorrect && _passwordCorrect
+                              ? () async {
                             _loginMsg = "";
                             setState(() {
                               isSent = true;
@@ -139,14 +144,13 @@ class LoginPageState extends State<LoginPage> {
                               isSent = false;
                             });
                             if (res.statusCode == 200) {
-                              //print("${res.data}");
+                              print("${res.data}");
                               try {
                                 Map<String, dynamic> json =
-                                    jsonDecode(res.data);
-                                User.fromJson(json);
+                                jsonDecode(res.data);
                                 if (json["loginInfo"] == "success") {
                                   _loginMsg = "Login Succeeded";
-                                  Navigator.pushNamed(context, "/bottomMenu",arguments: {
+                                  Navigator.pushNamed(context, "/allCardsPage",arguments: {
                                     "user": user,
                                   });
                                 } else {
@@ -154,24 +158,24 @@ class LoginPageState extends State<LoginPage> {
                                   showDialog(
                                       context: context,
                                       builder: (_) => AlertDialog(
-                                            title: Text("Alert"),
-                                            content: Text(_loginMsg),
-                                          ));
+                                        title: Text("Alert"),
+                                        content: Text(_loginMsg),
+                                      ));
                                 }
                               } on FormatException {
                                 _loginMsg = "Login Failed";
                                 showDialog(
                                     context: context,
                                     builder: (_) => AlertDialog(
-                                          title: Text("Alert"),
-                                          content: Text(_loginMsg),
-                                        ));
+                                      title: Text("Alert"),
+                                      content: Text(_loginMsg),
+                                    ));
                               }
                             } else if (res.statusCode == 400 ||
                                 res.statusCode == 404) {
                               _loginMsg =
-                                  "Network connection failed, "
-                                      "check your network";
+                              "Network connection failed, "
+                                  "check your network";
                               showDialog(context: context, builder: (_) => AlertDialog(
                                 title: Text("Alert"),
                                 content: Text(_loginMsg),
@@ -180,37 +184,39 @@ class LoginPageState extends State<LoginPage> {
                               _loginMsg = "Server error";
                             }
                           }
-                        : null,
-                    color: Colors.amber,
-                    child: Container(
-                      child: Text(
-                        "Sign In",
-                        textAlign: TextAlign.center,
-                      ),
+                              : null,
+                          color: Colors.amber,
+                          child: Container(
+                            child: Text(
+                              "Sign In",
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        MaterialButton(
+                          color: Colors.blue,
+                          onPressed: () {
+                            Navigator.of(context).pushNamed("/registerPage");
+                          },
+                          child: Container(
+                            child: Text("Sign Up"),
+                          ),
+                        )
+                      ],
                     ),
                   ),
-                  MaterialButton(
-                    color: Colors.blue,
-                    onPressed: () {
-                      Navigator.of(context).pushNamed("/registerPage");
-                    },
-                    child: Container(
-                      child: Text("Sign Up"),
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Container(
-              child: isSent
-                  ? CircularProgressIndicator()
-                  : Text(
+                  Container(
+                    child: isSent
+                        ? CircularProgressIndicator()
+                        : Text(
                       _loginMsg == null ? "" : _loginMsg,
                       textAlign: TextAlign.center,
                     ),
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
+          ]
       ),
     );
   }

@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_nfc_reader/flutter_nfc_reader.dart';
 import 'package:membership_card/model/card_count.dart';
 import 'package:membership_card/model/card_model.dart';
+import 'package:membership_card/model/user_model.dart';
 import 'package:membership_card/pages/add_cards_with_camera.dart';
 import 'package:membership_card/pages/add_cards_with_number.dart';
 import 'package:membership_card/pages/card_info_membership.dart';
@@ -37,8 +38,7 @@ class AllCardsMainPage extends StatefulWidget {
 
 /// This is the state related to the [AllCardsMainPage]
 /// It is the main state of the [AllCardsMainPage]
-class AllCardsMainPageState extends State<AllCardsMainPage>
-    with SingleTickerProviderStateMixin {
+class AllCardsMainPageState extends State<AllCardsMainPage> {
 
   TextEditingController _textEditingController;
   Response res;
