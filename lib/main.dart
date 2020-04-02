@@ -57,7 +57,7 @@ class GoWallet extends StatelessWidget {
           theme: ThemeData(
             primaryColor: Color.fromARGB(0xFF, 251, 108, 0),
           ),
-          home:BottomMenuPage(),
+          home: LoginPage(),
           // routes defined all the page routes of our App
           routes: {
             "/addnumber": (_) => AddCardWithNumberPage(),

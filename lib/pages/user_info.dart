@@ -20,7 +20,9 @@ class UserInfoPageState extends State<UserInfoPage> {
         child: ListView(
           children: <Widget>[
             GestureDetector(
-              //onTap: () { Navigator.of(context).pushNamed("/changePasswordPage"); },
+              onTap: () {
+                Navigator.of(context).pushNamed("/changePasswordPage");
+              },
               child: Container(
                 padding: EdgeInsets.fromLTRB(20, 30, 15, 15),
                 child: Row(
@@ -50,7 +52,9 @@ class UserInfoPageState extends State<UserInfoPage> {
             SizedBox(height: 10),
 
             GestureDetector(
-              onTap: (){ Navigator.of(context).pushNamed("/settings");},
+              onTap: (){
+                Navigator.of(context).pushNamed("/settings");
+              },
               child: Container(
                 color: Colors.white,
                 child: Column(
@@ -80,7 +84,9 @@ class UserInfoPageState extends State<UserInfoPage> {
             ),
 
             GestureDetector(
-              onTap: (){ Navigator.of(context).pushNamed("/help"); },
+              onTap: (){
+                Navigator.of(context).pushNamed("/help");
+              },
               child: Container(
                 color: Colors.white,
                 child: Column(
