@@ -102,6 +102,7 @@ class LoginPageState extends State<LoginPage> {
     );
 
     return Scaffold(
+<<<<<<< HEAD
       appBar: AppBar(
         title: Text('Login'),
       ),
@@ -126,94 +127,120 @@ class LoginPageState extends State<LoginPage> {
             Consumer<User>(
               builder: (context, user, child) => Flex(
                 mainAxisAlignment: MainAxisAlignment.center,
+=======
+      body:ListView(
+      children:<Widget>[
+        Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            children: <Widget>[
+              _nameTextField,
+              _passwordTextField,
+              Flex(
+>>>>>>> 18b3bfaab6bf1967c3381b32a799bb07da0592e2
                 direction: Axis.horizontal,
                 children: <Widget>[
-                  MaterialButton(
-                    onPressed: _usernameCorrect && _passwordCorrect
-                        ? () async {
-                            _loginMsg = "";
-                            setState(() {
-                              isSent = true;
-                            });
-                            user.username = _usernameController.text;
-                            user.password = _passwordController.text;
-                            res = await dioLogin(dio, user);
-                            setState(() {
-                              isSent = false;
-                            });
-                            if (res.statusCode == 200) {
-                              //print("${res.data}");
-                              try {
-                                Map<String, dynamic> json =
-                                    jsonDecode(res.data);
-                                User.fromJson(json);
-                                if (json["loginInfo"] == "success") {
-                                  _loginMsg = "Login Succeeded";
-                                  Navigator.pushNamed(context, "/bottomMenu",arguments: {
-                                    "user": user,
-                                  });
-                                } else {
-                                  _loginMsg = "Login Failed!";
-                                  showDialog(
-                                      context: context,
-                                      builder: (_) => AlertDialog(
-                                            title: Text("Alert"),
-                                            content: Text(_loginMsg),
-                                          ));
-                                }
-                              } on FormatException {
-                                _loginMsg = "Login Failed";
-                                showDialog(
-                                    context: context,
-                                    builder: (_) => AlertDialog(
-                                          title: Text("Alert"),
-                                          content: Text(_loginMsg),
-                                        ));
-                              }
-                            } else if (res.statusCode == 400 ||
-                                res.statusCode == 404) {
-                              _loginMsg =
-                                  "Network connection failed, "
-                                      "check your network";
-                              showDialog(context: context, builder: (_) => AlertDialog(
-                                title: Text("Alert"),
-                                content: Text(_loginMsg),
-                              ));
-                            } else if (res.statusCode >= 500) {
-                              _loginMsg = "Server error";
-                            }
-                          }
-                        : null,
-                    color: Colors.amber,
-                    child: Container(
-                      child: Text(
-                        "Sign In",
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                  MaterialButton(
-                    color: Colors.blue,
+                  Spacer(),
+                  FlatButton(
                     onPressed: () {
-                      Navigator.of(context).pushNamed("/registerPage");
+                      Navigator.pushNamed(context, "/forgetPage");
                     },
-                    child: Container(
-                      child: Text("Sign Up"),
-                    ),
+                    child: Text("Forget password?"),
                   )
                 ],
               ),
-            ),
-            Container(
-              child: isSent
-                  ? CircularProgressIndicator()
-                  : Text(
-                      _loginMsg == null ? "" : _loginMsg,
-                      textAlign: TextAlign.center,
+              Consumer<User>(
+                builder: (context, user, child) => Flex(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  direction: Axis.horizontal,
+                  children: <Widget>[
+                    MaterialButton(
+                      onPressed: _usernameCorrect && _passwordCorrect
+                          ? () async {
+                        _loginMsg = "";
+                        setState(() {
+                          isSent = true;
+                        });
+                        user.username = _usernameController.text;
+                        user.password = _passwordController.text;
+                        res = await dioLogin(dio, user);
+                        setState(() {
+                          isSent = false;
+                        });
+                        if (res.statusCode == 200) {
+                          print("${res.data}");
+                          try {
+                            Map<String, dynamic> json =
+                            jsonDecode(res.data);
+                            if (json["loginInfo"] == "success") {
+                              _loginMsg = "Login Succeeded";
+                              Navigator.pushNamed(context, "/allCardsPage",arguments: {
+                                "user": user,
+                              });
+                            } else {
+                              _loginMsg = "Login Failed!";
+                              showDialog(
+                                  context: context,
+                                  builder: (_) => AlertDialog(
+                                    title: Text("Alert"),
+                                    content: Text(_loginMsg),
+                                  ));
+                            }
+                          } on FormatException {
+                            _loginMsg = "Login Failed";
+                            showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  title: Text("Alert"),
+                                  content: Text(_loginMsg),
+                                ));
+                          }
+                        } else if (res.statusCode == 400 ||
+                            res.statusCode == 404) {
+                          _loginMsg =
+                          "Network connection failed, "
+                              "check your network";
+                          showDialog(context: context, builder: (_) => AlertDialog(
+                            title: Text("Alert"),
+                            content: Text(_loginMsg),
+                          ));
+                        } else if (res.statusCode >= 500) {
+                          _loginMsg = "Server error";
+                        }
+                      }
+                          : null,
+                      color: Colors.amber,
+                      child: Container(
+                        child: Text(
+                          "Sign In",
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                     ),
-            ),
-          ],
+                    MaterialButton(
+                      color: Colors.blue,
+                      onPressed: () {
+                        Navigator.of(context).pushNamed("/registerPage");
+                      },
+                      child: Container(
+                        child: Text("Sign Up"),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                child: isSent
+                    ? CircularProgressIndicator()
+                    : Text(
+                  _loginMsg == null ? "" : _loginMsg,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
         ),
+      ]
       ),
     );
   }
