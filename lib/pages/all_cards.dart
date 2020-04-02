@@ -37,8 +37,7 @@ class AllCardsMainPage extends StatefulWidget {
 
 /// This is the state related to the [AllCardsMainPage]
 /// It is the main state of the [AllCardsMainPage]
-class AllCardsMainPageState extends State<AllCardsMainPage>
-    with SingleTickerProviderStateMixin {
+class AllCardsMainPageState extends State<AllCardsMainPage> {
 
   TextEditingController _textEditingController;
   Response res;

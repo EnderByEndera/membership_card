@@ -67,6 +67,9 @@ flutter:
     - assets/images/Bin.png
     - assets/points/Polygon.png
     - assets/backgrounds/numCoupon.png
+    - assets/images/user_avatar.png
+    - assets/images/me_setting.png
+    - assets/images/me_about.png
   # To add assets to your application, add an assets section, like this:
 
   # An image asset can refer to one or more resolution-specific "variants", see
