@@ -42,8 +42,29 @@ Future<Response<T>> dioGetAllCards<T>(Dio dio) async {
 Future<Response<T>> dioLogin<T>(Dio dio, User user) async {
   Response res = Response();
   try {
-    res = await dio.put<String>(
+    res = await dio.get<String>(
       "/v1/api/user/login",
+      //data: jsonEncode(user.toJson()),
+    );
+    print("${res.statusCode}");
+
+  } on DioError catch (e) {
+    if (e.response == null) {
+      res.statusCode = 500;
+      res.data = "Error from the server, meet 500 error";
+      return res;
+    } else {
+      return e.response;
+    }
+  }
+  return res;
+}
+
+Future<Response<T>> dioRegister<T>(Dio dio, User user) async {
+  Response res = Response();
+  try {
+    res = await dio.post<String>(
+      "/v1/api/user/register",
       data: jsonEncode(user.toJson()),
     );
     print("${res.statusCode}");
@@ -64,10 +85,12 @@ Future<Response<T>> dioDelete<T>(CardInfo cardInfo, Dio dio) async {
   var res = Response();
   try {
     res = await dio.post(
-      "/v1/api/users/card/id/delete",
+      "/v1/api/user/card/{id}/delete",
       data: jsonEncode(cardInfo.idToJson()),
       queryParameters: cardInfo.idToJson(),
     );
+    print("${res.statusCode}");
+
     return res;
   }on DioError catch(e) {
     if (e.response == null) {
@@ -79,18 +102,16 @@ Future<Response<T>> dioDelete<T>(CardInfo cardInfo, Dio dio) async {
       return res;
     }
   }
-
 }
-
 
 Future<Response<T>> dioAdd<T>(Dio dio,CardInfo cardInfo)async {
   Response res=Response();
 
   try{
     res=await dio.post(
-   " /v1/api/users/card/:id",
-       data: jsonEncode(cardInfo.toJson()),
-      queryParameters: cardInfo.toJson(),
+   " /v1/api/user/card/add",
+       data: jsonEncode(cardInfo.idToJson()),
+      queryParameters: cardInfo.idToJson(),
     );
     print("${res.statusCode}");
   } on DioError catch(e) {
@@ -106,12 +127,15 @@ Future<Response<T>> dioAdd<T>(Dio dio,CardInfo cardInfo)async {
   return res;
 }
 
+
+
+
 Future<Response<T>> dioModify<T>(Dio dio,CardInfo cardInfo)async{
   Response res=Response();
 
   try{
     res=await dio.put(
-      " /v1/api/users/card/:id/info",
+      "/v1/api/user/card/{id}/info",
       data: jsonEncode(cardInfo.toJson()),
       queryParameters: cardInfo.toJson(),
     );

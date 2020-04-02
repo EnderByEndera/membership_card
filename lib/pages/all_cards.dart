@@ -39,9 +39,7 @@ class AllCardsMainPage extends StatefulWidget {
 /// It is the main state of the [AllCardsMainPage]
 class AllCardsMainPageState extends State<AllCardsMainPage>
     with SingleTickerProviderStateMixin {
-  /// Controlling the bottomTabBar
-  TabController _tabController;
-  ScrollController _scrollController;
+
   TextEditingController _textEditingController;
   Response res;
   Dio dio = initDio();
@@ -173,7 +171,7 @@ class AllCardsMainPageState extends State<AllCardsMainPage>
         for( ;i<Provider.of<CardCounter>(context).cardList.length;i++) {
           if (Provider.of<CardCounter>(context).getOneCard(i).cardId.compareTo(response.content) == 0) {
             index=i;
-            Provider.of<CardCounter>(context).getOneCard(i).addScore(Provider.of<CardCounter>(context).getOneCard(i).currentscore+1);
+            Provider.of<CardCounter>(context).getOneCard(i).addScore(Provider.of<CardCounter>(context).getOneCard(i).currentScore+1);
             break;
           }
         }
@@ -250,23 +248,9 @@ CupertinoAlertDialog nfcsuccessDialog(String name){
   }
 
   @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(
-      length: 2,
-      vsync: this,
-    );
-  }
-
-  /// Overwritten Method for disposing _tabController;
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    //dynamic args = ModalRoute.of(context).settings.arguments;
+
     var _cardNumber = Provider.of<CardCounter>(context).cardList.length;
 
     Widget _randomColorContainer = Container(
@@ -290,34 +274,8 @@ CupertinoAlertDialog nfcsuccessDialog(String name){
       child: Scaffold(
         appBar: _buildAppBar(context, _textEditingController),
         body: buildBody(context, _cardNumber, _randomColorContainer),
-        bottomNavigationBar: buildTabBar(context, _tabController),
         resizeToAvoidBottomPadding: false,
       ),
-    );
-  }
-
-  /// Build the tabBar in the very bottom of the [AllCardsMainPageState]
-  static TabBar buildTabBar(BuildContext context, TabController tabController) {
-    return TabBar(
-      controller: tabController,
-      tabs: <Widget>[
-        Container(
-          height: MediaQuery.of(context).size.height * 0.066,
-          padding: EdgeInsets.all(8.0),
-          alignment: Alignment.topCenter,
-          child: Image(
-            image: AssetImage("assets/backgrounds/tabCard.png"),
-          ),
-        ),
-        Container(
-          padding: EdgeInsets.all(8.0),
-          alignment: Alignment.topCenter,
-          height: MediaQuery.of(context).size.height * 0.066,
-          child: Image(
-            image: AssetImage("assets/backgrounds/tabUser.png"),
-          ),
-        )
-      ],
     );
   }
 
@@ -703,8 +661,7 @@ class _AllCardsPageState extends State<AllCardsPage>
             ],
           ),
         ),
-        bottomNavigationBar:
-            AllCardsMainPageState.buildTabBar(context, _tabController));
+    );
   }
 
   /// Method In order to build a Membership-Type Card.

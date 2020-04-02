@@ -1,3 +1,6 @@
+
+
+import 'package:dio/dio.dart';
 ///This page is the edit_card page
 ///which used to edit the information of a card
 ///it provide the delete function
@@ -10,6 +13,9 @@ import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:membership_card/network/client.dart';
+
+
 class EditCardPage extends StatefulWidget{
   final String cardId;
   final String eName;
@@ -27,6 +33,9 @@ class EditCardPageState extends  State<EditCardPage>
 
   TabController _tabController;
 
+ Dio dio=initDio();
+  Future<Response> res1;
+  Future<Response> res2;
   //final CardInfo card;
    //EditCardPageState(this.card) ;
 
@@ -64,7 +73,7 @@ class EditCardPageState extends  State<EditCardPage>
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
-        leading: Container(
+        title: Container(
           child: GestureDetector(
             child: Padding(
               padding: const EdgeInsets.all(0),
@@ -87,9 +96,19 @@ class EditCardPageState extends  State<EditCardPage>
           FlatButton(
               onPressed: () {
                if((_formKey.currentState as FormState).validate()) {
-                 Navigator.pop(context);
-                 Provider.of<CardCounter>(context,listen:false).editCard(args["card"],
-                     cardController.value.text, cardStoreController.value.text);
+                try {
+                  dioModify(dio, args["card"]).then((res){
+                    Navigator.pop(context);
+                    Provider.of<CardCounter>(context, listen: false).editCard(
+                        args["card"],
+                        cardController.value.text,
+                        cardStoreController.value.text);
+                    print(res.statusCode);
+                  }
+                  );
+                }catch(e){
+                  print(e);
+                }
                }
               },
               child: Text(
@@ -179,8 +198,15 @@ class EditCardPageState extends  State<EditCardPage>
                 right: 20.0,
               ),
               onPressed: (){
-                Navigator.of(context).popAndPushNamed('/allCardsPage');
-                counter.deleteCard(args["card"]);
+                try {
+                  dioDelete(args["card"], dio).then((res){
+                    Navigator.of(context).popAndPushNamed('/allCardsPage');
+                    counter.deleteCard(args["card"]);
+                    print(res.statusCode);
+                  });
+                }catch(e){
+                  print(e);
+                }
               },
               shape: RoundedRectangleBorder(
                 side: new BorderSide(

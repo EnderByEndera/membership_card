@@ -191,11 +191,13 @@ class CouponPageState extends State<CouponPage> with SingleTickerProviderStateMi
                           FlatButton(
                             onPressed: () {
                               try {
-                                useCoupon(dio, args["card"].cardId, -1);
-                                args["card"].redeemCoupon();
-                                Navigator.of(context).popUntil(
-                                    ModalRoute.withName(
-                                        "/cardinfo_membership"));
+                                dioUseCoupon(dio, args["card"].cardId, -1).then((res){
+                                  args["card"].redeemCoupon();
+                                  Navigator.of(context).popUntil(
+                                      ModalRoute.withName(
+                                          "/cardinfo_membership"));
+                                });
+
                               } catch (e) {
                                 print(e);
                               }
