@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:membership_card/pages/add_cards_with_camera.dart';
 import 'package:membership_card/pages/all_cards.dart';
 import 'package:membership_card/model/card_count.dart';
+import 'package:membership_card/pages/change_password.dart';
 import 'package:membership_card/pages/coupon.dart';
 import 'package:membership_card/pages/edit_card.dart';
 import 'package:membership_card/pages/help.dart';
@@ -84,7 +85,8 @@ class GoWallet extends StatelessWidget {
               return EditCardPage(card.cardId, card.eName);
             },
             "/user": (_) => UserInfoPage(),
-            "/bottomMenu": (_) => BottomMenuPage()
+            "/bottomMenu": (_) => BottomMenuPage(),
+            "/changePasswordPage": (_) =>ChangePasswordPage(),
           },
         ));
   }
