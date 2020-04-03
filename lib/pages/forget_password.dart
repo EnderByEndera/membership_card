@@ -12,36 +12,36 @@ class ForgetPasswordPage extends StatefulWidget {
   }
 }
 class ForgetPasswordPageState extends State<ForgetPasswordPage> {
-  var _usernameController = TextEditingController();
-  String _usernameErrMsg;
+  var _emailController = TextEditingController();
+  String _emailErrMsg;
   bool _usernameCorrect = false;
   var dio = initDio();
   Response res;
 
   @override
   void dispose() {
-    _usernameController.dispose();
+    _emailController.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    _usernameController.addListener(() {
-      if (_usernameController.text.isEmpty) {
+    _emailController.addListener(() {
+      if (_emailController.text.isEmpty) {
         setState(() {
           _usernameCorrect = false;
-          _usernameErrMsg = "Can not be empty";
+          _emailErrMsg = "Can not be empty";
         });
-      } else if (_usernameController.text.contains(RegExp(r"\W"))) {
+      } else if (_emailController.text.contains(RegExp(r"\W"))) {
         setState(() {
           _usernameCorrect = false;
-          _usernameErrMsg = "Can only input 0-9, a-z and A-Z";
+          _emailErrMsg = "Can only input 0-9, a-z and A-Z";
         });
       } else {
         setState(() {
           _usernameCorrect = true;
-          _usernameErrMsg = null;
+          _emailErrMsg = null;
         });
       }
     });
@@ -51,10 +51,10 @@ class ForgetPasswordPageState extends State<ForgetPasswordPage> {
     //Todo: implement build here
     var _nameTextField = TextField(
       decoration: InputDecoration(
-        labelText: "Enter your User Name",
-        errorText: _usernameErrMsg,
+        labelText: "Enter your email",
+        errorText: _emailErrMsg,
       ),
-      controller: _usernameController,
+      controller: _emailController,
       maxLength: 24,
     );
 

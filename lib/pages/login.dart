@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:membership_card/model/user_model.dart';
 import 'package:membership_card/network/client.dart';
 import 'package:provider/provider.dart';
+import 'package:membership_card/model/card_model.dart';
+import 'package:membership_card/model/card_count.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -16,22 +18,23 @@ class LoginPage extends StatefulWidget {
 
 class LoginPageState extends State<LoginPage> {
   var _passwordController = TextEditingController();
-  var _usernameController = TextEditingController();
+  var _userIdController = TextEditingController();
 
   bool isSent = false;
-  bool _usernameCorrect = false;
+  bool _userIdCorrect = false;
   bool _passwordCorrect = false;
   String _loginMsg;
-  String _usernameErrMsg;
+  String _userIdErrMsg;
   String _passwordErrMsg;
 
   var dio = initDio();
-  Response res;
+  Response res1;
+  Response res2;
 
   @override
   void dispose() {
     _passwordController.dispose();
-    _usernameController.dispose();
+    _userIdController.dispose();
     super.dispose();
   }
 
@@ -61,21 +64,21 @@ class LoginPageState extends State<LoginPage> {
         });
       }
     });
-    _usernameController.addListener(() {
-      if (_usernameController.text.isEmpty) {
+    _userIdController.addListener(() {
+      if (_userIdController.text.isEmpty) {
         setState(() {
-          _usernameCorrect = false;
-          _usernameErrMsg = "Can not be empty";
+          _userIdCorrect = false;
+          _userIdErrMsg = "Can not be empty";
         });
-      } else if (_usernameController.text.contains(RegExp(r"\W"))) {
+      } else if (_userIdController.text.contains(RegExp(r"\W"))) {
         setState(() {
-          _usernameCorrect = false;
-          _usernameErrMsg = "Can only input 0-9, a-z and A-Z";
+          _userIdCorrect = false;
+          _userIdErrMsg = "Can only input 0-9, a-z and A-Z";
         });
       } else {
         setState(() {
-          _usernameCorrect = true;
-          _usernameErrMsg = null;
+          _userIdCorrect = true;
+          _userIdErrMsg = null;
         });
       }
     });
@@ -85,10 +88,10 @@ class LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     var _nameTextField = TextField(
       decoration: InputDecoration(
-        labelText: "Name/Mail/Tel",
-        errorText: _usernameErrMsg,
+        labelText: "userId",
+        errorText: _userIdErrMsg,
       ),
-      controller: _usernameController,
+      controller: _userIdController,
       maxLength: 24,
     );
 
@@ -131,37 +134,39 @@ class LoginPageState extends State<LoginPage> {
                       direction: Axis.horizontal,
                       children: <Widget>[
                         MaterialButton(
-                          onPressed: _usernameCorrect && _passwordCorrect
+                          onPressed: _userIdCorrect && _passwordCorrect
                               ? () async {
                             _loginMsg = "";
                             setState(() {
                               isSent = true;
                             });
-                            user.username = _usernameController.text;
+                            user.userId = _userIdController.text;
                             user.password = _passwordController.text;
-                            res = await dioLogin(dio, user);
+                            res1 = await dioLogin(dio, user);
                             setState(() {
                               isSent = false;
                             });
-                            if (res.statusCode == 200) {
-                              print("${res.data}");
+                            if (res1.statusCode == 200) {
                               try {
-                                Map<String, dynamic> json =
-                                jsonDecode(res.data);
-                                if (json["loginInfo"] == "success") {
-                                  _loginMsg = "Login Succeeded";
-                                  Navigator.pushNamed(context, "/allCardsPage",arguments: {
-                                    "user": user,
-                                  });
-                                } else {
-                                  _loginMsg = "Login Failed!";
-                                  showDialog(
-                                      context: context,
-                                      builder: (_) => AlertDialog(
-                                        title: Text("Alert"),
-                                        content: Text(_loginMsg),
-                                      ));
-                                }
+                                dioGetAllCards(dio).then((res2){
+
+                                  var list = json.decode(res2.data) as List;
+                                  List<CardInfo> cards = list.map((i)=> CardInfo.fromJson(i)).toList();
+                                  Provider.of<CardCounter>(context,listen:false).cardList = cards;
+
+                                  if(cards.length==0){
+                                    Navigator.pushNamed(context, "/allCardsMainPage",arguments: {
+                                      "user": user,
+                                    });
+                                  }
+                                  else{
+                                    Navigator.pushNamed(context, "/allCardsPage",arguments: {
+                                      "user": user,
+                                    });
+                                  }
+                                });
+                                _loginMsg = "Login Succeeded";
+
                               } on FormatException {
                                 _loginMsg = "Login Failed";
                                 showDialog(
@@ -171,8 +176,7 @@ class LoginPageState extends State<LoginPage> {
                                       content: Text(_loginMsg),
                                     ));
                               }
-                            } else if (res.statusCode == 400 ||
-                                res.statusCode == 404) {
+                            } else if (res1.statusCode == 400) {
                               _loginMsg =
                               "Network connection failed, "
                                   "check your network";
@@ -180,8 +184,19 @@ class LoginPageState extends State<LoginPage> {
                                 title: Text("Alert"),
                                 content: Text(_loginMsg),
                               ));
-                            } else if (res.statusCode >= 500) {
+                            } else if (res1.statusCode == 406) {
+                              _loginMsg = "Account does not exist Or Password error";
+                              showDialog(context: context, builder: (_) => AlertDialog(
+                                title: Text("Alert"),
+                                content: Text(_loginMsg),
+                              ));
+                            }
+                            else{
                               _loginMsg = "Server error";
+                              showDialog(context: context, builder: (_) => AlertDialog(
+                                title: Text("Alert"),
+                                content: Text(_loginMsg),
+                              ));
                             }
                           }
                               : null,

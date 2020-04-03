@@ -12,6 +12,7 @@ import 'package:flutter/services.dart';
 import 'dart:async';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:membership_card/network/client.dart';
+import 'package:membership_card/model/user_model.dart';
 
 
 
@@ -233,30 +234,6 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
 
       ),
 
-
-
-
-      bottomNavigationBar: TabBar(
-        controller: _tabController,
-        tabs: <Widget>[
-          Container(
-            height: MediaQuery.of(context).size.height * 0.066,
-            padding: EdgeInsets.all(8.0),
-            alignment: Alignment.topCenter,
-            child: Image(
-              image: AssetImage("assets/backgrounds/tabCard.png"),
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(8.0),
-            alignment: Alignment.topCenter,
-            height: MediaQuery.of(context).size.height * 0.066,
-            child: Image(
-              image: AssetImage("assets/backgrounds/tabUser.png"),
-            ),
-          )
-        ],
-      ),
     );
   }
 }

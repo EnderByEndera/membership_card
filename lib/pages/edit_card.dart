@@ -1,5 +1,3 @@
-
-
 import 'package:dio/dio.dart';
 ///This page is the edit_card page
 ///which used to edit the information of a card
@@ -14,6 +12,7 @@ import 'package:flutter/services.dart';
 import 'dart:async';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:membership_card/network/client.dart';
+import 'package:membership_card/model/user_model.dart';
 
 
 class EditCardPage extends StatefulWidget{

@@ -9,6 +9,7 @@ import 'package:membership_card/model/card_model.dart';
 import 'dart:async';
 import 'package:provider/provider.dart';
 import 'package:membership_card/model/card_count.dart';
+import 'package:membership_card/model/user_model.dart';
 
 
 /// This is the Card_Info Page showing one card's information.

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:membership_card/model/card_model.dart';
 import 'package:membership_card/network/client.dart';
 import 'package:membership_card/pages/card_info_membership.dart';
+import 'package:membership_card/model/user_model.dart';
 
 class CouponPage extends StatefulWidget {
   @override
