@@ -142,6 +142,30 @@ class RegisterPageState extends State<RegisterPage> {
     });
   }
 
+  void startCountdownTimer() {
+    const oneSec = const Duration(seconds: 1);
+
+    var callback = (timer) => {
+      setState(() {
+        if (_countdownTime < 1) {
+          _timer.cancel();
+        } else {
+          _countdownTime = _countdownTime - 1;
+        }
+      })
+    };
+
+    _timer = Timer.periodic(oneSec, callback);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    if (_timer != null) {
+      _timer.cancel();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var _usernameTextFiled = TextField(
@@ -188,30 +212,6 @@ class RegisterPageState extends State<RegisterPage> {
       ),
       controller: _verifyController,
     );
-
-    void startCountdownTimer() {
-      const oneSec = const Duration(seconds: 1);
-
-      var callback = (timer) => {
-        setState(() {
-          if (_countdownTime < 1) {
-            _timer.cancel();
-          } else {
-            _countdownTime = _countdownTime - 1;
-          }
-        })
-      };
-
-      _timer = Timer.periodic(oneSec, callback);
-    }
-
-    @override
-    void dispose() {
-      super.dispose();
-      if (_timer != null) {
-        _timer.cancel();
-      }
-    }
 
     return Scaffold(
       appBar: AppBar(
