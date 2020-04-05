@@ -102,6 +102,27 @@ Future<Response<T>> dioRegister<T>(Dio dio, User user) async {
   return res;
 }
 
+Future<Response<T>> dioRegisterVerify<T>(Dio dio, User user) async {
+  Response res = Response();
+  try {
+    res = await dio.get<String>(
+      "/v1/api/user/enroll",
+//      queryParameters: {"email" : user.email},
+    );
+//    print("${res.statusCode}");
+
+  } on DioError catch (e) {
+    if (e.response == null) {
+      res.statusCode = 500;
+      res.data = "Error from the server, meet 500 error";
+      return res;
+    } else {
+      return e.response;
+    }
+  }
+  return res;
+}
+
 Future<Response<T>> dioDelete<T>(CardInfo cardInfo, Dio dio) async {
   var res = Response();
   try {
@@ -178,7 +199,7 @@ Future<Response<T>> dioUseCoupon<T>(Dio dio, String cardId, int increment) async
   var res = Response();
   try {
     res = await dio.post(
-      "/v1/api/user/card/id/coupons",
+      "/v1/api/user/card/:id/coupons",
       queryParameters: {
         "id": cardId,
       },
@@ -197,12 +218,6 @@ Future<Response<T>> dioUseCoupon<T>(Dio dio, String cardId, int increment) async
       return res;
     }
   }
-}
-
-void useCoupon(Dio dio, String cardId, int increment) async {
-  var res = await dioUseCoupon(dio, cardId, increment);
-  if (res.statusCode != 200)
-    throw Exception(res.data);
 }
 
 Future<Response<T>>  dioScore<T>(Dio dio, String cardId, int increment)async{

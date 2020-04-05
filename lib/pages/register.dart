@@ -16,16 +16,28 @@ class RegisterPage extends StatefulWidget {
 
 class RegisterPageState extends State<RegisterPage> {
   String _usernameErrMsg;
+  String _emailErrMsg;
   String _passwordErrMsg;
+  String _passwordRepeatErrMsg;
+  String _verifyCodeErrMsg;
+  String _verifyCode;
   bool _usernameCorrect = false;
+  bool _emailCorrect = false;
   bool _passwordCorrect = false;
+  bool _passwordRepeatCorrect = false;
+  bool _verifyCorrect = false;
   var _usernameController = TextEditingController();
+  var _emailController = TextEditingController();
   var _passwordController = TextEditingController();
+  var _passwordRepeatController = TextEditingController();
+  var _verifyController = TextEditingController();
 
+  User user;
   String _registerMsg;
   bool isSent = false;
   var dio = initDio();
-  Response res;
+  Response resVerify;
+  Response resSignUp;
 
   @override
   void initState() {
@@ -39,7 +51,7 @@ class RegisterPageState extends State<RegisterPage> {
       } else if (_usernameController.text.contains(RegExp(r"\W"))) {
         setState(() {
           _usernameCorrect = false;
-          _usernameErrMsg = "Can only input 0-9, a-z and A-Z";
+          _usernameErrMsg = "Can only input English and Numbers";
         });
       } else {
         setState(() {
@@ -48,11 +60,31 @@ class RegisterPageState extends State<RegisterPage> {
         });
       }
     });
+
+    _emailController.addListener(() {
+      if (_emailController.text.contains(RegExp(r"\W"))) {
+        setState(() {
+          _emailCorrect = false;
+          _emailErrMsg = "Can only input English and Numbers";
+        });
+      } else if (_emailController.text.isEmpty) {
+        setState(() {
+          _emailCorrect = false;
+          _emailErrMsg = "Email can not be empty";
+        });
+      } else {
+        setState(() {
+          _emailCorrect = true;
+          _emailErrMsg = null;
+        });
+      }
+    });
+
     _passwordController.addListener(() {
       if (_passwordController.text.contains(RegExp(r"\W"))) {
         setState(() {
           _passwordCorrect = false;
-          _passwordErrMsg = "Can only input 0-9, a-z and A-Z";
+          _passwordErrMsg = "Can only input English and Numbers";
         });
       } else if (_passwordController.text.isEmpty) {
         setState(() {
@@ -71,6 +103,40 @@ class RegisterPageState extends State<RegisterPage> {
         });
       }
     });
+
+    _passwordRepeatController.addListener(() {
+      if (_passwordController.text != _passwordController.text) {
+        setState(() {
+          _passwordRepeatCorrect = false;
+          _passwordRepeatErrMsg = "The two passwords you typed do not match";
+        });
+      } else {
+        setState(() {
+          _passwordRepeatCorrect = true;
+          _passwordRepeatErrMsg = null;
+        });
+      }
+    });
+
+
+    _verifyController.addListener(() {
+      if (_verifyController.text != _verifyCode) {
+        setState(() {
+          _verifyCorrect = false;
+          _verifyCodeErrMsg = "Wrong verification code";
+        });
+      } else if (_passwordController.text.isEmpty) {
+        setState(() {
+          _verifyCorrect = false;
+          _verifyCodeErrMsg = "Verification code can not be empty";
+        });
+      } else {
+        setState(() {
+          _verifyCorrect = true;
+          _verifyCodeErrMsg = null;
+        });
+      }
+    });
   }
 
   @override
@@ -84,6 +150,15 @@ class RegisterPageState extends State<RegisterPage> {
       controller: _usernameController,
     );
 
+    var _emailTextField = TextField(
+      decoration: InputDecoration(
+        hintText: "Email",
+        labelText: "Email",
+        errorText: _emailErrMsg,
+      ),
+      controller: _emailController,
+    );
+
     var _passwordTextField = TextField(
       decoration: InputDecoration(
         hintText: "Password",
@@ -91,6 +166,24 @@ class RegisterPageState extends State<RegisterPage> {
         errorText: _passwordErrMsg,
       ),
       controller: _passwordController,
+    );
+
+    var _passwordRepeatTextField = TextField(
+      decoration: InputDecoration(
+        hintText: "RepeatPassword",
+        labelText: "RepeatPassword",
+        errorText: _passwordRepeatErrMsg,
+      ),
+      controller: _passwordRepeatController,
+    );
+
+    var _verifyCodeTextField = TextField(
+      decoration: InputDecoration(
+        hintText: "VerificationCode",
+        labelText: "VerificationCode",
+        errorText: _verifyCodeErrMsg,
+      ),
+      controller: _verifyController,
     );
 
     return Scaffold(
@@ -103,26 +196,47 @@ class RegisterPageState extends State<RegisterPage> {
           children: <Widget>[
             _usernameTextFiled,
             _passwordTextField,
+            _passwordRepeatTextField,
+            Row(
+              children: <Widget>[
+                _emailTextField,
+                MaterialButton(
+                  onPressed: () async {
+                    user.username = _usernameController.text;
+                    user.password = _passwordController.text;
+//                    user.email = _emailController.text;
+                    resVerify = await dioRegisterVerify(dio, user);
+
+                  },
+                  child: Container(
+                    child: Text(
+                      "Send Verification code",
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                )
+              ],
+            ),
+            _verifyCodeTextField,
             MaterialButton(
-              onPressed: _usernameCorrect && _passwordCorrect
+              onPressed: _usernameCorrect && _passwordCorrect && _passwordRepeatCorrect && _verifyCorrect && _emailCorrect
                   ? () async {
                 _registerMsg = "";
                 setState(() {
                   isSent = true;
                 });
-                User user = User(_usernameController.text,_passwordController.text);
-                res = await dioRegister(dio, user);
+//                User user = User(_usernameController.text,_passwordController.text);
+                resSignUp = await dioRegister(dio, user);
                 setState(() {
                   isSent = false;
                 });
-                if (res.statusCode == 200) {
-                  print("${res.data}");
+                if (resSignUp.statusCode == 200) {
+                  print("${resSignUp.data}");
                   try {
-                    Map<String, dynamic> json =
-                    jsonDecode(res.data);
+                    Map<String, dynamic> json = jsonDecode(resSignUp.data);
                     if (json["registerInfo"] == "success") {
                       _registerMsg = "Register Succeeded";
-                      Navigator.pushNamed(context, "/loginPage");
+                      Navigator.of(context).pop();
                     } else {
                       _registerMsg = "Register Failed!";
                       showDialog(
@@ -141,8 +255,8 @@ class RegisterPageState extends State<RegisterPage> {
                           content: Text(_registerMsg),
                         ));
                   }
-                } else if (res.statusCode == 400 ||
-                    res.statusCode == 404) {
+                } else if (resSignUp.statusCode == 400 ||
+                    resSignUp.statusCode == 404) {
                   _registerMsg =
                   "Network connection failed, "
                       "check your network";
@@ -150,7 +264,7 @@ class RegisterPageState extends State<RegisterPage> {
                     title: Text("Alert"),
                     content: Text(_registerMsg),
                   ));
-                } else if (res.statusCode >= 500) {
+                } else if (resSignUp.statusCode >= 500) {
                   _registerMsg = "Server error";
                 }
               } : null,
@@ -159,7 +273,7 @@ class RegisterPageState extends State<RegisterPage> {
                 child: Text(
                   "Sign Up",
                   textAlign: TextAlign.center,
-                  //tyle: TextStyle(fontSize: 20.0),
+                  //style: TextStyle(fontSize: 20.0),
                 ),
               ),
             ),
