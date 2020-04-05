@@ -102,12 +102,12 @@ Future<Response<T>> dioRegister<T>(Dio dio, User user) async {
   return res;
 }
 
-Future<Response<T>> dioRegisterVerify<T>(Dio dio, User user) async {
+Future<Response<T>> dioRegisterVerify<T>(Dio dio, String mail) async {
   Response res = Response();
   try {
     res = await dio.get<String>(
       "/v1/api/user/enroll",
-//      queryParameters: {"email" : user.email},
+      queryParameters: {"email" : mail},
     );
 //    print("${res.statusCode}");
 

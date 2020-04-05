@@ -4,6 +4,7 @@ import 'package:membership_card/model/user_model.dart';
 import 'package:membership_card/network/client.dart';
 import 'package:dio/dio.dart';
 import 'dart:convert';
+import 'dart:async';
 
 import 'package:provider/provider.dart';
 
@@ -33,8 +34,10 @@ class RegisterPageState extends State<RegisterPage> {
   var _verifyController = TextEditingController();
 
   User user;
+  Timer _timer;
   String _registerMsg;
   bool isSent = false;
+  int _countdownTime = 0;
   var dio = initDio();
   Response resVerify;
   Response resSignUp;
@@ -186,6 +189,30 @@ class RegisterPageState extends State<RegisterPage> {
       controller: _verifyController,
     );
 
+    void startCountdownTimer() {
+      const oneSec = const Duration(seconds: 1);
+
+      var callback = (timer) => {
+        setState(() {
+          if (_countdownTime < 1) {
+            _timer.cancel();
+          } else {
+            _countdownTime = _countdownTime - 1;
+          }
+        })
+      };
+
+      _timer = Timer.periodic(oneSec, callback);
+    }
+
+    @override
+    void dispose() {
+      super.dispose();
+      if (_timer != null) {
+        _timer.cancel();
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Register Your Account'),
@@ -202,15 +229,36 @@ class RegisterPageState extends State<RegisterPage> {
                 _emailTextField,
                 MaterialButton(
                   onPressed: () async {
-                    user.username = _usernameController.text;
-                    user.password = _passwordController.text;
-//                    user.email = _emailController.text;
-                    resVerify = await dioRegisterVerify(dio, user);
-
+                    if (_countdownTime == 0 && _emailCorrect) {
+                      resVerify = await dioRegisterVerify(dio, _emailController.text);
+                      if (resVerify.statusCode == 200){
+                        _verifyCode = jsonDecode(resVerify.data)["生成的验证码"];
+                      } else if (resVerify.statusCode == 400) {
+                        showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            title: Text("Error"),
+                            content: Text("Network connection failed"),
+                          )
+                        );
+                      } else if (resVerify.statusCode == 500){
+                        showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              title: Text("Error"),
+                              content: Text("Server Error"),
+                            )
+                        );
+                      }
+                      setState(() {
+                        _countdownTime = 60;
+                      });
+                      startCountdownTimer();
+                    }
                   },
                   child: Container(
                     child: Text(
-                      "Send Verification code",
+                      _countdownTime > 0 ? '$_countdownTime' : 'Send verification code',
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -225,7 +273,8 @@ class RegisterPageState extends State<RegisterPage> {
                 setState(() {
                   isSent = true;
                 });
-//                User user = User(_usernameController.text,_passwordController.text);
+                User user = User(_usernameController.text,_passwordController.text);
+                user.mail = _emailController.text;
                 resSignUp = await dioRegister(dio, user);
                 setState(() {
                   isSent = false;
