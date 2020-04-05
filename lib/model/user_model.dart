@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:membership_card/pages/login.dart';
 import 'card_count.dart';
+import 'dart:convert';
+
 /// This is the User Model for [LoginPage] to use.
 /// When the user wants to login or register, it may use this [User] Model.
 /// Usage:
@@ -9,39 +11,60 @@ import 'card_count.dart';
 /// ```
 /// Notice that [_username] and [_password] is not necessary to create one User.
 class User extends ChangeNotifier {
-  static const String _USERNAME_JSON = "username";
+  static const String _ID_JSON = "id";
+  static const String _Mail_JSON = "mail";
   static const String _PASSWORD_JSON = "password";
-  static const String _CARDCOUNT_JSON = "cardcount";
+  static const String _TEL_JSON = "tel";
+  static const String _LOGINMONTH_JSON = "loginmonth";
+  static const String _LOGINNUM_JSON = "loginnum";
+  static const String _LOGINYEAR_JSON = "loginyear";
 
-  String _username;
+
+  String _userId;
   String _password;
-  CardCounter _cardcount;
-  String get username => _username;
+  String _mail;
+  String _tel;
+  String _loginMonth;
+  String _loginNum;
+  String _loginYear;
+
+
+  String get userId => _userId;
   String get password => _password;
-  CardCounter get cardcount => _cardcount;
+  String get mail => _mail;
+  String get tel => _tel;
+  String get loginMonth => _loginMonth;
+  String get loginNum => _loginNum;
+  String get loginYear => _loginYear;
 
-  User([this._username, this._password]);
 
-  set username(String value) {
-    _username = value;
+  User([this._userId, this._password]);
+
+  set userId(String value) {
+    _userId = value;
+  }
+  set password(String value) {
+    _password = value;
+  }
+  set mail(String value) {
+    _mail = value;
+  }
+  set tel(String value) {
+    _tel = value;
   }
 
   User.fromJson(Map<String, dynamic> json) {
-    _username = json[_USERNAME_JSON];
+    _userId = json[_ID_JSON];
     _password = json[_PASSWORD_JSON];
-    _cardcount = json[_CARDCOUNT_JSON];
+    _mail = json[_Mail_JSON];
   }
 
   Map<String, dynamic> toJson() {
     var user = <String, dynamic>{
-      _USERNAME_JSON: _username,
+      _ID_JSON: _userId,
       _PASSWORD_JSON: _password,
-      _CARDCOUNT_JSON: _cardcount,
+      _Mail_JSON: _mail,
     };
     return user;
-  }
-
-  set password(String value) {
-    _password = value;
   }
 }

@@ -20,9 +20,7 @@ class UserInfoPageState extends State<UserInfoPage> {
         child: ListView(
           children: <Widget>[
             GestureDetector(
-              onTap: () {
-                Navigator.of(context).pushNamed("/changePasswordPage");
-              },
+              onTap: () {},
               child: Container(
                 padding: EdgeInsets.fromLTRB(20, 30, 15, 15),
                 child: Row(
@@ -31,20 +29,7 @@ class UserInfoPageState extends State<UserInfoPage> {
                       radius: 40,
                       backgroundImage: AssetImage("assets/images/user_avatar.png"),
                     ),
-                    SizedBox(width: 25),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            '修改密码',
-                            style: TextStyle(fontSize: 18),
-                          ),
-                          // SizedBox(height: 10),
-                          // buildItems(),
-                        ],
-                      ),
-                    )
+
                   ],
                 ),
               ),
@@ -65,7 +50,7 @@ class UserInfoPageState extends State<UserInfoPage> {
                       padding: EdgeInsets.symmetric(horizontal: 20),
                       child: Row(
                         children: <Widget>[
-                          Image.asset("assets/images/me_setting.png"),
+                          Icon(Icons.settings),
                           SizedBox(width: 20),
                           Text("Settings", style: TextStyle(fontSize: 18)),
                           //Expanded(child: Container()),
@@ -82,7 +67,37 @@ class UserInfoPageState extends State<UserInfoPage> {
                 ),
               ),
             ),
-
+            GestureDetector(
+              onTap: (){
+                Navigator.of(context).pushNamed("/changePasswordPage");
+              },
+              child: Container(
+                color: Colors.white,
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      color: Colors.white,
+                      height: 50,
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.border_color),
+                          SizedBox(width: 20),
+                          Text("Password", style: TextStyle(fontSize: 18)),
+                          //Expanded(child: Container()),
+                          //Image.asset('img/arrow_right.png'),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: 1,
+                      color: Colors.grey,
+                      margin: EdgeInsets.only(left: 60),
+                    ),
+                  ],
+                ),
+              ),
+            ),
             GestureDetector(
               onTap: (){
                 Navigator.of(context).pushNamed("/help");
@@ -97,7 +112,7 @@ class UserInfoPageState extends State<UserInfoPage> {
                       padding: EdgeInsets.symmetric(horizontal: 20),
                       child: Row(
                         children: <Widget>[
-                          Image.asset("assets/images/me_about.png"),
+                          Icon(Icons.help),
                           SizedBox(width: 20),
                           Text("About", style: TextStyle(fontSize: 18)),
                           //Expanded(child: Container()),
@@ -109,6 +124,7 @@ class UserInfoPageState extends State<UserInfoPage> {
                 ),
               ),
             ),
+
           ],
         ),
       ),

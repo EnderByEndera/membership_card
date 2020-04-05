@@ -5,6 +5,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:membership_card/model/card_count.dart';
 import 'package:membership_card/model/card_model.dart';
+import 'package:membership_card/model/user_model.dart';
 
 /// This is the Card_Info Page showing one card's information with qrcode.
 class CardInfo3Page extends StatefulWidget {

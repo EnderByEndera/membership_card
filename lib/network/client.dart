@@ -1,9 +1,9 @@
 import 'dart:convert';
-
+import 'package:provider/provider.dart';
 import 'package:dio/dio.dart';
 import 'package:membership_card/model/card_model.dart';
 import 'package:membership_card/model/user_model.dart';
-
+import 'package:membership_card/model/card_count.dart';
 const SERVER_URL = "http://106.15.198.136";
 const PORT       = "8080";
 
@@ -25,7 +25,7 @@ Dio initDio() {
 Future<Response<T>> dioGetAllCards<T>(Dio dio) async {
   Response res = Response();
   try {
-    res = await dio.get("/v1/api/users");
+    res = await dio.get("/v1/api/user/");
     return res;
   } on DioError catch (e) {
     if (e.response == null) {
@@ -42,9 +42,9 @@ Future<Response<T>> dioGetAllCards<T>(Dio dio) async {
 Future<Response<T>> dioLogin<T>(Dio dio, User user) async {
   Response res = Response();
   try {
-    res = await dio.get<String>(
+    res = await dio.put<String>(
       "/v1/api/user/login",
-      //data: jsonEncode(user.toJson()),
+      data: jsonEncode(user.toJson()),
     );
     print("${res.statusCode}");
 
