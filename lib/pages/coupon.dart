@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -191,17 +193,22 @@ class CouponPageState extends State<CouponPage> with SingleTickerProviderStateMi
                           ),
                           FlatButton(
                             onPressed: () {
-                              try {
                                 dioUseCoupon(dio, args["card"].cardId, -1).then((res){
-                                  args["card"].redeemCoupon();
-                                  Navigator.of(context).popUntil(
-                                      ModalRoute.withName(
-                                          "/cardinfo_membership"));
+                                  if (res.statusCode == 200) {
+                                    args["card"].redeemCoupon();
+                                    Navigator.of(context).popUntil(
+                                        ModalRoute.withName(
+                                            "/cardinfo_membership"));
+                                  } else {
+                                    showDialog(
+                                        context: context,
+                                        builder: (_) => AlertDialog(
+                                          title: Text("Error"),
+//                                          content: Text(jsonDecode(res.data)[""]),
+                                        )
+                                    );
+                                  }
                                 });
-
-                              } catch (e) {
-                                print(e);
-                              }
                             },
                             child: Text(
                                 "Redeem Now", style: TextStyle(color: Theme
