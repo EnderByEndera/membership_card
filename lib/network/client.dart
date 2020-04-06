@@ -22,10 +22,10 @@ Dio initDio() {
   return dio;
 }
 
-Future<Response<T>> dioGetAllCards<T>(Dio dio) async {
+Future<Response<T>> dioGetAllCards<T>(Dio dio, String userId) async {
   Response res = Response();
   try {
-    res = await dio.get("/v1/api/user/");
+    res = await dio.get("/v1/api/user/"+userId);
     return res;
   } on DioError catch (e) {
     if (e.response == null) {
@@ -39,12 +39,33 @@ Future<Response<T>> dioGetAllCards<T>(Dio dio) async {
   }
 }
 
-Future<Response<T>> dioLogin<T>(Dio dio, User user) async {
+Future<Response<T>> dioLoginNRmb<T>(Dio dio, User user) async {
   Response res = Response();
   try {
     res = await dio.put<String>(
       "/v1/api/user/login",
-      data: jsonEncode(user.toJson()),
+      data: jsonEncode(user.toNRmbJson()),
+    );
+    print("${res.statusCode}");
+
+  } on DioError catch (e) {
+    if (e.response == null) {
+      res.statusCode = 500;
+      res.data = "Error from the server, meet 500 error";
+      return res;
+    } else {
+      return e.response;
+    }
+  }
+  return res;
+}
+
+Future<Response<T>> dioLoginRmb<T>(Dio dio, User user) async {
+  Response res = Response();
+  try {
+    res = await dio.put<String>(
+      "/v1/api/user/login",
+      data: jsonEncode(user.toRmbJson()),
     );
     print("${res.statusCode}");
 
@@ -232,4 +253,47 @@ Future<Response<T>>  dioScore<T>(Dio dio, String cardId, int increment)async{
     }
   }
   return  res;
+}
+
+
+
+Future<Response<T>> diogetenroll<T>(Dio dio,String email)async{
+  Response res = Response();
+  try {
+    res = await dio.get("/v1/api/user/enroll",
+        queryParameters:{'Mail':email}
+    );
+    return res;
+  } on DioError catch (e) {
+    if (e.response == null) {
+      res.data = "Error occured before connection";
+      res.statusCode = 500;
+      return res;
+    } else {
+      res.statusCode = e.response.statusCode;
+      return res;
+    }
+  }
+}
+
+Future<Response<T>> dioforgetpassword<T>(Dio dio,String userid,String password)async{
+  Response res=Response();
+
+  try{
+    res=await dio.put(
+      " /v1/api/user/ForgetPassword/New",
+      data: {'Id':userid,"Password":password},
+    );
+    print("${res.statusCode}");
+  } on DioError catch(e) {
+    if (e.response == null) {
+      res.statusCode = 500;
+      res.data = "Error from the server, meet 500 error";
+      return res;
+    }else {
+      res.statusCode = e.response.statusCode;
+      return res;
+    }
+  }
+  return res;
 }

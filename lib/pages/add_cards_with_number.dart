@@ -23,9 +23,10 @@ class AddCardWithNumberPage extends StatefulWidget {
 
 class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
     with TickerProviderStateMixin {
-  TabController _tabController;
+   TabController _tabController;
    Dio dio=initDio();
- Future<Response> res;
+   Response res;
+
 
   void initState() {
     _tabController = TabController(

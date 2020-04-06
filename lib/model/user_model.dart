@@ -18,7 +18,8 @@ class User extends ChangeNotifier {
   static const String _LOGINMONTH_JSON = "loginmonth";
   static const String _LOGINNUM_JSON = "loginnum";
   static const String _LOGINYEAR_JSON = "loginyear";
-
+  static const String _ACCOUNT_TYPE_JSON = "acountype";
+  static const String  _REMEMBER_JSON = "remember";
 
   String _userId;
   String _password;
@@ -57,6 +58,10 @@ class User extends ChangeNotifier {
     _userId = json[_ID_JSON];
     _password = json[_PASSWORD_JSON];
     _mail = json[_Mail_JSON];
+    _tel = json[_TEL_JSON];
+    _loginMonth = json[_LOGINMONTH_JSON];
+    _loginNum = json[_LOGINNUM_JSON];
+    _loginYear = json[_LOGINYEAR_JSON];
   }
 
   Map<String, dynamic> toJson() {
@@ -67,4 +72,18 @@ class User extends ChangeNotifier {
     };
     return user;
   }
+
+  Map<String, dynamic> toNRmbJson() => {
+    _ID_JSON: _userId,
+    _PASSWORD_JSON: _password,
+    _ACCOUNT_TYPE_JSON: "mail",
+    _REMEMBER_JSON: false,
+  };
+
+  Map<String, dynamic> toRmbJson() => {
+    _ID_JSON: _userId,
+    _PASSWORD_JSON: _password,
+    _ACCOUNT_TYPE_JSON: "mail",
+    _REMEMBER_JSON: true,
+  };
 }

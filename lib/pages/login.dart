@@ -8,6 +8,7 @@ import 'package:membership_card/network/client.dart';
 import 'package:provider/provider.dart';
 import 'package:membership_card/model/card_model.dart';
 import 'package:membership_card/model/card_count.dart';
+import 'package:membership_card/model/user_count.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -26,6 +27,8 @@ class LoginPageState extends State<LoginPage> {
   String _loginMsg;
   String _userIdErrMsg;
   String _passwordErrMsg;
+  bool remember = false;
+  bool _checkboxSelected=true; //维护复选框状态
 
   var dio = initDio();
   Response res1;
@@ -86,7 +89,7 @@ class LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    var _nameTextField = TextField(
+    var _IdTextField = TextField(
       decoration: InputDecoration(
         labelText: "userId",
         errorText: _userIdErrMsg,
@@ -114,20 +117,24 @@ class LoginPageState extends State<LoginPage> {
               padding: const EdgeInsets.all(24.0),
               child: Column(
                 children: <Widget>[
-                  _nameTextField,
+                  _IdTextField,
                   _passwordTextField,
-                  Flex(
-                    direction: Axis.horizontal,
+                  Row(
                     children: <Widget>[
-                      Spacer(),
-                      FlatButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, "/forgetPage");
-                        },
-                        child: Text("Forget password?"),
-                      )
+                      Checkbox(
+                        value: _checkboxSelected,
+                        activeColor: Colors.red, //选中时的颜色
+                        onChanged:(value){
+                          setState(() {
+                            _checkboxSelected=value;
+                            remember=true;
+                          });
+                        } ,
+                      ),
+                      Text("Remember Password"),
                     ],
                   ),
+
                   Consumer<User>(
                     builder: (context, user, child) => Flex(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -142,13 +149,37 @@ class LoginPageState extends State<LoginPage> {
                             });
                             user.userId = _userIdController.text;
                             user.password = _passwordController.text;
-                            res1 = await dioLogin(dio, user);
-                            setState(() {
-                              isSent = false;
-                            });
+                            List userList = Provider.of<UserCounter>(context).userList;
+                            int i=0;
+                            for(; i < userList.length; i++){
+                              if(user.userId == userList[i].userId){   //之前保存了这个账号的信息了
+                                user = userList[i];
+                                res1 = await dioLoginRmb(dio,user);
+                                break;
+                              }
+                            }
+                            //判断是否使用cookie直接登录
+                            if(i == userList.length){          //之前没有保存这个用户的账号
+                              if(remember=true){             //当前选中记住密码
+                                res1 = await dioLoginRmb(dio, user);
+                              }
+                              else{                          //当前没有选择记住密码
+                                res1 = await dioLoginNRmb(dio, user);
+                              }
+                              setState(() {
+                                isSent = false;
+                              });
+                            }
+
+                            ///登录成功
                             if (res1.statusCode == 200) {
                               try {
-                                dioGetAllCards(dio).then((res2){
+                                user = User.fromJson(json.decode(res1.data));
+                                if(remember == true && i == userList.length){    //当前选择记住密码且之前没有保存这个用户的账号
+                                  Provider.of<UserCounter>(context).addUser(user);
+                                }
+
+                                dioGetAllCards(dio, user.userId).then((res2){
 
                                   var list = json.decode(res2.data) as List;
                                   List<CardInfo> cards = list.map((i)=> CardInfo.fromJson(i)).toList();
@@ -176,7 +207,10 @@ class LoginPageState extends State<LoginPage> {
                                       content: Text(_loginMsg),
                                     ));
                               }
-                            } else if (res1.statusCode == 400) {
+                            }
+
+                            //登录失败
+                            else if (res1.statusCode == 400) {
                               _loginMsg =
                               "Network connection failed, "
                                   "check your network";
@@ -184,7 +218,8 @@ class LoginPageState extends State<LoginPage> {
                                 title: Text("Alert"),
                                 content: Text(_loginMsg),
                               ));
-                            } else if (res1.statusCode == 406) {
+                            }
+                            else if (res1.statusCode == 406) {
                               _loginMsg = "Account does not exist Or Password error";
                               showDialog(context: context, builder: (_) => AlertDialog(
                                 title: Text("Alert"),
@@ -227,6 +262,23 @@ class LoginPageState extends State<LoginPage> {
                       _loginMsg == null ? "" : _loginMsg,
                       textAlign: TextAlign.center,
                     ),
+                  ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      FlatButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, "/forgetPage");
+                        },
+                        child: Text("Forget password?",
+                            style: TextStyle(
+                              color: Colors.grey,
+                              decoration: TextDecoration.underline
+                            )
+                        ),
+                      )
+                    ],
                   ),
                 ],
               ),
