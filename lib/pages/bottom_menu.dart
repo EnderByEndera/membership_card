@@ -11,7 +11,7 @@ class BottomMenuPageState extends State<BottomMenuPage>
     with SingleTickerProviderStateMixin{
 
   int _currentIndex = 0;  //设置当前显示的页面索引
-  List<Widget> viewlist = [AllCardsMainPage(), UserInfoPage()];
+  List<Widget> viewList = [AllCardsMainPage(), UserInfoPage()];
 
   @override
   void initState() {
@@ -22,7 +22,7 @@ class BottomMenuPageState extends State<BottomMenuPage>
   Widget build(BuildContext context){
     return Container(
       child: Scaffold(
-        body: viewlist[_currentIndex],
+        body: viewList[_currentIndex],
         bottomNavigationBar: SafeArea(
           child: BottomNavigationBar(
             items: [
