@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:membership_card/model/user_count.dart';
 import 'package:membership_card/pages/add_cards_with_camera.dart';
 import 'package:membership_card/pages/all_cards.dart';
 import 'package:membership_card/model/card_count.dart';
@@ -50,7 +51,8 @@ class GoWallet extends StatelessWidget {
           ),
           ChangeNotifierProvider(
             builder: (_) => User(),
-          )
+          ),
+          ChangeNotifierProvider(builder: (_) => UserCounter(),)
         ],
         child: MaterialApp(
           title: 'GoWallet App',

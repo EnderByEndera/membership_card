@@ -39,12 +39,18 @@ Future<Response<T>> dioGetAllCards<T>(Dio dio, String userId) async {
   }
 }
 
-Future<Response<T>> dioLoginNRmb<T>(Dio dio, User user) async {
+Future<Response<T>> dioLogin<T>(Dio dio, User user, String type, bool remember) async {
   Response res = Response();
+  Map<String, dynamic> toJson() => {
+    "account": user.userId,
+    "password": user.password,
+    "accounttype": type,
+    "remember": remember,
+  };
   try {
     res = await dio.put<String>(
       "/v1/api/user/login",
-      data: jsonEncode(user.toNRmbJson()),
+      data: jsonEncode(toJson()),
     );
     print("${res.statusCode}");
 
@@ -60,12 +66,11 @@ Future<Response<T>> dioLoginNRmb<T>(Dio dio, User user) async {
   return res;
 }
 
-Future<Response<T>> dioLoginRmb<T>(Dio dio, User user) async {
+Future<Response<T>> dioLoginWithCookie<T>(Dio dio) async {
   Response res = Response();
   try {
-    res = await dio.put<String>(
+    res = await dio.get<String>(
       "/v1/api/user/login",
-      data: jsonEncode(user.toRmbJson()),
     );
     print("${res.statusCode}");
 

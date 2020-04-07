@@ -25,7 +25,7 @@ class CardInfo extends ChangeNotifier{
   static const String COUPON_NUM_JSON = "coupon_num";
   static const String ADDRESS_JSON     = "address";
   static const String BATCH_NUM_JSON   = "batch_num";
-  static const String CARD_ID_JSON     = "id";
+  static const String CARD_ID_JSON     = "card_id";
   static const String CARD_TYPE_JSON     = "card_type";
   static const String CITY_JSON        = "city";
   static const String DESCRIPTION_JSON = "description";
