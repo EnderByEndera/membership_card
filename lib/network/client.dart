@@ -4,6 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:membership_card/model/card_model.dart';
 import 'package:membership_card/model/user_model.dart';
 import 'package:membership_card/model/card_count.dart';
+import 'dart:async';
+
 const SERVER_URL = "http://106.15.198.136";
 const PORT       = "8080";
 
@@ -86,12 +88,18 @@ Future<Response<T>> dioLoginWithCookie<T>(Dio dio) async {
   return res;
 }
 
-Future<Response<T>> dioChangePass<T>(Dio dio, User user) async{
+Future<Response<T>> dioChangePass<T>(Dio dio, String userId, String oldPassword, String newPassword) async{
   Response res = Response();
+  Map<String,dynamic> data={
+    "UserId": userId,
+    "OldPassword":oldPassword,
+    "NewPassword":newPassword,
+  };
+
   try {
     res = await dio.put<String>(
-      "/v1/api/user/",
-      data: jsonEncode(user.toJson()),
+      "/v1/api/user/password",
+      data: jsonEncode(data),
     );
     print("${res.statusCode}");
 
@@ -166,7 +174,7 @@ Future<Response<T>> dioDelete<T>(CardInfo cardInfo, Dio dio) async {
   var res = Response();
   try {
     res = await dio.post(
-      "/v1/api/user/card/{id}/delete",
+      "/v1/api/user/card/:id/delete",
       data: jsonEncode(cardInfo.idToJson()),
       queryParameters: cardInfo.idToJson(),
     );
@@ -187,12 +195,15 @@ Future<Response<T>> dioDelete<T>(CardInfo cardInfo, Dio dio) async {
 
 Future<Response<T>> dioAdd<T>(Dio dio,CardInfo cardInfo)async {
   Response res=Response();
-
+ Map<String,dynamic> data={
+   "CardID":cardInfo.cardId,
+   "Enterprise":cardInfo.eName,
+  };
   try{
     res=await dio.post(
    " /v1/api/user/card/add",
-       data: jsonEncode(cardInfo.idToJson()),
-      queryParameters: cardInfo.idToJson(),
+       data: jsonEncode(data),
+      queryParameters: data,
     );
     print("${res.statusCode}");
   } on DioError catch(e) {
@@ -211,14 +222,17 @@ Future<Response<T>> dioAdd<T>(Dio dio,CardInfo cardInfo)async {
 
 
 
-Future<Response<T>> dioModify<T>(Dio dio,CardInfo cardInfo)async{
+Future<Response<T>> dioModify<T>(Dio dio,String cardId,String eName)async{
   Response res=Response();
-
+  Map<String,dynamic> data={
+    "CardID":cardId,
+    "Enterprise":eName,
+  };
   try{
     res=await dio.put(
-      "/v1/api/user/card/{id}/info",
-      data: jsonEncode(cardInfo.toJson()),
-      queryParameters: cardInfo.toJson(),
+      "/v1/api/user/card/:id/info",
+      data: jsonEncode(data),
+      queryParameters: data,
     );
     print("${res.statusCode}");
   } on DioError catch(e) {
