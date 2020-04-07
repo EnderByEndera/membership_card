@@ -23,7 +23,7 @@ class User extends ChangeNotifier {
   String _userId;
   String _password;
   String _mail;
-  String _tel;
+  String _tel = "undefined";
   String _loginMonth;
   String _loginNum;
   String _loginYear;

@@ -16,18 +16,19 @@ class RegisterPage extends StatefulWidget {
 }
 
 class RegisterPageState extends State<RegisterPage> {
-  String _usernameErrMsg;
+  String _telErrMsg;
   String _emailErrMsg;
   String _passwordErrMsg;
   String _passwordRepeatErrMsg;
   String _verifyCodeErrMsg;
   String _verifyCode;
-  bool _usernameCorrect = false;
+  bool _telCorrect = false;
   bool _emailCorrect = false;
   bool _passwordCorrect = false;
   bool _passwordRepeatCorrect = false;
   bool _verifyCorrect = false;
-  var _usernameController = TextEditingController();
+  bool _verifyNotEmpty = false;
+  var _telController = TextEditingController();
   var _emailController = TextEditingController();
   var _passwordController = TextEditingController();
   var _passwordRepeatController = TextEditingController();
@@ -45,32 +46,27 @@ class RegisterPageState extends State<RegisterPage> {
   @override
   void initState() {
     super.initState();
-    _usernameController.addListener(() {
-      if (_usernameController.text.isEmpty) {
+    _telController.addListener(() {
+      if (_telController.text.contains(RegExp(r"\W"))) {
         setState(() {
-          _usernameCorrect = false;
-          _usernameErrMsg = "Can not be empty";
+          _telCorrect = false;
+          _telErrMsg = "Can only input English and Numbers";
         });
-      } else if (_usernameController.text.contains(RegExp(r"\W"))) {
+      } else if (_telController.text.isEmpty) {
         setState(() {
-          _usernameCorrect = false;
-          _usernameErrMsg = "Can only input English and Numbers";
+          _telCorrect = false;
+          _telErrMsg = "Can not be empty";
         });
       } else {
         setState(() {
-          _usernameCorrect = true;
-          _usernameErrMsg = null;
+          _telCorrect = true;
+          _telErrMsg = null;
         });
       }
     });
 
     _emailController.addListener(() {
-      if (_emailController.text.contains(RegExp(r"\W"))) {
-        setState(() {
-          _emailCorrect = false;
-          _emailErrMsg = "Can only input English and Numbers";
-        });
-      } else if (_emailController.text.isEmpty) {
+      if (_emailController.text.isEmpty) {
         setState(() {
           _emailCorrect = false;
           _emailErrMsg = "Email can not be empty";
@@ -108,7 +104,7 @@ class RegisterPageState extends State<RegisterPage> {
     });
 
     _passwordRepeatController.addListener(() {
-      if (_passwordController.text != _passwordController.text) {
+      if (_passwordRepeatController.text != _passwordController.text) {
         setState(() {
           _passwordRepeatCorrect = false;
           _passwordRepeatErrMsg = "The two passwords you typed do not match";
@@ -170,11 +166,12 @@ class RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     var _usernameTextFiled = TextField(
       decoration: InputDecoration(
-        hintText: "Username",
-        labelText: "Username",
-        errorText: _usernameErrMsg,
+        hintText: "Telephone number",
+        labelText: "Telephone number",
+        errorText: _telErrMsg,
       ),
-      controller: _usernameController,
+      controller: _telController,
+      maxLength: 24,
     );
 
     var _emailTextField = TextField(
@@ -184,6 +181,7 @@ class RegisterPageState extends State<RegisterPage> {
         errorText: _emailErrMsg,
       ),
       controller: _emailController,
+      maxLength: 30,
     );
 
     var _passwordTextField = TextField(
@@ -193,22 +191,25 @@ class RegisterPageState extends State<RegisterPage> {
         errorText: _passwordErrMsg,
       ),
       controller: _passwordController,
+      obscureText: true,
+      maxLength: 16,
     );
 
     var _passwordRepeatTextField = TextField(
       decoration: InputDecoration(
-        hintText: "RepeatPassword",
-        labelText: "RepeatPassword",
+        hintText: "Repeat password",
+        labelText: "Repeat password",
         errorText: _passwordRepeatErrMsg,
       ),
       controller: _passwordRepeatController,
+      obscureText: true,
+      maxLength: 16,
     );
 
     var _verifyCodeTextField = TextField(
       decoration: InputDecoration(
-        hintText: "VerificationCode",
-        labelText: "VerificationCode",
-        errorText: _verifyCodeErrMsg,
+        hintText: "Verification code",
+        labelText: "Verification code",
       ),
       controller: _verifyController,
     );
@@ -217,29 +218,32 @@ class RegisterPageState extends State<RegisterPage> {
       appBar: AppBar(
         title: Text('Register Your Account'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          children: <Widget>[
-            _usernameTextFiled,
-            _passwordTextField,
-            _passwordRepeatTextField,
-            Row(
+      body: ListView(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
+                _usernameTextFiled,
+                _passwordTextField,
+                _passwordRepeatTextField,
                 _emailTextField,
                 MaterialButton(
                   onPressed: () async {
                     if (_countdownTime == 0 && _emailCorrect) {
                       resVerify = await dioRegisterVerify(dio, _emailController.text);
+                      print(resVerify.statusCode);
                       if (resVerify.statusCode == 200){
-                        _verifyCode = jsonDecode(resVerify.data)["生成的验证码"];
+                        _verifyCode = jsonDecode(resVerify.data)["data"];
                       } else if (resVerify.statusCode == 400) {
                         showDialog(
-                          context: context,
-                          builder: (_) => AlertDialog(
-                            title: Text("Error"),
-                            content: Text("Network connection failed"),
-                          )
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              title: Text("Error"),
+                              content: Text("Network connection failed"),
+                            )
                         );
                       } else if (resVerify.statusCode == 500){
                         showDialog(
@@ -247,6 +251,14 @@ class RegisterPageState extends State<RegisterPage> {
                             builder: (_) => AlertDialog(
                               title: Text("Error"),
                               content: Text("Server Error"),
+                            )
+                        );
+                      } else if (resVerify.statusCode == 404){
+                        showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              title: Text("Error"),
+                              content: Text("404"),
                             )
                         );
                       }
@@ -258,77 +270,88 @@ class RegisterPageState extends State<RegisterPage> {
                   },
                   child: Container(
                     child: Text(
-                      _countdownTime > 0 ? '$_countdownTime' : 'Send verification code',
+                      _countdownTime > 0 ? '${_countdownTime}s' : 'Send verification code',
                       textAlign: TextAlign.center,
                     ),
                   ),
-                )
-              ],
-            ),
-            _verifyCodeTextField,
-            MaterialButton(
-              onPressed: _usernameCorrect && _passwordCorrect && _passwordRepeatCorrect && _verifyCorrect && _emailCorrect
-                  ? () async {
-                _registerMsg = "";
-                setState(() {
-                  isSent = true;
-                });
-                User user = User(_usernameController.text,_passwordController.text);
-                user.mail = _emailController.text;
-                resSignUp = await dioRegister(dio, user);
-                setState(() {
-                  isSent = false;
-                });
-                if (resSignUp.statusCode == 200) {
-                  print("${resSignUp.data}");
-                  try {
-                    Map<String, dynamic> json = jsonDecode(resSignUp.data);
-                    if (json["registerInfo"] == "success") {
-                      _registerMsg = "Register Succeeded";
-                      Navigator.of(context).pop();
-                    } else {
-                      _registerMsg = "Register Failed!";
+                ),
+                _verifyCodeTextField,
+                MaterialButton(
+                  onPressed: _telCorrect && _passwordCorrect && _passwordRepeatCorrect && _emailCorrect
+                      ? () async {
+                    if (!_verifyCorrect){
                       showDialog(
                           context: context,
                           builder: (_) => AlertDialog(
-                            title: Text("Alert"),
-                            content: Text(_registerMsg),
+                            title: Text("Register Failed!"),
+                            content: Text("Wrong verification code"),
                           ));
+                      setState(() {
+                        _verifyController.clear();
+                      });
                     }
-                  } on FormatException {
-                    _registerMsg = "Register Failed";
-                    showDialog(
-                        context: context,
-                        builder: (_) => AlertDialog(
-                          title: Text("Alert"),
-                          content: Text(_registerMsg),
-                        ));
-                  }
-                } else if (resSignUp.statusCode == 400 ||
-                    resSignUp.statusCode == 404) {
-                  _registerMsg =
-                  "Network connection failed, "
-                      "check your network";
-                  showDialog(context: context, builder: (_) => AlertDialog(
-                    title: Text("Alert"),
-                    content: Text(_registerMsg),
-                  ));
-                } else if (resSignUp.statusCode >= 500) {
-                  _registerMsg = "Server error";
-                }
-              } : null,
-              color: Colors.blue,
-              child: Container(
-                child: Text(
-                  "Sign Up",
-                  textAlign: TextAlign.center,
-                  //style: TextStyle(fontSize: 20.0),
+                    _registerMsg = "";
+                    setState(() {
+                      isSent = true;
+                    });
+                    User user = User("undefined",_passwordController.text);
+                    user.mail = _emailController.text;
+                    user.tel = _telController.text;
+                    resSignUp = await dioRegister(dio, user, _verifyController.text);
+                    setState(() {
+                      isSent = false;
+                    });
+                    if (resSignUp.statusCode == 200) {
+                      print("${resSignUp.data}");
+                      try {
+                        Map<String, dynamic> json = jsonDecode(resSignUp.data);
+                        if (json["msg"] == "success") {
+                          _registerMsg = "Register Succeeded";
+                          Navigator.of(context).pop();
+                        } else {
+                          _registerMsg = json["msg"];
+                          showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                title: Text("Register Failed!"),
+                                content: Text(_registerMsg),
+                              ));
+                        }
+                      } on FormatException {
+                        showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              title: Text("Register Failed!"),
+                              content: Text(_registerMsg),
+                            ));
+                      }
+                    } else if (resSignUp.statusCode == 400 ||
+                        resSignUp.statusCode == 404) {
+                      _registerMsg =
+                      "Network connection failed, "
+                          "check your network";
+                      showDialog(context: context, builder: (_) => AlertDialog(
+                        title: Text("Alert"),
+                        content: Text(_registerMsg),
+                      ));
+                    } else if (resSignUp.statusCode >= 500) {
+                      _registerMsg = "Server error";
+                    }
+                  } : null,
+                  color: Colors.blue,
+                  child: Container(
+                    child: Text(
+                      "Sign Up",
+                      textAlign: TextAlign.center,
+                      //style: TextStyle(fontSize: 20.0),
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        ],
+      )
     );
   }
 }

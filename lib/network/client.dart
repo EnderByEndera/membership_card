@@ -81,16 +81,25 @@ Future<Response<T>> dioChangePass<T>(Dio dio, User user) async{
   return res;
 }
 
-Future<Response<T>> dioRegister<T>(Dio dio, User user) async {
+Future<Response<T>> dioRegister<T>(Dio dio, User user, String verify) async {
   Response res = Response();
+  Map<String, dynamic> data = {
+    "Tel" : user.tel,
+    "Mail" : user.mail,
+    "Password" : user.password,
+    "Verify" : verify
+  };
+
   try {
+    print(verify);
     res = await dio.post<String>(
-      "/v1/api/user/register",
-      data: jsonEncode(user.toJson()),
+      "/v1/api/user/enroll",
+      data: jsonEncode(data),
     );
-    print("${res.statusCode}");
+    print(res);
 
   } on DioError catch (e) {
+    print(res);
     if (e.response == null) {
       res.statusCode = 500;
       res.data = "Error from the server, meet 500 error";
@@ -104,14 +113,18 @@ Future<Response<T>> dioRegister<T>(Dio dio, User user) async {
 
 Future<Response<T>> dioRegisterVerify<T>(Dio dio, String mail) async {
   Response res = Response();
+  Map<String, String> body = {"Email" : mail};
   try {
-    res = await dio.get<String>(
-      "/v1/api/user/enroll",
-      queryParameters: {"email" : mail},
+    print(mail);
+    res = await dio.post<String>(
+      "/v1/api/user/verify",
+      data: jsonEncode(body),
     );
-//    print("${res.statusCode}");
+    print("${res.statusCode}");
+    print(res);
 
   } on DioError catch (e) {
+    print(res);
     if (e.response == null) {
       res.statusCode = 500;
       res.data = "Error from the server, meet 500 error";
