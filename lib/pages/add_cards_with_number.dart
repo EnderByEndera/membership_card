@@ -116,12 +116,24 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
               dioAdd(dio, CardInfo(cardController.value.text,
                 cardStoreController.value.text,
               )).then((res){
-                Navigator.pop(context);
-                counter.addCard(CardInfo(
-                  cardController.value.text,
-                  cardStoreController.value.text,
-                ));
-                print(res.statusCode);
+                if(res.statusCode==200) {
+                  Navigator.pop(context);
+                  counter.addCard(CardInfo(
+                    cardController.value.text,
+                    cardStoreController.value.text,
+                  ));
+                  print(res.statusCode);
+                }else {
+                  showDialog(
+                      context: context,
+                      builder: (_) =>
+                          AlertDialog(
+                            title: Text("Alert"),
+                            content: Text("Failed to add a card!"),
+                          ));
+                  print(res.statusCode);
+                  print(res);
+                }
               });
 
             }catch(e){

@@ -4,6 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:membership_card/model/card_model.dart';
 import 'package:membership_card/model/user_model.dart';
 import 'package:membership_card/model/card_count.dart';
+import 'dart:async';
+
 const SERVER_URL = "http://106.15.198.136";
 const PORT       = "8080";
 
@@ -86,12 +88,18 @@ Future<Response<T>> dioLoginWithCookie<T>(Dio dio) async {
   return res;
 }
 
-Future<Response<T>> dioChangePass<T>(Dio dio, User user) async{
+Future<Response<T>> dioChangePass<T>(Dio dio, String userId, String oldPassword, String newPassword) async{
   Response res = Response();
+  Map<String,dynamic> data={
+    "UserId": userId,
+    "OldPassword":oldPassword,
+    "NewPassword":newPassword,
+  };
+
   try {
     res = await dio.put<String>(
-      "/v1/api/user/",
-      data: jsonEncode(user.toJson()),
+      "/v1/api/user/password",
+      data: jsonEncode(data),
     );
     print("${res.statusCode}");
 
@@ -107,16 +115,25 @@ Future<Response<T>> dioChangePass<T>(Dio dio, User user) async{
   return res;
 }
 
-Future<Response<T>> dioRegister<T>(Dio dio, User user) async {
+Future<Response<T>> dioRegister<T>(Dio dio, User user, String verify) async {
   Response res = Response();
+  Map<String, dynamic> data = {
+    "Tel" : user.tel,
+    "Mail" : user.mail,
+    "Password" : user.password,
+    "Verify" : verify
+  };
+
   try {
+    print(verify);
     res = await dio.post<String>(
-      "/v1/api/user/register",
-      data: jsonEncode(user.toJson()),
+      "/v1/api/user/enroll",
+      data: jsonEncode(data),
     );
-    print("${res.statusCode}");
+    print(res);
 
   } on DioError catch (e) {
+    print(res);
     if (e.response == null) {
       res.statusCode = 500;
       res.data = "Error from the server, meet 500 error";
@@ -130,14 +147,18 @@ Future<Response<T>> dioRegister<T>(Dio dio, User user) async {
 
 Future<Response<T>> dioRegisterVerify<T>(Dio dio, String mail) async {
   Response res = Response();
+  Map<String, String> body = {"Email" : mail};
   try {
-    res = await dio.get<String>(
-      "/v1/api/user/enroll",
-      queryParameters: {"email" : mail},
+    print(mail);
+    res = await dio.post<String>(
+      "/v1/api/user/verify",
+      data: jsonEncode(body),
     );
-//    print("${res.statusCode}");
+    print("${res.statusCode}");
+    print(res);
 
   } on DioError catch (e) {
+    print(res);
     if (e.response == null) {
       res.statusCode = 500;
       res.data = "Error from the server, meet 500 error";
@@ -153,7 +174,7 @@ Future<Response<T>> dioDelete<T>(CardInfo cardInfo, Dio dio) async {
   var res = Response();
   try {
     res = await dio.post(
-      "/v1/api/user/card/{id}/delete",
+      "/v1/api/user/card/:id/delete",
       data: jsonEncode(cardInfo.idToJson()),
       queryParameters: cardInfo.idToJson(),
     );
@@ -174,12 +195,15 @@ Future<Response<T>> dioDelete<T>(CardInfo cardInfo, Dio dio) async {
 
 Future<Response<T>> dioAdd<T>(Dio dio,CardInfo cardInfo)async {
   Response res=Response();
-
+ Map<String,dynamic> data={
+   "CardID":cardInfo.cardId,
+   "Enterprise":cardInfo.eName,
+  };
   try{
     res=await dio.post(
    " /v1/api/user/card/add",
-       data: jsonEncode(cardInfo.idToJson()),
-      queryParameters: cardInfo.idToJson(),
+       data: jsonEncode(data),
+      queryParameters: data,
     );
     print("${res.statusCode}");
   } on DioError catch(e) {
@@ -198,14 +222,17 @@ Future<Response<T>> dioAdd<T>(Dio dio,CardInfo cardInfo)async {
 
 
 
-Future<Response<T>> dioModify<T>(Dio dio,CardInfo cardInfo)async{
+Future<Response<T>> dioModify<T>(Dio dio,String cardId,String eName)async{
   Response res=Response();
-
+  Map<String,dynamic> data={
+    "CardID":cardId,
+    "Enterprise":eName,
+  };
   try{
     res=await dio.put(
-      "/v1/api/user/card/{id}/info",
-      data: jsonEncode(cardInfo.toJson()),
-      queryParameters: cardInfo.toJson(),
+      "/v1/api/user/card/:id/info",
+      data: jsonEncode(data),
+      queryParameters: data,
     );
     print("${res.statusCode}");
   } on DioError catch(e) {
@@ -277,12 +304,13 @@ Future<Response<T>>  dioScore<T>(Dio dio, String cardId, int increment)async{
 
 
 
-Future<Response<T>> diogetenroll<T>(Dio dio,String email)async{
+Future<Response<T>> diogetenroll<T>(Dio dio,String id)async{
   Response res = Response();
+  Map<String, dynamic> data = {
+    'Id':id,
+  };
   try {
-    res = await dio.get("/v1/api/user/enroll",
-        queryParameters:{'Mail':email}
-    );
+    res = await dio.post("/v1/api/user/forgetPw", data:jsonEncode(data));
     return res;
   } on DioError catch (e) {
     if (e.response == null) {
@@ -296,13 +324,18 @@ Future<Response<T>> diogetenroll<T>(Dio dio,String email)async{
   }
 }
 
-Future<Response<T>> dioforgetpassword<T>(Dio dio,String userid,String password)async{
+Future<Response<T>> dioforgetpassword<T>(Dio dio,String userid,String password,String code)async{
   Response res=Response();
-
+  Map<String, dynamic> data = {
+    'Id':userid,
+    "NewPassword":password,
+    "Verify":code
+  };
+  print(data);
   try{
-    res=await dio.put(
-      " /v1/api/user/ForgetPassword/New",
-      data: {'Id':userid,"Password":password},
+    res=await dio.post(
+      " /v1/api/user/forgetPw/New",
+      data: jsonEncode(data),
     );
     print("${res.statusCode}");
   } on DioError catch(e) {
@@ -313,6 +346,30 @@ Future<Response<T>> dioforgetpassword<T>(Dio dio,String userid,String password)a
     }else {
       res.statusCode = e.response.statusCode;
       return res;
+    }
+  }
+  return res;
+}
+Future<Response<T>> dioForgetVerify<T>(Dio dio, String mail) async {
+  Response res = Response();
+  Map<String, String> body = {"Email" : mail};
+  try {
+    print(mail);
+    res = await dio.post<String>(
+      "/v1/api/user/verify",
+      data: jsonEncode(body),
+    );
+    print("${res.statusCode}");
+    print(res);
+
+  } on DioError catch (e) {
+    print(res);
+    if (e.response == null) {
+      res.statusCode = 500;
+      res.data = "Error from the server, meet 500 error";
+      return res;
+    } else {
+      return e.response;
     }
   }
   return res;

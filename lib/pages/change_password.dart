@@ -17,11 +17,18 @@ class ChangePasswordPage extends StatefulWidget {
 class ChangePasswordPageState extends State<ChangePasswordPage>{
   var _newPasswordController=TextEditingController();
   var _verifyNewPasswordController=TextEditingController();
+  var _oldPasswordController=TextEditingController();
+
   bool _rePasswordCorrect = false;
   bool _passwordCorrect = false;
+  bool _oldPasswordCorrect = false;
+
   bool isSent = false;
   String _passwordErrMsg;
   String _rePasswordErrMsg;
+  String _oldPasswordErrMsg;
+
+
   String _prePassword;
   String _changePassMsg;
 
@@ -33,12 +40,28 @@ class ChangePasswordPageState extends State<ChangePasswordPage>{
   void dispose() {
     _newPasswordController.dispose();
     _verifyNewPasswordController.dispose();
+    _oldPasswordController.dispose();
     super.dispose();
   }
 
   @override
   void initState(){
     super.initState();
+
+    _oldPasswordController.addListener((){
+      if(_oldPasswordController.text!=_prePassword){
+        setState(() {
+          _oldPasswordCorrect=false;
+          _oldPasswordErrMsg="Please Input The Correct Old Password";
+        });
+      }else{
+        _oldPasswordCorrect=true;
+        _oldPasswordErrMsg=null;
+      }
+
+    }
+    );
+
     _newPasswordController.addListener(() {
       if (_newPasswordController.text.contains(RegExp(r"\W"))) {
         setState(() {
@@ -80,11 +103,13 @@ class ChangePasswordPageState extends State<ChangePasswordPage>{
       }
     });
   }
+  GlobalKey _formKey = GlobalKey<FormState>();
+
 
   @override
 
   Widget build(BuildContext context) {
-  var newPasswordTextField = TextFormField(
+  var _newPasswordTextField = TextFormField(
     obscureText: true,
     decoration: InputDecoration(
     labelText: "Please Input New Password",
@@ -97,7 +122,7 @@ class ChangePasswordPageState extends State<ChangePasswordPage>{
     maxLength: 24,
   );
 
-  var verifyPasswordTextField = TextFormField(
+  var _verifyPasswordTextField = TextFormField(
     obscureText: true,
     decoration: InputDecoration(
       labelText: "Please Input New Password",
@@ -109,6 +134,20 @@ class ChangePasswordPageState extends State<ChangePasswordPage>{
     controller: _verifyNewPasswordController,
     maxLength: 24,
   );
+
+  var _oldPasswordTextField = TextFormField(
+    obscureText: true,
+    decoration: InputDecoration(
+      labelText: "Please Input Old Password",
+      errorText: _oldPasswordErrMsg,
+      contentPadding: EdgeInsets.all(10.0),
+      icon: Icon(Icons.edit),
+    ),
+    keyboardType: TextInputType.text,
+    controller: _oldPasswordController,
+    maxLength: 24,
+  );
+
 
     return Scaffold(
         appBar: AppBar(
@@ -139,22 +178,19 @@ class ChangePasswordPageState extends State<ChangePasswordPage>{
             Consumer<User>(
              builder: (context, user, child) => FlatButton(
                //require connection
-              onPressed: _rePasswordCorrect&&_passwordCorrect?() async{
+              onPressed: (_rePasswordCorrect&&_passwordCorrect&&_oldPasswordCorrect)?() async{
                 _changePassMsg = "";
                 setState(() {
                   isSent = true;
                 });
                 //new password
                 user.password = _newPasswordController.text;
-                res = await dioChangePass(dio, user);
+                res = await dioChangePass(dio, user.userId, _prePassword,_newPasswordController.text);
                 setState(() {
                   isSent = false;
                 });
                 if (res.statusCode == 200) {
                   try {
-                    Map<String, dynamic> json =
-                    jsonDecode(res.data);
-                    if (json["changeInfo"] == "success") {
                       Navigator.pop(context);
                       _changePassMsg = "successfully changed!";
                       showDialog(
@@ -164,16 +200,7 @@ class ChangePasswordPageState extends State<ChangePasswordPage>{
                                 title: Text("Alert"),
                                 content: Text(_changePassMsg),
                               ));
-                    } else {
-                      _changePassMsg = "Change Failed!";
-                      showDialog(
-                          context: context,
-                          builder: (_) =>
-                              AlertDialog(
-                                title: Text("Alert"),
-                                content: Text(_changePassMsg),
-                              ));
-                    }
+
                   } on FormatException {
                     _changePassMsg = "Login Failed";
                     showDialog(
@@ -204,7 +231,38 @@ class ChangePasswordPageState extends State<ChangePasswordPage>{
             ),
             )
           ],
-        )
+        ),
+
+
+       body: GestureDetector(
+         behavior: HitTestBehavior.translucent,
+         onTap: () {
+           FocusScope.of(context).requestFocus(FocusNode());
+         },
+         child: ListView(
+           children: <Widget>[
+             Form(
+               key: _formKey,
+               autovalidate: true,
+               child: Column(
+                 children: <Widget>[
+                   Text("Change Your Password",textAlign: TextAlign.center,maxLines: 1,style:
+                   TextStyle(
+                       color: Colors.orange
+                   ),),
+
+
+                   _oldPasswordTextField,
+                   _newPasswordTextField,
+                   _verifyPasswordTextField,
+
+                 ],
+               ),
+
+             ),
+           ],
+         ),
+    ),
 
     );
   }

@@ -96,13 +96,23 @@ class EditCardPageState extends  State<EditCardPage>
               onPressed: () {
                if((_formKey.currentState as FormState).validate()) {
                 try {
-                  dioModify(dio, args["card"]).then((res){
-                    Navigator.pop(context);
-                    Provider.of<CardCounter>(context, listen: false).editCard(
-                        args["card"],
-                        cardController.value.text,
-                        cardStoreController.value.text);
-                    print(res.statusCode);
+                  dioModify(dio,cardController.text,cardStoreController.text).then((res){
+                    if(res.statusCode==200) {
+                      Navigator.pop(context);
+                      Provider.of<CardCounter>(context, listen: false).editCard(
+                          args["card"],
+                          cardController.value.text,
+                          cardStoreController.value.text);
+                      print(res.statusCode);
+                    }else {
+                      showDialog(
+                          context: context,
+                          builder: (_) =>
+                              AlertDialog(
+                                title: Text("Alert"),
+                                content: Text("Failed to edit a card!"),
+                              ));
+                    }
                   }
                   );
                 }catch(e){
