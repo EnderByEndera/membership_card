@@ -79,7 +79,10 @@ class FindPasswordPageState extends State<FindPasswordPage> {
 
                   onPressed: () {
                     print(args["id"]);
-                    dioforgetpassword(dio,args["id"], _passwordController.text);
+                    print(args["code"]);
+                    dioforgetpassword(dio,args["id"], _passwordController.text,args["code"]).then((res){
+                      print(res.statusCode);
+                    });
                     Navigator.of(context).popAndPushNamed('/loginPage'); //之后改为修改密码的界面
 
                   },
