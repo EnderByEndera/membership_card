@@ -109,12 +109,15 @@ class ForgetPasswordPageState extends State<ForgetPasswordPage> {
               children: <Widget>[
                 Spacer(),
                 FlatButton(
-
                   onPressed: () {
-                    diogetenroll(dio, _emailController.text).then((res){
-                      code=res.data;
+                    print(_idController.text);
+                    print(_emailController.text);
+                    diogetenroll(dio, _idController.text).then((res){
+                      print("send email\n");
+                      print(res.statusCode);
                     });
-                    showDialog(context: context, builder: (_) => emaildialog(code,_idController.text));
+                    dioForgetVerify(dio, _emailController.text);
+                    showDialog(context: context, builder: (_) => emaildialog(_idController.text));
                   },
 
                   child: Text("OK",style: TextStyle(fontSize: 20.0),),
@@ -128,7 +131,7 @@ class ForgetPasswordPageState extends State<ForgetPasswordPage> {
     );
 
   }
-  AlertDialog emaildialog(String code,String id ){
+  AlertDialog emaildialog(String id ){
     TextEditingController _textEditingController = new TextEditingController();
 
     return AlertDialog(
@@ -151,10 +154,10 @@ class ForgetPasswordPageState extends State<ForgetPasswordPage> {
       actions:<Widget>[
         FlatButton(
           onPressed: (){
-            if(code==_textEditingController.text) {
+
               Navigator.of(context).popAndPushNamed('/findpasswordpage',arguments:
-              {"id":id});
-            }
+              {"id":id,"code":_textEditingController.text});
+
 
           },
           child: Text("OK",
