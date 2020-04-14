@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:membership_card/network/client.dart';
+import 'package:membership_card/model/user_model.dart';
 
 class UserInfoPage extends StatefulWidget {
+  User user;
+  UserInfoPage(this.user);
+
   @override
-  State<StatefulWidget> createState() {
-    return UserInfoPageState();
-  }
+  State<StatefulWidget> createState() => UserInfoPageState(this.user);
 }
 
 class UserInfoPageState extends State<UserInfoPage> {
+  User user;
+  UserInfoPageState(this.user);
+
   @override
   Widget build(BuildContext context){
     return Scaffold(
@@ -69,7 +74,10 @@ class UserInfoPageState extends State<UserInfoPage> {
             ),
             GestureDetector(
               onTap: (){
-                Navigator.of(context).pushNamed("/changePasswordPage");
+                Navigator.of(context).pushNamed("/changePasswordPage",arguments: {
+                  "user": user
+                }
+                );
               },
               child: Container(
                 color: Colors.white,

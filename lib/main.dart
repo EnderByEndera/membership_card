@@ -81,7 +81,7 @@ class GoWallet extends StatelessWidget {
               CardInfo card = Provider.of<CardCounter>(context,listen:false).getCard(args["card"]);
               return EditCardPage(card.cardId, card.eName);
             },
-            "/user": (_) => UserInfoPage(),
+
             "/bottomMenu": (_) => BottomMenuPage(),
             "/changePasswordPage": (_) =>ChangePasswordPage(),
             "/findpasswordpage":(_)=>FindPasswordPage(),

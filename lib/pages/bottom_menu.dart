@@ -6,12 +6,12 @@ class BottomMenuPage extends StatefulWidget {
   @override
   BottomMenuPageState createState() => BottomMenuPageState();
 }
+ int _currentIndex = 0;  //设置当前显示的页面索引
 
 class BottomMenuPageState extends State<BottomMenuPage>
     with SingleTickerProviderStateMixin{
 
-  int _currentIndex = 0;  //设置当前显示的页面索引
-  List<Widget> viewList = [AllCardsMainPage(), UserInfoPage()];
+
 
   @override
   void initState() {
@@ -20,6 +20,9 @@ class BottomMenuPageState extends State<BottomMenuPage>
 
   @override
   Widget build(BuildContext context){
+    dynamic args = ModalRoute.of(context).settings.arguments;
+    List<Widget> viewList = [AllCardsMainPage(), UserInfoPage(args["user"])];
+
     return Container(
       child: Scaffold(
         body: viewList[_currentIndex],
