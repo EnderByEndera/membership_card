@@ -304,12 +304,13 @@ Future<Response<T>>  dioScore<T>(Dio dio, String cardId, int increment)async{
 
 
 
-Future<Response<T>> diogetenroll<T>(Dio dio,String email)async{
+Future<Response<T>> diogetenroll<T>(Dio dio,String id)async{
   Response res = Response();
+  Map<String, dynamic> data = {
+    'Id':id,
+  };
   try {
-    res = await dio.get("/v1/api/user/enroll",
-        queryParameters:{'Mail':email}
-    );
+    res = await dio.post("/v1/api/user/forgetPw", data:jsonEncode(data));
     return res;
   } on DioError catch (e) {
     if (e.response == null) {
@@ -323,13 +324,18 @@ Future<Response<T>> diogetenroll<T>(Dio dio,String email)async{
   }
 }
 
-Future<Response<T>> dioforgetpassword<T>(Dio dio,String userid,String password)async{
+Future<Response<T>> dioforgetpassword<T>(Dio dio,String userid,String password,String code)async{
   Response res=Response();
-
+  Map<String, dynamic> data = {
+    'Id':userid,
+    "NewPassword":password,
+    "Verify":code
+  };
+  print(data);
   try{
-    res=await dio.put(
-      " /v1/api/user/ForgetPassword/New",
-      data: {'Id':userid,"Password":password},
+    res=await dio.post(
+      " /v1/api/user/forgetPw/New",
+      data: jsonEncode(data),
     );
     print("${res.statusCode}");
   } on DioError catch(e) {
@@ -340,6 +346,30 @@ Future<Response<T>> dioforgetpassword<T>(Dio dio,String userid,String password)a
     }else {
       res.statusCode = e.response.statusCode;
       return res;
+    }
+  }
+  return res;
+}
+Future<Response<T>> dioForgetVerify<T>(Dio dio, String mail) async {
+  Response res = Response();
+  Map<String, String> body = {"Email" : mail};
+  try {
+    print(mail);
+    res = await dio.post<String>(
+      "/v1/api/user/verify",
+      data: jsonEncode(body),
+    );
+    print("${res.statusCode}");
+    print(res);
+
+  } on DioError catch (e) {
+    print(res);
+    if (e.response == null) {
+      res.statusCode = 500;
+      res.data = "Error from the server, meet 500 error";
+      return res;
+    } else {
+      return e.response;
     }
   }
   return res;
