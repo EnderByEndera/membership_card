@@ -27,8 +27,7 @@ class LoginPageState extends State<LoginPage> {
   String _loginMsg;
   String _accountErrMsg;
   String _passwordErrMsg;
-  bool remember = false;
-  bool _checkboxSelected=true; //维护复选框状态
+  bool _remember = false;
   bool isTel;
   bool isMail;
 
@@ -136,12 +135,11 @@ class LoginPageState extends State<LoginPage> {
                   Row(
                     children: <Widget>[
                       Checkbox(
-                        value: _checkboxSelected,
+                        value: _remember,
                         activeColor: Colors.red, //选中时的颜色
                         onChanged:(value){
                           setState(() {
-                            _checkboxSelected=value;
-                            remember=true;
+                            _remember=value;
                           });
                         } ,
                       ),
@@ -175,7 +173,7 @@ class LoginPageState extends State<LoginPage> {
                           }
 
                           if(i == userList.length){           //之前没有保存这个用户的账号
-                            res1 = await dioLogin(dio, user, accountType(), remember);
+                            res1 = await dioLogin(dio, user, accountType(), _remember);
                             setState(() {
                               isSent = true;
                             });
@@ -188,7 +186,7 @@ class LoginPageState extends State<LoginPage> {
                                 isSent = false;
                               });
                               user = User.fromJson(json.decode(res1.data));
-                              if(remember == true && i == userList.length){    //当前选择记住密码且之前没有保存这个用户的账号
+                              if(_remember == true && i == userList.length){    //当前选择记住密码且之前没有保存这个用户的账号
                                 Provider.of<UserCounter>(context).addUser(user);
                               }
 
@@ -197,10 +195,9 @@ class LoginPageState extends State<LoginPage> {
                                 var list = json.decode(res2.data) as List;
                                 List<CardInfo> cards = list.map((i)=> CardInfo.fromJson(i)).toList();
                                 Provider.of<CardCounter>(context,listen:false).cardList = cards;
-
-                                Navigator.of(context).pushNamed("/bottomMenu",arguments: {
-                                    "user": user,
-                                  });
+                              });
+                              Navigator.of(context).pushNamed("/bottomMenu",arguments: {
+                                "user": user,
                               });
                               _loginMsg = "Login Suceeded";
 
