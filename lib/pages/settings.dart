@@ -21,7 +21,7 @@ class SettingsPage extends StatelessWidget {
               FlatButton(
                   onPressed: () {
                     Navigator.of(context).pushNamedAndRemoveUntil(
-                        "/loginPage", ModalRoute.withName("/loginPage")
+                        "/loginPage", (route) => route == null
                     );
                   },
                   child: Text('YES')),
