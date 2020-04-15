@@ -113,9 +113,9 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
               onPressed: () {
                 if((_formKey.currentState as FormState).validate()) {
             try {
-              dioAdd(dio, CardInfo(cardController.value.text,
+              dioAdd(dio, cardController.value.text,
                 cardStoreController.value.text,
-              )).then((res){
+              ).then((res){
                 if(res.statusCode==200) {
                   Navigator.pop(context);
                   counter.addCard(CardInfo(
@@ -132,7 +132,6 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
                             content: Text("Failed to add a card!"),
                           ));
                   print(res.statusCode);
-                  print(res);
                 }
               });
 
@@ -153,7 +152,9 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
           ),
         ],
       ),
-      body: GestureDetector(
+      body: ListView(
+        children:<Widget>[
+        GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: () {
 
@@ -197,6 +198,8 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
                 },
                 autofocus: false,
               ),
+
+              SizedBox(height: 200.0,),
 
               FutureBuilder(
 
@@ -247,6 +250,10 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
 
       ),
 
+
+      ],
+      ),
+      //here
     );
   }
 }

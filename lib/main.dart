@@ -83,7 +83,11 @@ class GoWallet extends StatelessWidget {
             },
 
             "/bottomMenu": (_) => BottomMenuPage(),
-            "/changePasswordPage": (_) =>ChangePasswordPage(),
+            "/changePasswordPage": (BuildContext context){
+              dynamic args = ModalRoute.of(context).settings.arguments;
+              User user=args["user"];
+              return ChangePasswordPage(user);},
+
             "/findpasswordpage":(_)=>FindPasswordPage(),
           },
         ));

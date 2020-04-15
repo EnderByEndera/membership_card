@@ -447,6 +447,7 @@ CupertinoAlertDialog nfcsuccessDialog(String name){
   Widget _buildAppBar(
       BuildContext context, TextEditingController textEditingController) {
     return AppBar(
+      automaticallyImplyLeading: false,
       backgroundColor: Colors.white,
       bottom: AppBar(
         backgroundColor: Colors.white,

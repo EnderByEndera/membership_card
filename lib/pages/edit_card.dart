@@ -132,7 +132,9 @@ class EditCardPageState extends  State<EditCardPage>
         ],
       ),
 
-      body:GestureDetector(
+      body:ListView(
+        children:<Widget>[
+      GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: () {
 
@@ -182,16 +184,17 @@ class EditCardPageState extends  State<EditCardPage>
               ),
 
 
+              SizedBox(height: 200.0,),
 
-         Stack(
-             alignment: Alignment.bottomCenter,
-           children:<Widget>[
+              Stack(
+               alignment: Alignment.bottomCenter,
+                children:<Widget>[
 
-             Positioned(
+                Positioned(
 
-             child:Consumer<CardCounter>(
-            builder: (context, counter, child) =>FlatButton(
-              child: Text(
+                  child:Consumer<CardCounter>(
+                   builder: (context, counter, child) =>FlatButton(
+                     child: Text(
                 'Delete Card',
                 style: TextStyle(fontSize: 20.0,color:Colors.orange
                 ),
@@ -233,7 +236,7 @@ class EditCardPageState extends  State<EditCardPage>
             ),
 
           ),
-    ),
+        ),
             ],
          ),
           ],
@@ -241,6 +244,10 @@ class EditCardPageState extends  State<EditCardPage>
 
           ),
       ),
+
+      ],
+      ),
+      //here
 
 
       bottomNavigationBar: TabBar(

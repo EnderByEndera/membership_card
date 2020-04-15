@@ -18,6 +18,7 @@ class UserInfoPageState extends State<UserInfoPage> {
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text("Me", textAlign:TextAlign.start,style: TextStyle(fontSize: 28.0,),
         ),
       ),
