@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:membership_card/pages/all_cards.dart';
 import 'package:membership_card/pages/user_info.dart';
-
+import 'package:membership_card/model/user_model.dart';
 class BottomMenuPage extends StatefulWidget {
   @override
   BottomMenuPageState createState() => BottomMenuPageState();
@@ -21,7 +21,8 @@ class BottomMenuPageState extends State<BottomMenuPage>
   @override
   Widget build(BuildContext context){
     dynamic args = ModalRoute.of(context).settings.arguments;
-    List<Widget> viewList = [AllCardsMainPage(), UserInfoPage(args["user"])];
+    User user = args["user"];
+    List<Widget> viewList = [AllCardsMainPage(), UserInfoPage(user)];
 
     return Container(
       child: Scaffold(

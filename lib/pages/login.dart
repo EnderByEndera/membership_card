@@ -187,7 +187,7 @@ class LoginPageState extends State<LoginPage> {
                               });
                               Map<String, dynamic> u = json.decode(res1.data);
                               user = User.fromJson(u);
-                              
+
                               if(_remember == true && i == userList.length){    //当前选择记住密码且之前没有保存这个用户的账号
                                 Provider.of<UserCounter>(context).addUser(user);
                               }
