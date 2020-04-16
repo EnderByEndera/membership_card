@@ -3,18 +3,25 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:membership_card/model/card_count.dart';
 import 'package:membership_card/model/user_model.dart';
 import 'package:membership_card/network/client.dart';
 import 'package:provider/provider.dart';
 
 class ChangePasswordPage extends StatefulWidget {
+  User user;
+  ChangePasswordPage(this.user);
   @override
   State<StatefulWidget> createState() {
-    return ChangePasswordPageState();
+    return ChangePasswordPageState(this.user);
   }
 }
 
 class ChangePasswordPageState extends State<ChangePasswordPage>{
+  User user;
+  ChangePasswordPageState(this.user);
+
+
   var _newPasswordController=TextEditingController();
   var _verifyNewPasswordController=TextEditingController();
   var _oldPasswordController=TextEditingController();
@@ -30,6 +37,8 @@ class ChangePasswordPageState extends State<ChangePasswordPage>{
 
 
   String _prePassword;
+ String _userId1;
+
   String _changePassMsg;
 
 
@@ -47,6 +56,9 @@ class ChangePasswordPageState extends State<ChangePasswordPage>{
   @override
   void initState(){
     super.initState();
+
+    _userId1=user.userId;
+    _prePassword=user.password;
 
     _oldPasswordController.addListener((){
       if(_oldPasswordController.text!=_prePassword){
@@ -109,6 +121,10 @@ class ChangePasswordPageState extends State<ChangePasswordPage>{
   @override
 
   Widget build(BuildContext context) {
+
+  dynamic args=ModalRoute.of(context).settings.arguments;
+  print(_prePassword);
+
   var _newPasswordTextField = TextFormField(
     obscureText: true,
     decoration: InputDecoration(
@@ -175,8 +191,7 @@ class ChangePasswordPageState extends State<ChangePasswordPage>{
 
 
           actions: <Widget>[
-            Consumer<User>(
-             builder: (context, user, child) => FlatButton(
+             FlatButton(
                //require connection
               onPressed: (_rePasswordCorrect&&_passwordCorrect&&_oldPasswordCorrect)?() async{
                 _changePassMsg = "";
@@ -184,13 +199,14 @@ class ChangePasswordPageState extends State<ChangePasswordPage>{
                   isSent = true;
                 });
                 //new password
-                user.password = _newPasswordController.text;
                 res = await dioChangePass(dio, user.userId, _prePassword,_newPasswordController.text);
                 setState(() {
                   isSent = false;
                 });
                 if (res.statusCode == 200) {
                   try {
+                    print(res.statusCode);
+                     user.password = _newPasswordController.text;
                       Navigator.pop(context);
                       _changePassMsg = "successfully changed!";
                       showDialog(
@@ -202,7 +218,7 @@ class ChangePasswordPageState extends State<ChangePasswordPage>{
                               ));
 
                   } on FormatException {
-                    _changePassMsg = "Login Failed";
+                    _changePassMsg = "Change Failed";
                     showDialog(
                         context: context,
                         builder: (_) => AlertDialog(
@@ -211,14 +227,47 @@ class ChangePasswordPageState extends State<ChangePasswordPage>{
                         ));
                   }
                 }else if (res.statusCode == 400 ||
-                    res.statusCode == 404){
-                  _changePassMsg=
-                  "Network connection failed, "
-                      "check your network";
-                  showDialog(context: context, builder: (_) => AlertDialog(
-                    title: Text("Alert"),
-                    content: Text(_changePassMsg),
-                  ));
+                    res.statusCode == 404) {
+                  try {
+                    print(res.statusCode);
+                    _changePassMsg =
+                    "Network connection failed, "
+                        "check your network";
+                    showDialog(context: context, builder: (_) =>
+                        AlertDialog(
+                          title: Text("Alert"),
+                          content: Text(_changePassMsg),
+                        ));
+                  }on FormatException {
+                    _changePassMsg = "Change Failed";
+                    showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          title: Text("Alert"),
+                          content: Text(_changePassMsg),
+                        ));
+                  }
+                }else{
+                  try{
+                    print(res.statusCode);
+                   print(user.userId);
+                    print(_prePassword);
+                    _changePassMsg = "Failed to Change";
+                    showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          title: Text("Alert"),
+                          content: Text(_changePassMsg),
+                        ));
+                  }on FormatException {
+                    _changePassMsg = "Change Failed";
+                    showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          title: Text("Alert"),
+                          content: Text(_changePassMsg),
+                        ));
+                  }
                 }
               } : null ,
               child: Text(
@@ -229,7 +278,7 @@ class ChangePasswordPageState extends State<ChangePasswordPage>{
                   fontSize: 25.0,),
               ),
             ),
-            )
+
           ],
         ),
 
@@ -256,6 +305,15 @@ class ChangePasswordPageState extends State<ChangePasswordPage>{
                    _newPasswordTextField,
                    _verifyPasswordTextField,
 
+                   //进度条
+                   Container(
+                     child: isSent
+                         ? CircularProgressIndicator()
+                         : Text(
+                       _changePassMsg == null ? "" : _changePassMsg,
+                       textAlign: TextAlign.center,
+                     ),
+                   ),
                  ],
                ),
 
@@ -268,12 +326,3 @@ class ChangePasswordPageState extends State<ChangePasswordPage>{
   }
 }
 
-//进度条
-//Container(
-//child: isSent
-//? CircularProgressIndicator()
-//    : Text(
-//_loginMsg == null ? "" : _loginMsg,
-//textAlign: TextAlign.center,
-//),
-//),
