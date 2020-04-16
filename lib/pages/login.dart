@@ -117,7 +117,7 @@ class LoginPageState extends State<LoginPage> {
     );
 
     String accountType(){
-      return isMail ? "mail" : "tel";
+      return isMail ? "mail" : "phone";
     }  //校验邮箱
 
     return Scaffold(
@@ -185,7 +185,9 @@ class LoginPageState extends State<LoginPage> {
                               setState(() {
                                 isSent = false;
                               });
-                              user = User.fromJson(json.decode(res1.data));
+                              Map<String, dynamic> u = json.decode(res1.data);
+                              user = User.fromJson(u);
+                              
                               if(_remember == true && i == userList.length){    //当前选择记住密码且之前没有保存这个用户的账号
                                 Provider.of<UserCounter>(context).addUser(user);
                               }

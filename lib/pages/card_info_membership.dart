@@ -43,7 +43,7 @@ class CardInfo1State extends State<CardInfo1Page> {
   Widget build(BuildContext context) {
     dynamic args = ModalRoute.of(context).settings.arguments;
     CardInfo card = Provider.of<CardCounter>(context,listen:false).getCard(args["card"]);
-    int itemNum = card.cardCoupon + 3;
+    int itemNum = card.couponsNum + 3;
     return Scaffold(
         backgroundColor: Colors.white,
         //Todo: Add more UI about Card Info body from here

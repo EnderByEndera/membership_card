@@ -11,20 +11,20 @@ import 'dart:convert';
 /// ```
 /// Notice that [_username] and [_password] is not necessary to create one User.
 class User extends ChangeNotifier {
-  static const String _ID_JSON = "id";
-  static const String _Mail_JSON = "mail";
-  static const String _PASSWORD_JSON = "password";
-  static const String _TEL_JSON = "tel";
-  static const String _LOGINMONTH_JSON = "loginmonth";
-  static const String _LOGINNUM_JSON = "loginnum";
-  static const String _LOGINYEAR_JSON = "loginyear";
+  static const String _ID_JSON = "Id";
+  static const String _Mail_JSON = "Mail";
+  static const String _PASSWORD_JSON = "Password";
+  static const String _TEL_JSON = "Tel";
+  static const String _LOGINMONTH_JSON = "LoginMonth";
+  static const String _LOGINNUM_JSON = "LoginNum";
+  static const String _LOGINYEAR_JSON = "LoginYear";
 
   String _userId;
   String _password;
   String _mail;
-  String _tel = "undefined";
+  String _tel;
   String _loginMonth;
-  String _loginNum;
+  int _loginNum;
   String _loginYear;
 
 
@@ -33,8 +33,9 @@ class User extends ChangeNotifier {
   String get mail => _mail;
   String get tel => _tel;
   String get loginMonth => _loginMonth;
-  String get loginNum => _loginNum;
+  int get loginNum => _loginNum;
   String get loginYear => _loginYear;
+
 
 
   User([this._userId, this._password]);
