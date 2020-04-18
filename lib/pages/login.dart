@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,6 +10,8 @@ import 'package:provider/provider.dart';
 import 'package:membership_card/model/card_model.dart';
 import 'package:membership_card/model/card_count.dart';
 import 'package:membership_card/model/user_count.dart';
+import 'package:cookie_jar/cookie_jar.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -31,7 +34,7 @@ class LoginPageState extends State<LoginPage> {
   bool isTel;
   bool isMail;
 
-  var dio = initDio();
+  Dio dio = initDio();
   Response res1;
   Response res2;
 
@@ -98,6 +101,7 @@ class LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+
     var _accountTextField = TextField(
       decoration: InputDecoration(
         labelText: "Account",
@@ -154,6 +158,7 @@ class LoginPageState extends State<LoginPage> {
                       MaterialButton(
                         onPressed: _accountCorrect && _passwordCorrect
                             ? () async {
+
                           _loginMsg = "";
 
                           User user = new User();
@@ -173,6 +178,8 @@ class LoginPageState extends State<LoginPage> {
                           }
 
                           if(i == userList.length){           //之前没有保存这个用户的账号
+
+                            dio.interceptors.add(CookieManager(CookieJar()));
                             res1 = await dioLogin(dio, user, accountType(), _remember);
                             setState(() {
                               isSent = true;
@@ -182,6 +189,7 @@ class LoginPageState extends State<LoginPage> {
                           ///登录成功
                           if (res1.statusCode == 200) {
                             try {
+                              print(res1.statusCode);
                               setState(() {
                                 isSent = false;
                               });
@@ -192,17 +200,10 @@ class LoginPageState extends State<LoginPage> {
                                 Provider.of<UserCounter>(context).addUser(user);
                               }
 
-                              dioGetAllCards(dio, user.userId).then((res2){
-
-                                var list = json.decode(res2.data) as List;
-                                List<CardInfo> cards = list.map((i)=> CardInfo.fromJson(i)).toList();
-                                Provider.of<CardCounter>(context,listen:false).cardList = cards;
-                              });
                               Navigator.of(context).pushNamed("/bottomMenu",arguments: {
                                 "user": user,
                               });
                               _loginMsg = "Login Suceeded";
-
                             } on FormatException {
                               _loginMsg = "Login Failed";
                               showDialog(
@@ -219,6 +220,7 @@ class LoginPageState extends State<LoginPage> {
                             _loginMsg =
                             "Network connection failed, "
                                 "check your network";
+                            print(res1.statusCode);
                             showDialog(context: context, builder: (_) => AlertDialog(
                               title: Text("Alert"),
                               content: Text(_loginMsg),
@@ -226,6 +228,7 @@ class LoginPageState extends State<LoginPage> {
                           }
                           else if (res1.statusCode == 406) {
                             _loginMsg = "Account does not exist or Password error";
+                            print(res1.statusCode);
                             showDialog(context: context, builder: (_) => AlertDialog(
                               title: Text("Alert"),
                               content: Text(_loginMsg),
@@ -233,6 +236,7 @@ class LoginPageState extends State<LoginPage> {
                           }
                           else{
                             _loginMsg = "Server error";
+                            print(res1.statusCode);
                             showDialog(context: context, builder: (_) => AlertDialog(
                               title: Text("Alert"),
                               content: Text(_loginMsg),

@@ -21,27 +21,34 @@ import 'package:membership_card/pages/all_cards.dart';
 /// ```
 class CardInfo extends ChangeNotifier{
   static const String CARD_COUPON_JSON = "card_coupon";
-  static const String MAX_COUPON_JSON  = "max_coupon";
+//  static const String MAX_COUPON_JSON  = "max_coupon";
   static const String COUPON_NUM_JSON = "CouponsNum";
-  static const String ADDRESS_JSON     = "address";
+//  static const String ADDRESS_JSON     = "address";
   static const String BATCH_NUM_JSON   = "BatchNum";
   static const String CARD_ID_JSON     = "CardId";
   static const String CARD_TYPE_JSON     = "CardType";
   static const String CITY_JSON        = "city";
-  static const String DESCRIPTION_JSON = "description";
+//  static const String DESCRIPTION_JSON = "description";
   static const String E_NAME_JSON      = "Enterprise";
   static const String FACTORY_NUM_JSON = "FactoryNum";
-  static const String REMARK_JSON      = "remark";
-  static const String STYLE_JSON       = "style";
+//  static const String REMARK_JSON      = "remark";
+//  static const String STYLE_JSON       = "style";
   static const String TEL_JSON         = "tel";
   static const String TYPE_JSON        = "type";
   static const String USER_ID_JSON     = "UserId";
-  static const String WORK_TIME_JSON   = "work_time";
-  static const String BACKGROUND_JSON  = "background";
-  static const String ICON_JSON        = "icon";
+//  static const String WORK_TIME_JSON   = "work_time";
+//  static const String BACKGROUND_JSON  = "background";
+//  static const String ICON_JSON        = "icon";
   static const String EXPIRE_TIME_JSON = "ExpireTime";
   static const String CURRENT_SCORE_JSON = "Score";
-  static const String MAX_SCORE_JSON     = "max_score";
+//  static const String MAX_SCORE_JSON     = "max_score";
+  static const String CARD_ORDER_JSON     = "CardOrder";
+  static const String COUPONS_JSON     = "Coupons";
+  static const String DEL_TIME_JSON     = "DelTime";
+  static const String MONEY_JSON     = "Money";
+  static const String SERIAL_NUM_JSON     = "SerialNum";
+  static const String STATE_JSON     = "State";
+
 
   int    _currentScore = 3;
   int    _maxScore = 5;
@@ -65,6 +72,12 @@ class CardInfo extends ChangeNotifier{
   String _workTime;
   Image  _background;
   Image  _icon;
+  int _cardOrder;
+  List<String> _coupons;
+  String _delTime;
+  int _money;
+  int _serialNum;
+  String _state;
 
   bool _isChosen = false;
   Key _cardKey = UniqueKey();
@@ -100,9 +113,14 @@ class CardInfo extends ChangeNotifier{
   String get tel         => _tel;
   String get workTime    => _workTime;
   String get expireTime  => _expireTime;
-  int    get currentScore=>_currentScore;
+  int    get currentScore=> _currentScore;
   int    get maxScore    => _maxScore;
-
+  int get cardOrder => _cardOrder;
+  List<String>  get coupons => _coupons;
+  String get delTime => _delTime;
+  int get money => _money;
+  int get serialNum => _serialNum;
+  String get state => _state;
 
   set isChosen(bool isChosen) => this._isChosen = isChosen;
 
@@ -122,11 +140,21 @@ class CardInfo extends ChangeNotifier{
   CardInfo.fromJson(Map<String, dynamic> json) {
     this._cardId = json[CARD_ID_JSON];
     this._eName = json[E_NAME_JSON];
-    this._remark = json[REMARK_JSON];
+    ///this._remark = json[REMARK_JSON];
     this._currentScore = json[CURRENT_SCORE_JSON];
     this._expireTime = json[EXPIRE_TIME_JSON];
     this._couponsNum = json[COUPON_NUM_JSON];
     this._userId = json[USER_ID_JSON];
+    this._city = json[CITY_JSON];
+    this._batchNum = json[BATCH_NUM_JSON];
+    this._cardType = json[CARD_TYPE_JSON];
+    this._factoryNum = json[FACTORY_NUM_JSON];
+    this._cardOrder = json[CARD_ORDER_JSON];
+    this._coupons = json[COUPONS_JSON].cast<String>();
+    this._delTime = json[DEL_TIME_JSON];
+    this._money = json[MONEY_JSON];
+    this._serialNum = json[SERIAL_NUM_JSON];
+    this._state = json[STATE_JSON];
   }
 
   factory CardInfo.getJson(Map<String, dynamic> json) {

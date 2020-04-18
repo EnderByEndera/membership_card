@@ -1,13 +1,18 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:provider/provider.dart';
 import 'package:dio/dio.dart';
 import 'package:membership_card/model/card_model.dart';
 import 'package:membership_card/model/user_model.dart';
 import 'package:membership_card/model/card_count.dart';
 import 'dart:async';
+import 'package:cookie_jar/cookie_jar.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'package:path_provider/path_provider.dart';
 
 const SERVER_URL = "http://106.15.198.136";
 const PORT       = "8080";
+
 
 Dio initDio() {
   Dio dio = Dio(
@@ -20,14 +25,16 @@ Dio initDio() {
       sendTimeout: 3000,
     ),
   );
-  // You can add dio interceptors here
   return dio;
 }
+
 
 Future<Response<T>> dioGetAllCards<T>(Dio dio, String userId) async {
   Response res = Response();
   try {
-    res = await dio.get("/v1/api/user/"+userId);
+    String url = "/v1/api/user/" + userId;
+    res = await dio.get(url);
+
     return res;
   } on DioError catch (e) {
     if (e.response == null) {
@@ -55,7 +62,16 @@ Future<Response<T>> dioLogin<T>(Dio dio, User user, String type, bool remember) 
       data: jsonEncode(toJson()),
     );
     print("${res.statusCode}");
-
+    var cj = new CookieJar();
+    List<Cookie> cookies = [
+      new Cookie("userId", user.userId),
+      new Cookie("password", user.password),
+    ];
+    //Save cookies
+    cj.saveFromResponse(Uri.parse(dio.options.baseUrl), cookies);
+    List<Cookie> results = cj.loadForRequest(Uri.parse(dio.options.baseUrl+"/v1/api/user/login"));
+    print(results);
+    print("cookie save successly!");
   } on DioError catch (e) {
     if (e.response == null) {
       res.statusCode = 500;
@@ -102,6 +118,16 @@ Future<Response<T>> dioChangePass<T>(Dio dio, String userId, String oldPassword,
       data: jsonEncode(data),
     );
     print("${res.statusCode}");
+    var cj = new CookieJar();
+    List<Cookie> cookies = [
+      new Cookie("userId", userId),
+      new Cookie("password", newPassword),
+    ];
+    //Save cookies
+    cj.saveFromResponse(Uri.parse(dio.options.baseUrl), cookies);
+    List<Cookie> results = cj.loadForRequest(Uri.parse(dio.options.baseUrl+"/v1/api/user/password"));
+    print(results);
+    print("cookie save successly!");
 
   } on DioError catch (e) {
     if (e.response == null) {
@@ -193,11 +219,10 @@ Future<Response<T>> dioDelete<T>(CardInfo cardInfo, Dio dio) async {
   }
 }
 
-Future<Response<T>> dioAdd<T>(Dio dio,String cardId,String eName)async {
+Future<Response<T>> dioAdd<T>(Dio dio,String cardId)async {
   Response res=Response();
  Map<String,dynamic> data={
-   "CardID":cardId,
-   "Enterprise":eName,
+   "id":cardId,
   };
   try{
     res=await dio.post(

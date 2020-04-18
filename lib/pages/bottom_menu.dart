@@ -22,7 +22,7 @@ class BottomMenuPageState extends State<BottomMenuPage>
   Widget build(BuildContext context){
     dynamic args = ModalRoute.of(context).settings.arguments;
     User user = args["user"];
-    List<Widget> viewList = [AllCardsMainPage(), UserInfoPage(user)];
+    List<Widget> viewList = [AllCardsPage(), UserInfoPage(user)];
 
     return Container(
       child: Scaffold(

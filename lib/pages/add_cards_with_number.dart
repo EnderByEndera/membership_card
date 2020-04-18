@@ -113,9 +113,7 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
               onPressed: () {
                 if((_formKey.currentState as FormState).validate()) {
             try {
-              dioAdd(dio, cardController.value.text,
-                cardStoreController.value.text,
-              ).then((res){
+              dioAdd(dio, cardController.value.text,).then((res){
                 if(res.statusCode==200) {
                   Navigator.pop(context);
                   counter.addCard(CardInfo(
