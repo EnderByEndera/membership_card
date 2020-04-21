@@ -63,12 +63,15 @@ Future<Response<T>> dioLogin<T>(Dio dio, User user, String type, bool remember) 
     );
     print("${res.statusCode}");
     var cj = new CookieJar();
+    print(cj);
     List<Cookie> cookies = [
       new Cookie("userId", user.userId),
       new Cookie("password", user.password),
     ];
+    print(cookies);
     //Save cookies
     cj.saveFromResponse(Uri.parse(dio.options.baseUrl), cookies);
+    print(cj);
     List<Cookie> results = cj.loadForRequest(Uri.parse(dio.options.baseUrl+"/v1/api/user/login"));
     print(results);
     print("cookie save successly!");
