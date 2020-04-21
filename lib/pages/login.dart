@@ -166,13 +166,30 @@ class LoginPageState extends State<LoginPage> {
                           user.password = _passwordController.text;
                           List userList = Provider.of<UserCounter>(context).userList;
                           int i=0;
-                          for(; i < userList.length; i++){
-                            if(user.userId == userList[i].userId){   //之前保存了这个账号的信息了
+                          for(;i < userList.length; i++){
+                            if(_accountController.text == userList[i].mail
+                               || _accountController.text == userList[i].tel){   //之前保存了这个账号的信息了
                               user = userList[i];
-                              res1 = await dioLoginWithCookie(dio);    //直接就用cookie登录了
-                              setState(() {
-                                isSent = true;
-                              });
+                              dio.interceptors.add(CookieManager(CookieJar()));
+                              res1 = await dioLoginWithCookie(dio, user);    //直接就用cookie登录了
+                              if(res1.statusCode == 200){
+                                print("Login Suceeded");
+                                setState(() {
+                                  isSent = true;
+                                });
+                                print(userList.length);
+
+                                Navigator.of(context).pushNamed("/bottomMenu",arguments: {
+                                  "user": user,
+                                });
+                              }
+                              else{
+                                _loginMsg = "Login Failed";
+                                showDialog(context: context, builder: (_) => AlertDialog(
+                                  title: Text("Alert"),
+                                  content: Text(_loginMsg),
+                                ));
+                              }
                              break;
                             }
                           }
@@ -181,66 +198,68 @@ class LoginPageState extends State<LoginPage> {
 
                             dio.interceptors.add(CookieManager(CookieJar()));
                             res1 = await dioLogin(dio, user, accountType(), _remember);
+                            print("Login Suceeded");
                             setState(() {
                               isSent = true;
                             });
-                          }
 
-                          ///登录成功
-                          if (res1.statusCode == 200) {
-                            try {
-                              print(res1.statusCode);
-                              setState(() {
-                                isSent = false;
-                              });
-                              Map<String, dynamic> u = json.decode(res1.data);
-                              user = User.fromJson(u);
+                            ///登录成功
+                            if (res1.statusCode == 200) {
+                              try {
+                                setState(() {
+                                  isSent = false;
+                                });
+                                Map<String, dynamic> u = json.decode(res1.data);
+                                user = User.fromJson(u);
 
-                              if(_remember == true && i == userList.length){    //当前选择记住密码且之前没有保存这个用户的账号
-                                Provider.of<UserCounter>(context).addUser(user);
+                                if(_remember){    //当前选择记住密码且之前没有保存这个用户的账号
+                                  Provider.of<UserCounter>(context).addUser(user);
+                                  print("userInfo saved");
+                                }
+                                print(userList.length);
+
+                                Navigator.of(context).pushNamed("/bottomMenu",arguments: {
+                                  "user": user,
+                                });
+                                _loginMsg = "Login Suceeded";
+                              } on FormatException {
+                                _loginMsg = "Login Failed";
+                                showDialog(
+                                    context: context,
+                                    builder: (_) => AlertDialog(
+                                      title: Text("Alert"),
+                                      content: Text(_loginMsg),
+                                    ));
                               }
-
-                              Navigator.of(context).pushNamed("/bottomMenu",arguments: {
-                                "user": user,
-                              });
-                              _loginMsg = "Login Suceeded";
-                            } on FormatException {
-                              _loginMsg = "Login Failed";
-                              showDialog(
-                                  context: context,
-                                  builder: (_) => AlertDialog(
-                                    title: Text("Alert"),
-                                    content: Text(_loginMsg),
-                                  ));
                             }
-                          }
 
-                          //登录失败
-                          else if (res1.statusCode == 400) {
-                            _loginMsg =
-                            "Network connection failed, "
-                                "check your network";
-                            print(res1.statusCode);
-                            showDialog(context: context, builder: (_) => AlertDialog(
-                              title: Text("Alert"),
-                              content: Text(_loginMsg),
-                            ));
-                          }
-                          else if (res1.statusCode == 406) {
-                            _loginMsg = "Account does not exist or Password error";
-                            print(res1.statusCode);
-                            showDialog(context: context, builder: (_) => AlertDialog(
-                              title: Text("Alert"),
-                              content: Text(_loginMsg),
-                            ));
-                          }
-                          else{
-                            _loginMsg = "Server error";
-                            print(res1.statusCode);
-                            showDialog(context: context, builder: (_) => AlertDialog(
-                              title: Text("Alert"),
-                              content: Text(_loginMsg),
-                            ));
+                            //登录失败
+                            else if (res1.statusCode == 400) {
+                              _loginMsg =
+                              "Network connection failed, "
+                                  "check your network";
+                              print(res1.statusCode);
+                              showDialog(context: context, builder: (_) => AlertDialog(
+                                title: Text("Alert"),
+                                content: Text(_loginMsg),
+                              ));
+                            }
+                            else if (res1.statusCode == 406) {
+                              _loginMsg = "Account does not exist or Password error";
+                              print(res1.statusCode);
+                              showDialog(context: context, builder: (_) => AlertDialog(
+                                title: Text("Alert"),
+                                content: Text(_loginMsg),
+                              ));
+                            }
+                            else{
+                              _loginMsg = "Server error";
+                              print(res1.statusCode);
+                              showDialog(context: context, builder: (_) => AlertDialog(
+                                title: Text("Alert"),
+                                content: Text(_loginMsg),
+                              ));
+                            }
                           }
                         }
                             : null,
