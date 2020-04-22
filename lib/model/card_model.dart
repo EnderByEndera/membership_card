@@ -20,14 +20,13 @@ import 'package:membership_card/pages/all_cards.dart';
 /// CardInfo cardInfo = CardInfo.fromJson(jsonDecoder.convert(jsonInput));
 /// ```
 class CardInfo extends ChangeNotifier{
-  static const String CARD_COUPON_JSON = "card_coupon";
 //  static const String MAX_COUPON_JSON  = "max_coupon";
   static const String COUPON_NUM_JSON = "CouponsNum";
 //  static const String ADDRESS_JSON     = "address";
   static const String BATCH_NUM_JSON   = "BatchNum";
   static const String CARD_ID_JSON     = "CardId";
   static const String CARD_TYPE_JSON     = "CardType";
-  static const String CITY_JSON        = "city";
+  static const String CITY_JSON        = "City";
 //  static const String DESCRIPTION_JSON = "description";
   static const String E_NAME_JSON      = "Enterprise";
   static const String FACTORY_NUM_JSON = "FactoryNum";
@@ -150,7 +149,7 @@ class CardInfo extends ChangeNotifier{
     this._cardType = json[CARD_TYPE_JSON];
     this._factoryNum = json[FACTORY_NUM_JSON];
     this._cardOrder = json[CARD_ORDER_JSON];
-    this._coupons = json[COUPONS_JSON].cast<String>();
+    this._coupons = json[COUPONS_JSON];//.cast<String>();
     this._delTime = json[DEL_TIME_JSON];
     this._money = json[MONEY_JSON];
     this._serialNum = json[SERIAL_NUM_JSON];
