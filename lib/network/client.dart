@@ -25,6 +25,10 @@ Dio initDio() {
       sendTimeout: 3000,
     ),
   );
+  var cj = new CookieJar();
+  List<Cookie> cookies = [];
+  //Save cookies
+  cj.saveFromResponse(Uri.parse(dio.options.baseUrl), cookies);
   return dio;
 }
 
@@ -63,15 +67,6 @@ Future<Response<T>> dioLogin<T>(Dio dio, User user, String type, bool remember) 
     );
     print("${res.statusCode}");
     var cj = new CookieJar();
-    print(cj);
-    List<Cookie> cookies = [
-      new Cookie("userId", user.userId),
-      new Cookie("password", user.password),
-    ];
-    print(cookies);
-    //Save cookies
-    cj.saveFromResponse(Uri.parse(dio.options.baseUrl), cookies);
-    print(cj);
     List<Cookie> results = cj.loadForRequest(Uri.parse(dio.options.baseUrl+"/v1/api/user/login"));
     print(results);
     print("cookie save successly!");
@@ -87,14 +82,17 @@ Future<Response<T>> dioLogin<T>(Dio dio, User user, String type, bool remember) 
   return res;
 }
 
-Future<Response<T>> dioLoginWithCookie<T>(Dio dio) async {
+Future<Response<T>> dioLoginWithCookie<T>(Dio dio, User user) async {
   Response res = Response();
   try {
     res = await dio.get<String>(
       "/v1/api/user/login",
     );
     print("${res.statusCode}");
-
+    var cj = new CookieJar();
+    List<Cookie> results = cj.loadForRequest(Uri.parse(dio.options.baseUrl+"/v1/api/user/login"));
+    print(results);
+    print("cookie save successly!");
   } on DioError catch (e) {
     if (e.response == null) {
       res.statusCode = 500;
@@ -278,6 +276,10 @@ Future<Response<T>> dioModify<T>(Dio dio,String cardId,String eName)async{
 
 Future<Response<T>> dioUseCoupon<T>(Dio dio, String cardId, int increment) async{
   var res = Response();
+  Map data = {
+    "increment": increment
+  };
+
   try {
     res = await dio.post(
       "/v1/api/user/card/:id/coupons",
@@ -285,7 +287,7 @@ Future<Response<T>> dioUseCoupon<T>(Dio dio, String cardId, int increment) async
         "id": cardId,
       },
       data: {
-        jsonEncode({"increment": increment}),
+        jsonEncode(data),
       }
     );
     return res;
