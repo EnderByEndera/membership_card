@@ -141,7 +141,7 @@ class CardInfo extends ChangeNotifier{
     this._eName = json[E_NAME_JSON];
     ///this._remark = json[REMARK_JSON];
     this._currentScore = json[CURRENT_SCORE_JSON];
-    this._expireTime = json[EXPIRE_TIME_JSON].cast<String>();
+    this._expireTime = json[EXPIRE_TIME_JSON];
     this._couponsNum = json[COUPON_NUM_JSON];
     this._userId = json[USER_ID_JSON];
     this._city = json[CITY_JSON];

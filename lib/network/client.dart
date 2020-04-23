@@ -205,10 +205,11 @@ Future<Response<T>> dioDelete<T>(CardInfo cardInfo, Dio dio) async {
   }
 }
 
-Future<Response<T>> dioAdd<T>(Dio dio,String cardId)async {
+Future<Response<T>> dioAdd<T>(Dio dio,String cardId, String eName)async {
   Response res=Response();
   Map<String,dynamic> data={
-    "id":cardId,
+    "cardid": cardId,
+    "enterprise": eName
   };
   try{
     res=await dio.post(
