@@ -200,6 +200,7 @@ class ChangePasswordPageState extends State<ChangePasswordPage>{
                 setState(() {
                   isSent = true;
                 });
+                dio.interceptors.add(CookieManager(await Api.cookieJar));
                 //new password
                 res = await dioChangePass(dio, user.userId, _prePassword,_newPasswordController.text);
 

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 ///This page is the add card page.
 ///The user can jump to this page by clicking the Add button in the main page, and enter the user's card number,
@@ -13,8 +15,9 @@ import 'dart:async';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:membership_card/network/client.dart';
 import 'package:membership_card/model/user_model.dart';
-
-
+import 'package:cookie_jar/cookie_jar.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'package:membership_card/network/cookie.dart';
 
 class AddCardWithNumberPage extends StatefulWidget {
   @override
@@ -42,7 +45,7 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
   }
 
   ///card control
-  TextEditingController cardController = TextEditingController();
+  TextEditingController cardIdController = TextEditingController();
 
   ///card type control
   TextEditingController cardStoreController = TextEditingController();
@@ -110,14 +113,19 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
         actions: <Widget>[
           Consumer<CardCounter>(
             builder: (context, counter, child) => FlatButton(
-              onPressed: () {
+              onPressed: () async{
                 if((_formKey.currentState as FormState).validate()) {
             try {
-              dioAdd(dio, cardController.value.text,).then((res){
+              //Save cookies
+             // (await Api.cookieJar).saveFromResponse(Uri.parse("/v1/api/user/card/add"), cookies);
+              //print("Save cookies successly");
+              dio.interceptors.add(CookieManager(await Api.cookieJar));
+
+              dioAdd(dio, cardIdController.value.text).then((res){
                 if(res.statusCode==200) {
                   Navigator.pop(context);
                   counter.addCard(CardInfo(
-                    cardController.value.text,
+                    cardIdController.value.text,
                     cardStoreController.value.text,
                   ));
                   print(res.statusCode);
@@ -165,7 +173,7 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
             children: <Widget>[
               // card input
               TextFormField(
-                controller: cardController,
+                controller: cardIdController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.all(10.0),
@@ -238,8 +246,6 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
                           ),
                         )
                     );
-
-
                 }
               )
             ],

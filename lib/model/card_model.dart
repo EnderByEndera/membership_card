@@ -72,7 +72,7 @@ class CardInfo extends ChangeNotifier{
   Image  _background;
   Image  _icon;
   int _cardOrder;
-  List<String> _coupons;
+  String _coupons;
   String _delTime;
   int _money;
   int _serialNum;
@@ -115,7 +115,7 @@ class CardInfo extends ChangeNotifier{
   int    get currentScore=> _currentScore;
   int    get maxScore    => _maxScore;
   int get cardOrder => _cardOrder;
-  List<String>  get coupons => _coupons;
+  String  get coupons => _coupons;
   String get delTime => _delTime;
   int get money => _money;
   int get serialNum => _serialNum;
@@ -141,7 +141,7 @@ class CardInfo extends ChangeNotifier{
     this._eName = json[E_NAME_JSON];
     ///this._remark = json[REMARK_JSON];
     this._currentScore = json[CURRENT_SCORE_JSON];
-    this._expireTime = json[EXPIRE_TIME_JSON];
+    this._expireTime = json[EXPIRE_TIME_JSON].cast<String>();
     this._couponsNum = json[COUPON_NUM_JSON];
     this._userId = json[USER_ID_JSON];
     this._city = json[CITY_JSON];
@@ -150,7 +150,7 @@ class CardInfo extends ChangeNotifier{
     this._factoryNum = json[FACTORY_NUM_JSON];
     this._cardOrder = json[CARD_ORDER_JSON];
     this._coupons = json[COUPONS_JSON];//.cast<String>();
-    this._delTime = json[DEL_TIME_JSON];
+    this._delTime = json[DEL_TIME_JSON].cast<String>();
     this._money = json[MONEY_JSON];
     this._serialNum = json[SERIAL_NUM_JSON];
     this._state = json[STATE_JSON];

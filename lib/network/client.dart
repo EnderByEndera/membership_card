@@ -212,7 +212,7 @@ Future<Response<T>> dioAdd<T>(Dio dio,String cardId)async {
   };
   try{
     res=await dio.post(
-      " /v1/api/user/card/add",
+      "/v1/api/user/card/add",
       data: jsonEncode(data),
       queryParameters: data,
     );

@@ -156,35 +156,36 @@ class LoginPageState extends State<LoginPage> {
                       MaterialButton(
                         onPressed: _accountCorrect && _passwordCorrect
                             ? () async {
-
                           _loginMsg = "";
-                          dio.interceptors.add(CookieManager(CookieJar()));
-                          //获取cookies
-                          List<Cookie> cookies = (await Api.cookieJar).loadForRequest(Uri.parse(dio.options.baseUrl+"/v1/api/user/login"));
-                          print(cookies);
-                          print("Load cookies successly");
+                          dio.interceptors.add(CookieManager(await Api.cookieJar));
+                          //Save cookies
+                          //(await Api.cookieJar).saveFromResponse(Uri.parse("/v1/api/user/login"), cookies);
+                          // print("Save cookies successly");
 
                           List userList = Provider.of<UserCounter>(context).userList;
                           int i=0;
                           for(;i < userList.length; i++){
                             if(_accountController.text == userList[i].mail
                                || _accountController.text == userList[i].tel){   //之前保存了这个账号的信息了
-                              //Save cookies
-                              //(await Api.cookieJar).saveFromResponse(Uri.parse("/v1/api/user/login"), cookies);
-                              //print("Save cookies successly");
-                              res1 = await dioLoginWithCookie(dio);    //直接就用cookie登录了
+                              //获取cookies
 
+                              res1 = await dioLoginWithCookie(dio);    //直接就用cookie登录了
                               if(res1.statusCode == 200){
+                                List<Cookie> cookies = (await Api.cookieJar).loadForRequest(Uri.parse(dio.options.baseUrl+"/v1/api/user/login"));
+                                print(cookies);
+                                print("Load cookies successly");
+
                                 setState(() {
                                   isSent = true;
                                 });
                                 print(userList.length);
+                                Map<String, dynamic> u = json.decode(res1.data);
+                                user = User.fromJson(u);
                                 dioGetAllCards(dio, user.userId).then((res2)async{
                                   if(res2.statusCode == 200){
-                                    List<dynamic> js = json.decode(res2.data); //.cast<String, CardInfo>()
+                                    List<dynamic> js = json.decode(res2.data);
                                     CardCounter.fromJson(js);
                                     print("get cards succeed");
-                                    //Provider.of<CardCounter>(context,listen:false).cardList = cards;
                                   }
                                   else{
                                     showDialog(
@@ -220,9 +221,7 @@ class LoginPageState extends State<LoginPage> {
                             }
                             String account = _accountController.text;
                             String psw = _passwordController.text;
-                            //Save cookies
-                            //(await Api.cookieJar).saveFromResponse(Uri.parse("/v1/api/user/login"), cookies);
-                            //print("Save cookies successly");
+
                             res1 = await dioLogin(dio, account, psw, accountType(), _remember);
 
                             setState(() {
@@ -232,6 +231,10 @@ class LoginPageState extends State<LoginPage> {
                             ///登录成功
                             if (res1.statusCode == 200) {
                               try {
+                                List<Cookie> cookies = (await Api.cookieJar).loadForRequest(Uri.parse(dio.options.baseUrl+"/v1/api/user/login"));
+                                print(cookies);
+                                print("Load cookies successly");
+
                                 setState(() {
                                   isSent = false;
                                 });
@@ -244,16 +247,11 @@ class LoginPageState extends State<LoginPage> {
                                 }
                                 print(userList.length);
 
-                                //获取cookies
-                                List<Cookie> cardCookies = (await Api.cookieJar).loadForRequest(Uri.parse(dio.options.baseUrl+"/v1/api/user/" + user.userId));
-                                print(cardCookies);
-                                print("Load cardCookies successly");
                                 dioGetAllCards(dio, user.userId).then((res2)async{
                                   if(res2.statusCode == 200){
-                                    List<dynamic> js = json.decode(res2.data); //.cast<String, CardInfo>()
+                                    List<dynamic> js = json.decode(res2.data);
                                     CardCounter.fromJson(js);
                                     print("get cards succeed");
-                                    //Provider.of<CardCounter>(context,listen:false).cardList = cards;
                                   }
                                   else{
                                     showDialog(
