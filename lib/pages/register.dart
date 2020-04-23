@@ -28,6 +28,8 @@ class RegisterPageState extends State<RegisterPage> {
   bool _passwordRepeatCorrect = false;
   bool _verifyCorrect = false;
   bool _verifyNotEmpty = false;
+  bool isTel;
+  bool isMail;
   var _telController = TextEditingController();
   var _emailController = TextEditingController();
   var _passwordController = TextEditingController();
@@ -47,10 +49,14 @@ class RegisterPageState extends State<RegisterPage> {
   void initState() {
     super.initState();
     _telController.addListener(() {
-      if (_telController.text.contains(RegExp(r"\W"))) {
+      RegExp exp1 = RegExp(
+          r'^((13[0-9])|(14[0-9])|(15[0-9])|(16[0-9])|(17[0-9])|(18[0-9])|(19[0-9]))\d{8}$');
+      isTel = exp1.hasMatch(_telController.text);     //校验手机号
+
+      if (!isTel) {
         setState(() {
           _telCorrect = false;
-          _telErrMsg = "Can only input English and Numbers";
+          _telErrMsg = "Can only input telephone numbers";
         });
       } else if (_telController.text.isEmpty) {
         setState(() {
@@ -66,18 +72,27 @@ class RegisterPageState extends State<RegisterPage> {
     });
 
     _emailController.addListener(() {
+      RegExp exp2 = RegExp(
+          "^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*\$"
+      );
+      isMail = exp2.hasMatch(_emailController.text);    //校验邮箱
+
       if (_emailController.text.isEmpty) {
         setState(() {
           _emailCorrect = false;
           _emailErrMsg = "Email can not be empty";
         });
+      } else if (!isMail) {
+        _emailCorrect = false;
+        _emailErrMsg = "Can only input email address";
       } else {
-        setState(() {
-          _emailCorrect = true;
-          _emailErrMsg = null;
-        });
-      }
-    });
+          setState(() {
+            _emailCorrect = true;
+            _emailErrMsg = null;
+          });
+        }
+    }
+    );
 
     _passwordController.addListener(() {
       if (_passwordController.text.contains(RegExp(r"\W"))) {
@@ -337,7 +352,13 @@ class RegisterPageState extends State<RegisterPage> {
                     } else if (resSignUp.statusCode >= 500) {
                       _registerMsg = "Server error";
                     }
-                  } : null,
+                  } : (){
+                    print(_telCorrect);
+                    print(_passwordCorrect);
+                    print(_passwordRepeatCorrect);
+                    print(_emailCorrect);
+                    print(_verifyCorrect);
+                  },
                   color: Colors.blue,
                   child: Container(
                     child: Text(

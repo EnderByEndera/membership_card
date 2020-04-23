@@ -44,7 +44,7 @@ Future<Response<T>> dioGetAllCards<T>(Dio dio, String userId) async {
       res.statusCode = e.response.statusCode;
       print(e);
       return res;
-    }
+  }
   }
 }
 
@@ -262,6 +262,10 @@ Future<Response<T>> dioModify<T>(Dio dio,String cardId,String eName)async{
 
 Future<Response<T>> dioUseCoupon<T>(Dio dio, String cardId, int increment) async{
   var res = Response();
+  Map data = {
+    "increment": increment
+  };
+
   try {
     res = await dio.post(
         "/v1/api/user/card/:id/coupons",

@@ -150,7 +150,7 @@ class CardInfo extends ChangeNotifier{
     this._factoryNum = json[FACTORY_NUM_JSON];
     this._cardOrder = json[CARD_ORDER_JSON];
     this._coupons = json[COUPONS_JSON];//.cast<String>();
-    this._delTime = json[DEL_TIME_JSON].cast<String>();
+    this._delTime = json[DEL_TIME_JSON];//cast<String>();
     this._money = json[MONEY_JSON];
     this._serialNum = json[SERIAL_NUM_JSON];
     this._state = json[STATE_JSON];

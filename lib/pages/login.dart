@@ -246,7 +246,7 @@ class LoginPageState extends State<LoginPage> {
 
                                 dioGetAllCards(dio, user.userId).then((res2)async{
                                   if(res2.statusCode == 200){
-                                    List<dynamic> js = json.decode(res2.data);
+                                    List<dynamic> js = res2.data;
                                     CardCounter.fromJson(js);
                                     print("get cards succeed");
                                   }
