@@ -158,6 +158,7 @@ class LoginPageState extends State<LoginPage> {
                             ? () async {
 
                           _loginMsg = "";
+                          dio.interceptors.add(CookieManager(CookieJar()));
                           //获取cookies
                           List<Cookie> cookies = (await Api.cookieJar).loadForRequest(Uri.parse(dio.options.baseUrl+"/v1/api/user/login"));
                           print(cookies);
@@ -168,7 +169,6 @@ class LoginPageState extends State<LoginPage> {
                           for(;i < userList.length; i++){
                             if(_accountController.text == userList[i].mail
                                || _accountController.text == userList[i].tel){   //之前保存了这个账号的信息了
-                              dio.interceptors.add(CookieManager(CookieJar()));
                               //Save cookies
                               //(await Api.cookieJar).saveFromResponse(Uri.parse("/v1/api/user/login"), cookies);
                               //print("Save cookies successly");
@@ -181,14 +181,10 @@ class LoginPageState extends State<LoginPage> {
                                 print(userList.length);
                                 dioGetAllCards(dio, user.userId).then((res2)async{
                                   if(res2.statusCode == 200){
-                                    var list = json.decode(res2.data); //.cast<String, CardInfo>()
-                                    List<CardInfo> cards = list.map((i){
-                                      var card = CardInfo.fromJson(i);
-                                      Provider.of<CardCounter>(context,listen:false).addCard(card);
-                                      return CardInfo.fromJson(i);
-                                    }).toList();
+                                    List<dynamic> js = json.decode(res2.data); //.cast<String, CardInfo>()
+                                    CardCounter.fromJson(js);
                                     print("get cards succeed");
-                                    Provider.of<CardCounter>(context,listen:false).cardList = cards;
+                                    //Provider.of<CardCounter>(context,listen:false).cardList = cards;
                                   }
                                   else{
                                     showDialog(
@@ -224,7 +220,6 @@ class LoginPageState extends State<LoginPage> {
                             }
                             String account = _accountController.text;
                             String psw = _passwordController.text;
-                            dio.interceptors.add(CookieManager(await Api.cookieJar));
                             //Save cookies
                             //(await Api.cookieJar).saveFromResponse(Uri.parse("/v1/api/user/login"), cookies);
                             //print("Save cookies successly");
@@ -248,16 +243,17 @@ class LoginPageState extends State<LoginPage> {
                                   print("userInfo saved");
                                 }
                                 print(userList.length);
+
+                                //获取cookies
+                                List<Cookie> cardCookies = (await Api.cookieJar).loadForRequest(Uri.parse(dio.options.baseUrl+"/v1/api/user/" + user.userId));
+                                print(cardCookies);
+                                print("Load cardCookies successly");
                                 dioGetAllCards(dio, user.userId).then((res2)async{
                                   if(res2.statusCode == 200){
-                                    var list = json.decode(res2.data);
-                                    List<CardInfo> cards = list.map((i){
-                                      var card = CardInfo.fromJson(i);
-                                      Provider.of<CardCounter>(context,listen:false).addCard(card);
-                                      return CardInfo.fromJson(i);
-                                    }).toList();
+                                    List<dynamic> js = json.decode(res2.data); //.cast<String, CardInfo>()
+                                    CardCounter.fromJson(js);
                                     print("get cards succeed");
-                                    Provider.of<CardCounter>(context,listen:false).cardList = cards;
+                                    //Provider.of<CardCounter>(context,listen:false).cardList = cards;
                                   }
                                   else{
                                     showDialog(
