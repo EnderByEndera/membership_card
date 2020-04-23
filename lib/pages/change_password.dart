@@ -7,7 +7,9 @@ import 'package:membership_card/model/card_count.dart';
 import 'package:membership_card/model/user_model.dart';
 import 'package:membership_card/network/client.dart';
 import 'package:provider/provider.dart';
-
+import 'package:cookie_jar/cookie_jar.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'package:membership_card/network/cookie.dart';
 class ChangePasswordPage extends StatefulWidget {
   User user;
   ChangePasswordPage(this.user);
@@ -195,11 +197,16 @@ class ChangePasswordPageState extends State<ChangePasswordPage>{
                //require connection
               onPressed: (_rePasswordCorrect&&_passwordCorrect&&_oldPasswordCorrect)?() async{
                 _changePassMsg = "";
+
+                dio.interceptors.add(CookieManager(CookieJar()));
+
                 setState(() {
                   isSent = true;
                 });
+                dio.interceptors.add(CookieManager(await Api.cookieJar));
                 //new password
                 res = await dioChangePass(dio, user.userId, _prePassword,_newPasswordController.text);
+
                 setState(() {
                   isSent = false;
                 });

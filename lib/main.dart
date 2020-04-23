@@ -45,7 +45,7 @@ class GoWallet extends StatelessWidget {
 
         // This is the providers for out state management
         providers: [
-          ChangeNotifierProvider(builder: (_) => CardCounter()),
+          ChangeNotifierProvider(builder: (_) => CardCounter(new List<CardInfo>())),
           ChangeNotifierProvider(
             builder: (_) => CardInfo(),
           ),

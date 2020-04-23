@@ -1,14 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:provider/provider.dart';
 import 'package:dio/dio.dart';
 import 'package:membership_card/model/card_model.dart';
 import 'package:membership_card/model/user_model.dart';
 import 'package:membership_card/model/card_count.dart';
 import 'dart:async';
 import 'package:cookie_jar/cookie_jar.dart';
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
-import 'package:path_provider/path_provider.dart';
 
 const SERVER_URL = "http://106.15.198.136";
 const PORT       = "8080";
@@ -25,10 +22,7 @@ Dio initDio() {
       sendTimeout: 3000,
     ),
   );
-  var cj = new CookieJar();
-  List<Cookie> cookies = [];
-  //Save cookies
-  cj.saveFromResponse(Uri.parse(dio.options.baseUrl), cookies);
+
   return dio;
 }
 
@@ -44,19 +38,21 @@ Future<Response<T>> dioGetAllCards<T>(Dio dio, String userId) async {
     if (e.response == null) {
       res.data = "Error occured before connection";
       res.statusCode = 500;
+      print(e);
       return res;
     } else {
       res.statusCode = e.response.statusCode;
+      print(e);
       return res;
     }
   }
 }
 
-Future<Response<T>> dioLogin<T>(Dio dio, User user, String type, bool remember) async {
+Future<Response<T>> dioLogin<T>(Dio dio, String account, String password, String type, bool remember) async {
   Response res = Response();
   Map<String, dynamic> toJson() => {
-    "account": user.userId,
-    "password": user.password,
+    "account": account,
+    "password": password,
     "accounttype": type,
     "remember": remember,
   };
@@ -66,10 +62,7 @@ Future<Response<T>> dioLogin<T>(Dio dio, User user, String type, bool remember) 
       data: jsonEncode(toJson()),
     );
     print("${res.statusCode}");
-    var cj = new CookieJar();
-    List<Cookie> results = cj.loadForRequest(Uri.parse(dio.options.baseUrl+"/v1/api/user/login"));
-    print(results);
-    print("cookie save successly!");
+
   } on DioError catch (e) {
     if (e.response == null) {
       res.statusCode = 500;
@@ -82,17 +75,14 @@ Future<Response<T>> dioLogin<T>(Dio dio, User user, String type, bool remember) 
   return res;
 }
 
-Future<Response<T>> dioLoginWithCookie<T>(Dio dio, User user) async {
+Future<Response<T>> dioLoginWithCookie<T>(Dio dio) async {
   Response res = Response();
   try {
     res = await dio.get<String>(
       "/v1/api/user/login",
     );
     print("${res.statusCode}");
-    var cj = new CookieJar();
-    List<Cookie> results = cj.loadForRequest(Uri.parse(dio.options.baseUrl+"/v1/api/user/login"));
-    print(results);
-    print("cookie save successly!");
+
   } on DioError catch (e) {
     if (e.response == null) {
       res.statusCode = 500;
@@ -124,11 +114,6 @@ Future<Response<T>> dioChangePass<T>(Dio dio, String userId, String oldPassword,
       new Cookie("userId", userId),
       new Cookie("password", newPassword),
     ];
-    //Save cookies
-    cj.saveFromResponse(Uri.parse(dio.options.baseUrl), cookies);
-    List<Cookie> results = cj.loadForRequest(Uri.parse(dio.options.baseUrl+"/v1/api/user/password"));
-    print(results);
-    print("cookie save successly!");
 
   } on DioError catch (e) {
     if (e.response == null) {
@@ -222,13 +207,13 @@ Future<Response<T>> dioDelete<T>(CardInfo cardInfo, Dio dio) async {
 
 Future<Response<T>> dioAdd<T>(Dio dio,String cardId)async {
   Response res=Response();
- Map<String,dynamic> data={
-   "id":cardId,
+  Map<String,dynamic> data={
+    "id":cardId,
   };
   try{
     res=await dio.post(
-   " /v1/api/user/card/add",
-       data: jsonEncode(data),
+      "/v1/api/user/card/add",
+      data: jsonEncode(data),
       queryParameters: data,
     );
     print("${res.statusCode}");
@@ -282,13 +267,13 @@ Future<Response<T>> dioUseCoupon<T>(Dio dio, String cardId, int increment) async
 
   try {
     res = await dio.post(
-      "/v1/api/user/card/:id/coupons",
-      queryParameters: {
-        "id": cardId,
-      },
-      data: {
-        jsonEncode(data),
-      }
+        "/v1/api/user/card/:id/coupons",
+        queryParameters: {
+          "id": cardId,
+        },
+        data: {
+          jsonEncode({"increment": increment}),
+        }
     );
     return res;
   } on DioError catch (e) {
@@ -308,7 +293,7 @@ Future<Response<T>>  dioScore<T>(Dio dio, String cardId, int increment)async{
 
   try{
     res=await dio.put(
-      " /v1/api/users/card/:id/score",
+        " /v1/api/users/card/:id/score",
         queryParameters: {
           "id": cardId,
         },
@@ -404,3 +389,4 @@ Future<Response<T>> dioForgetVerify<T>(Dio dio, String mail) async {
   }
   return res;
 }
+

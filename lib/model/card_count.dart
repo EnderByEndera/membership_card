@@ -3,10 +3,11 @@ import 'package:membership_card/model/card_model.dart';
 import 'package:membership_card/pages/edit_card.dart';
 
 class CardCounter extends ChangeNotifier {
+  //static const String CARDS_JSON = "data";
 
-  var _cardList = List<CardInfo>();
+  List<CardInfo> _cardList = new List<CardInfo>();
+  CardCounter(this._cardList);   //default constructor
 
-  set cardList(List<CardInfo> cardList) => this._cardList = cardList;
   List<CardInfo> get cardList => _cardList;
 
   void addCard(CardInfo cardInfo) {
@@ -43,5 +44,9 @@ class CardCounter extends ChangeNotifier {
 
   Color getCardColor(int index) {
     return _cardList.elementAt(index).cardColor;
+  }
+
+  CardCounter.fromJson(List<dynamic> json){
+    _cardList = json.map((i)=>CardInfo.fromJson(i)).toList();
   }
 }

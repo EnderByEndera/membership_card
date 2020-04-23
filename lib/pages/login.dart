@@ -12,6 +12,7 @@ import 'package:membership_card/model/card_count.dart';
 import 'package:membership_card/model/user_count.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'package:membership_card/network/cookie.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -33,6 +34,7 @@ class LoginPageState extends State<LoginPage> {
   bool _remember = false;
   bool isTel;
   bool isMail;
+  User user = new User();
 
   Dio dio = initDio();
   Response res1;
@@ -120,10 +122,6 @@ class LoginPageState extends State<LoginPage> {
       controller: _passwordController,
     );
 
-    String accountType(){
-      return isMail ? "mail" : "phone";
-    }  //校验邮箱
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Login'),
@@ -158,27 +156,47 @@ class LoginPageState extends State<LoginPage> {
                       MaterialButton(
                         onPressed: _accountCorrect && _passwordCorrect
                             ? () async {
-
                           _loginMsg = "";
+                          dio.interceptors.add(CookieManager(await Api.cookieJar));
+                          //Save cookies
+                          //(await Api.cookieJar).saveFromResponse(Uri.parse("/v1/api/user/login"), cookies);
+                          // print("Save cookies successly");
 
-                          User user = new User();
-                          user.userId = _accountController.text;
-                          user.password = _passwordController.text;
                           List userList = Provider.of<UserCounter>(context).userList;
                           int i=0;
                           for(;i < userList.length; i++){
                             if(_accountController.text == userList[i].mail
                                || _accountController.text == userList[i].tel){   //之前保存了这个账号的信息了
-                              user = userList[i];
-                              dio.interceptors.add(CookieManager(CookieJar()));
-                              res1 = await dioLoginWithCookie(dio, user);    //直接就用cookie登录了
+                              //获取cookies
+
+                              res1 = await dioLoginWithCookie(dio);    //直接就用cookie登录了
                               if(res1.statusCode == 200){
-                                print("Login Suceeded");
+                                List<Cookie> cookies = (await Api.cookieJar).loadForRequest(Uri.parse(dio.options.baseUrl+"/v1/api/user/login"));
+                                print(cookies);
+                                print("Load cookies successly");
+
                                 setState(() {
                                   isSent = true;
                                 });
                                 print(userList.length);
-
+                                Map<String, dynamic> u = json.decode(res1.data);
+                                user = User.fromJson(u);
+                                dioGetAllCards(dio, user.userId).then((res2)async{
+                                  if(res2.statusCode == 200){
+                                    List<dynamic> js = json.decode(res2.data);
+                                    CardCounter.fromJson(js);
+                                    print("get cards succeed");
+                                  }
+                                  else{
+                                    showDialog(
+                                        context: context,
+                                        builder: (_) => AlertDialog(
+                                          title: Text("Alert"),
+                                          content: Text("Fail to read"),
+                                        ));
+                                  }
+                                });
+                                print("Login with cookie suceeded");
                                 Navigator.of(context).pushNamed("/bottomMenu",arguments: {
                                   "user": user,
                                 });
@@ -195,10 +213,17 @@ class LoginPageState extends State<LoginPage> {
                           }
 
                           if(i == userList.length){           //之前没有保存这个用户的账号
+                            //////判断账号类型
+                            String accountType(){
+                              if(isTel)  return "phone";
+                              else if(isMail)  return "mail";
+                              else  return null;
+                            }
+                            String account = _accountController.text;
+                            String psw = _passwordController.text;
 
-                            dio.interceptors.add(CookieManager(CookieJar()));
-                            res1 = await dioLogin(dio, user, accountType(), _remember);
-                            print("Login Suceeded");
+                            res1 = await dioLogin(dio, account, psw, accountType(), _remember);
+
                             setState(() {
                               isSent = true;
                             });
@@ -206,6 +231,10 @@ class LoginPageState extends State<LoginPage> {
                             ///登录成功
                             if (res1.statusCode == 200) {
                               try {
+                                List<Cookie> cookies = (await Api.cookieJar).loadForRequest(Uri.parse(dio.options.baseUrl+"/v1/api/user/login"));
+                                print(cookies);
+                                print("Load cookies successly");
+
                                 setState(() {
                                   isSent = false;
                                 });
@@ -218,10 +247,27 @@ class LoginPageState extends State<LoginPage> {
                                 }
                                 print(userList.length);
 
+                                dioGetAllCards(dio, user.userId).then((res2)async{
+                                  if(res2.statusCode == 200){
+                                    List<dynamic> js = json.decode(res2.data);
+                                    CardCounter.fromJson(js);
+                                    print("get cards succeed");
+                                  }
+                                  else{
+                                    showDialog(
+                                        context: context,
+                                        builder: (_) => AlertDialog(
+                                          title: Text("Alert"),
+                                          content: Text("Fail to read"),
+                                        ));
+                                    print(res2.statusCode);
+                                  }
+                                });
                                 Navigator.of(context).pushNamed("/bottomMenu",arguments: {
                                   "user": user,
                                 });
                                 _loginMsg = "Login Suceeded";
+                                print(_loginMsg);
                               } on FormatException {
                                 _loginMsg = "Login Failed";
                                 showDialog(
