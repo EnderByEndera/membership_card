@@ -137,7 +137,6 @@ class CardInfo extends ChangeNotifier{
   CardInfo([this._cardId, this._eName, this._remark]);
 
   CardInfo.fromJson(Map<String, dynamic> json) {
-    print(3);
     this._cardId = json[CARD_ID_JSON];
     this._eName = json[E_NAME_JSON];
     ///this._remark = json[REMARK_JSON];
@@ -155,7 +154,6 @@ class CardInfo extends ChangeNotifier{
     this._money = json[MONEY_JSON];
     this._serialNum = json[SERIAL_NUM_JSON];
     this._state = json[STATE_JSON];
-    print(4);
   }
 
   factory CardInfo.getJson(Map<String, dynamic> json) {
