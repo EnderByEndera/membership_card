@@ -44,7 +44,7 @@ Future<Response<T>> dioGetAllCards<T>(Dio dio, String userId) async {
       res.statusCode = e.response.statusCode;
       print(e);
       return res;
-    }
+  }
   }
 }
 

@@ -47,6 +47,11 @@ class CardCounter extends ChangeNotifier {
   }
 
   CardCounter.fromJson(List<dynamic> json){
-    _cardList = json.map((i)=>CardInfo.fromJson(i)).toList();
+    List<CardInfo> list=[];
+    list.add(CardInfo.fromJson(json[0]));
+    /*json.forEach((f){
+      list.add(CardInfo.fromJson(f));
+    });*/
+    _cardList = list;
   }
 }
