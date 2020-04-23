@@ -158,19 +158,16 @@ class LoginPageState extends State<LoginPage> {
                             ? () async {
                           _loginMsg = "";
                           dio.interceptors.add(CookieManager(await Api.cookieJar));
-                          //Save cookies
-                          //(await Api.cookieJar).saveFromResponse(Uri.parse("/v1/api/user/login"), cookies);
-                          // print("Save cookies successly");
 
                           List userList = Provider.of<UserCounter>(context).userList;
                           int i=0;
                           for(;i < userList.length; i++){
                             if(_accountController.text == userList[i].mail
                                || _accountController.text == userList[i].tel){   //之前保存了这个账号的信息了
-                              //获取cookies
 
                               res1 = await dioLoginWithCookie(dio);    //直接就用cookie登录了
                               if(res1.statusCode == 200){
+                                //获取cookies
                                 List<Cookie> cookies = (await Api.cookieJar).loadForRequest(Uri.parse(dio.options.baseUrl+"/v1/api/user/login"));
                                 print(cookies);
                                 print("Load cookies successly");

@@ -13,7 +13,7 @@ class Api {
       // get the path to the document directory.
       String tempPath = (await getApplicationDocumentsDirectory()).path;
       print('获取的文件系统目录 appDocPath： ' + tempPath);
-      _cookieJar = new PersistCookieJar(dir: tempPath);
+      _cookieJar = new PersistCookieJar(dir: tempPath+"/.cookies/");
     }
     return _cookieJar;
   }

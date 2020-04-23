@@ -116,13 +116,18 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
               onPressed: () async{
                 if((_formKey.currentState as FormState).validate()) {
             try {
-              //Save cookies
-             // (await Api.cookieJar).saveFromResponse(Uri.parse("/v1/api/user/card/add"), cookies);
-              //print("Save cookies successly");
+
               dio.interceptors.add(CookieManager(await Api.cookieJar));
 
-              dioAdd(dio, cardIdController.value.text).then((res){
+              dioAdd(dio, cardIdController.value.text, cardStoreController.value.text).then((res) async{
                 if(res.statusCode==200) {
+                  //获取cookies
+                  List<Cookie> cookies = (await Api.cookieJar).loadForRequest(Uri.parse(dio.options.baseUrl+"/v1/api/user/login"));
+                  print(cookies);
+                  print("Load cookies successly");
+                  //Save cookies
+                  //(await Api.cookieJar).saveFromResponse(res.request.uri, cookies.map((str) => Cookie.fromSetCookieValue(str.toString())).toList());
+                  //print("Save cookies successly");
                   Navigator.pop(context);
                   counter.addCard(CardInfo(
                     cardIdController.value.text,
