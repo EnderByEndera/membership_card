@@ -197,6 +197,9 @@ class ChangePasswordPageState extends State<ChangePasswordPage>{
                //require connection
               onPressed: (_rePasswordCorrect&&_passwordCorrect&&_oldPasswordCorrect)?() async{
                 _changePassMsg = "";
+
+                dio.interceptors.add(CookieManager(CookieJar()));
+
                 setState(() {
                   isSent = true;
                 });
