@@ -19,7 +19,7 @@ import 'package:membership_card/model/user_model.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:membership_card/network/cookie.dart';
-
+import 'dart:convert';
 class AddCardWithNumberPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => AddCardWithNumberPageState();
@@ -130,10 +130,8 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
                   //(await Api.cookieJar).saveFromResponse(res.request.uri, cookies.map((str) => Cookie.fromSetCookieValue(str.toString())).toList());
                   //print("Save cookies successly");
                   Navigator.pop(context);
-                  counter.addCard(CardInfo(
-                    cardIdController.value.text,
-                    cardStoreController.value.text,
-                  ));
+                  Map<String, dynamic> card = json.decode(res.data);
+                  counter.addCard(CardInfo.fromJson(card));
                   print(res.statusCode);
                 }else {
                   showDialog(

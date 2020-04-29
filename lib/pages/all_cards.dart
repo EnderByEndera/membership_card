@@ -634,8 +634,8 @@ class _AllCardsPageState extends State<AllCardsPage>
                             builder: (context, counter, _) => Hero(
                               tag: counter.getOneCard(heroNumber).cardKey,
                               child:
-                              //_cardDesign(counter, heroNumber,  _getCardDesignByType(counter.getOneCard(index).cardType)),
-                              _cardDesign(counter, heroNumber,  _getCardDesignByIndex(index)),
+                              _cardDesign(counter, heroNumber,  _getCardDesignByType(counter.getOneCard(heroNumber).cardType)),
+                              //_cardDesign(counter, heroNumber,  _getCardDesignByIndex(index)),
                             ),
                           );
                         } on Exception {
@@ -915,14 +915,17 @@ class _AllCardsPageState extends State<AllCardsPage>
   _getCardDesignByType(String cardType) {
     CardDesign design;
     switch (cardType) {
-      case "membership":
+      case "Integral":
         design = CardDesign.membership;
         break;
-      case "barcode":
+      case "Recharge":
         design = CardDesign.barcode;
         break;
-      case "qrCode":
+      case "Discount":
         design = CardDesign.qrCode;
+        break;
+      default:
+        design = CardDesign.membership;
         break;
     }
     return design;

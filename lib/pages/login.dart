@@ -180,8 +180,11 @@ class LoginPageState extends State<LoginPage> {
                                 user = User.fromJson(u);
                                 dioGetAllCards(dio, user.userId).then((res2)async{
                                   if(res2.statusCode == 200){
-                                    List<dynamic> js = json.decode(res2.data);
-                                    CardCounter.fromJson(js);
+                                    List<dynamic> js = res2.data;
+                                    //print(js[0]);
+                                    List<CardInfo> list = CardCounter.fromJson(js).cardList;
+                                    //print(list.toString());
+                                    Provider.of<CardCounter>(context).cardList = list;
                                     print("get cards succeed");
                                   }
                                   else{
@@ -247,7 +250,10 @@ class LoginPageState extends State<LoginPage> {
                                 dioGetAllCards(dio, user.userId).then((res2)async{
                                   if(res2.statusCode == 200){
                                     List<dynamic> js = res2.data;
-                                    CardCounter.fromJson(js);
+                                    //print(js[0]);
+                                    List<CardInfo> list = CardCounter.fromJson(js).cardList;
+                                    //print(list.toString());
+                                    Provider.of<CardCounter>(context).cardList = list;
                                     print("get cards succeed");
                                   }
                                   else{
@@ -257,7 +263,6 @@ class LoginPageState extends State<LoginPage> {
                                           title: Text("Alert"),
                                           content: Text("Fail to read"),
                                         ));
-                                    print(res2.statusCode);
                                   }
                                 });
                                 Navigator.of(context).pushNamed("/bottomMenu",arguments: {

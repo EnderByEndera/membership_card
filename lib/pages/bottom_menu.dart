@@ -11,8 +11,6 @@ class BottomMenuPage extends StatefulWidget {
 class BottomMenuPageState extends State<BottomMenuPage>
     with SingleTickerProviderStateMixin{
 
-
-
   @override
   void initState() {
     super.initState();
@@ -22,7 +20,7 @@ class BottomMenuPageState extends State<BottomMenuPage>
   Widget build(BuildContext context){
     dynamic args = ModalRoute.of(context).settings.arguments;
     User user = args["user"];
-    List<Widget> viewList = [AllCardsPage(), UserInfoPage(user)];
+    List<Widget> viewList = [AllCardsMainPage(), UserInfoPage(user)];
 
     return Container(
       child: Scaffold(

@@ -6,7 +6,11 @@ class CardCounter extends ChangeNotifier {
   //static const String CARDS_JSON = "data";
 
   List<CardInfo> _cardList = new List<CardInfo>();
-  CardCounter(this._cardList);   //default constructor
+  CardCounter(this._cardList);
+
+  set cardList(List<CardInfo> value) {
+    _cardList = value;
+  } //default constructor
 
   List<CardInfo> get cardList => _cardList;
 
@@ -47,8 +51,12 @@ class CardCounter extends ChangeNotifier {
   }
 
   CardCounter.fromJson(List<dynamic> json){
+
     List<CardInfo> list=[];
-    list.add(CardInfo.fromJson(json[0]));
+    for(int i=0; i<json.length; i++){
+      list.add(CardInfo.fromJson(json[i]));
+    }
+
     /*json.forEach((f){
       list.add(CardInfo.fromJson(f));
     });*/
