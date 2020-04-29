@@ -429,9 +429,9 @@ CupertinoAlertDialog nfcsuccessDialog(String name){
                           builder: (context, counter, child) => Stack(
                               fit: StackFit.expand,
                               children: _buildStack(
-                                  counter.cardList.length > 4
+                                  _cardNumber > 4
                                       ? 4
-                                      : counter.cardList.length,
+                                      : _cardNumber,
                                   context)),
                         ),
                       ),
