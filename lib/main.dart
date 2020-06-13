@@ -23,6 +23,8 @@ import 'pages/card_info_barcode.dart';
 import 'pages/card_info_qrcode.dart';
 import 'package:membership_card/pages/bottom_menu.dart';
 import 'package:membership_card/pages/find_password.dart';
+import 'package:membership_card/pages/discount_detail.dart';
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
@@ -89,6 +91,7 @@ class GoWallet extends StatelessWidget {
               return ChangePasswordPage(user);},
 
             "/findpasswordpage":(_)=>FindPasswordPage(),
+            "/discountDetail":(_)=> discountDetailPage(),
           },
         ));
   }

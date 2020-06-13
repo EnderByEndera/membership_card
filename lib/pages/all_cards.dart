@@ -483,6 +483,11 @@ CupertinoAlertDialog nfcsuccessDialog(String name){
           onTap: () {
             Navigator.of(context).pushNamed("/addnumber");
 
+//            Navigator.of(context).pushNamed("/discountDetail", arguments: {
+//              "enterprise": "HP",
+//              "title": 'discount 50%',
+//              "describe": "use while buying hp's laptop",
+//            });
             ///We can test page here
           },
         )
