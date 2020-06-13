@@ -21,6 +21,7 @@ class User extends ChangeNotifier {
 
   String _userId;
   String _password;
+  String _lastLoginAccount;
   String _mail;
   String _tel;
   String _loginMonth;
@@ -30,6 +31,7 @@ class User extends ChangeNotifier {
 
   String get userId => _userId;
   String get password => _password;
+  String get lastLoginAccount => _lastLoginAccount;
   String get mail => _mail;
   String get tel => _tel;
   String get loginMonth => _loginMonth;
@@ -39,6 +41,10 @@ class User extends ChangeNotifier {
 
 
   User([this._userId, this._password]);
+  User.fromAccount(String accountname, String password){
+    this._lastLoginAccount = accountname;
+    this._password = password;
+  }
 
   set userId(String value) {
     _userId = value;
@@ -51,6 +57,9 @@ class User extends ChangeNotifier {
   }
   set tel(String value) {
     _tel = value;
+  }
+  set account(String value){
+    _lastLoginAccount = value;
   }
 
   User.fromJson(Map<String, dynamic> json) {

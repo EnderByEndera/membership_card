@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:membership_card/control/remember_account/remember_account.dart';
 import 'package:membership_card/model/user_model.dart';
 import 'package:membership_card/network/client.dart';
 import 'package:provider/provider.dart';
@@ -22,19 +23,25 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginPageState extends State<LoginPage> {
-  var _passwordController = TextEditingController();
-  var _accountController = TextEditingController();
+  GlobalKey _globalKey = new GlobalKey(); //用来标记控件
 
-  bool isSent = false;
+  var _passwordController;
+  var _accountController;
+
+  bool _isSent = false;
   bool _accountCorrect = false;
   bool _passwordCorrect = false;
   String _loginMsg;
   String _accountErrMsg;
   String _passwordErrMsg;
+  String _username = "";
+  String _password = "";
   bool _remember = false;
-  bool isTel;
-  bool isMail;
+  bool _isTel;
+  bool _isMail;
+  bool _expand = false; //是否展示历史账号
   User user = new User();
+  UserCounter _userCounter = new UserCounter(); //历史账号
 
   Dio dio = initDio();
   Response res1;
@@ -50,6 +57,452 @@ class LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
+    _initController();
+    _gainUsers();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        resizeToAvoidBottomPadding: false,
+        body: Stack(
+          children: <Widget>[
+            Center(
+              child: Container(
+                width: 300,
+                child: Flex(
+                  direction: Axis.vertical,
+                  children: <Widget>[
+                    Expanded(
+                      child: Container(
+                        child: Icon(
+                          Icons.card_membership,
+                          size: 50,
+                        ),
+                      ),
+                    ),
+                    _buildUsername(),
+                    _buildPassword(),
+                    Row(
+                      children: <Widget>[
+                        Checkbox(
+                          value: _remember,
+                          activeColor: Colors.red, //选中时的颜色
+                          onChanged: (value) {
+                            setState(() {
+                              _remember = value;
+                            });
+                          },
+                        ),
+                        Text("Remember Password"),
+                      ],
+                    ),
+                    Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          FlatButton(
+                            onPressed: () {
+                              Navigator.pushNamed(context, "/forgetPage");
+                            },
+                            child: Text("Forget password?",
+                                style: TextStyle(
+                                    color: Colors.grey,
+                                    decoration: TextDecoration.underline)),
+                          )
+                        ],
+                      ),
+                    ),
+                    _buildButton(),
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.only(bottom: 20),
+                        alignment: AlignmentDirectional.bottomCenter,
+                        child: Text("Version: 1.0.0"),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Offstage(
+              child: _buildListView(),
+              offstage: !_expand,
+            ),
+          ],
+        ));
+  }
+
+  ///构建账号输入框
+  Widget _buildUsername() {
+    return TextField(
+      key: _globalKey,
+      decoration: InputDecoration(
+        labelText: "Account",
+        errorText: _accountErrMsg,
+        border: OutlineInputBorder(borderSide: BorderSide()),
+        contentPadding: EdgeInsets.all(8),
+        fillColor: Colors.white,
+        filled: true,
+        prefixIcon: Icon(Icons.person_outline),
+        suffixIcon: GestureDetector(
+          onTap: () {
+            print(_userCounter.length);
+            setState(() {
+              _expand = !_expand;
+            });
+            print(_expand);
+          },
+          child: _expand
+              ? Icon(
+                  Icons.arrow_drop_up,
+                  color: Colors.red,
+                )
+              : Icon(
+                  Icons.arrow_drop_down,
+                  color: Colors.grey,
+                ),
+        ),
+      ),
+      maxLength: 24,
+      controller: _accountController,
+      onChanged: (value) {
+        _username = value;
+      },
+    );
+  }
+
+  ///构建密码输入框
+  Widget _buildPassword() {
+    return Container(
+      padding: EdgeInsets.only(top: 30),
+      child: TextField(
+        decoration: InputDecoration(
+          errorText: _passwordErrMsg,
+          labelText: "Password",
+          border: OutlineInputBorder(borderSide: BorderSide()),
+          fillColor: Colors.white,
+          filled: true,
+          prefixIcon: Icon(Icons.lock),
+          contentPadding: EdgeInsets.all(8),
+        ),
+        controller: _passwordController,
+        onChanged: (value) {
+          _password = value;
+        },
+        obscureText: true,
+      ),
+    );
+  }
+
+  ///构建历史账号ListView
+  Widget _buildListView() {
+    if (_expand) {
+      List<Widget> children = _buildItems();
+      if (children.length > 0) {
+        RenderBox renderObject = _globalKey.currentContext.findRenderObject();
+        final position = renderObject.localToGlobal(Offset.zero);
+        double screenW = MediaQuery.of(context).size.width;
+        double currentW = renderObject.paintBounds.size.width;
+        double currentH = renderObject.paintBounds.size.height;
+        double margin = (screenW - currentW) / 2;
+        double offsetY = position.dy;
+        double itemHeight = 30.0;
+        double dividerHeight = 2;
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(5.0),
+            border: Border.all(color: Colors.blue, width: 2),
+          ),
+          child: ListView(
+            itemExtent: itemHeight,
+            padding: EdgeInsets.all(0),
+            children: children,
+          ),
+          width: currentW,
+          height: (children.length * itemHeight +
+              (children.length - 1) * dividerHeight),
+          margin: EdgeInsets.fromLTRB(margin, offsetY + currentH, margin, 0),
+        );
+      }
+    }
+    return null;
+  }
+
+  ///构建历史记录items
+  List<Widget> _buildItems() {
+    List<Widget> list = new List();
+    for (int i = 0; i < _userCounter.length; i++) {
+      if (_userCounter.index(i).lastLoginAccount != _username) {
+        //增加账号记录
+        list.add(_buildItem(_userCounter.index(i)));
+        //增加分割线
+        list.add(Divider(
+          color: Colors.grey,
+          height: 2,
+        ));
+      }
+    }
+    if (list.length > 0) {
+      list.removeLast(); //删掉最后一个分割线
+    }
+    return list;
+  }
+
+  ///构建单个历史记录item
+  Widget _buildItem(User user) {
+    return GestureDetector(
+      child: Container(
+        child: Flex(
+          direction: Axis.horizontal,
+          children: <Widget>[
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(left: 5),
+                child: Text(user.lastLoginAccount),
+              ),
+            ),
+            GestureDetector(
+              child: Padding(
+                padding: EdgeInsets.only(right: 5),
+                child: Icon(
+                  Icons.highlight_off,
+                  color: Colors.grey,
+                ),
+              ),
+              onTap: () {
+                setState(() {
+                  _userCounter.remove(user);
+                  SharedPreferenceUtil.delUser(user);
+                  //处理最后一个数据，假如最后一个被删掉，将Expand置为false
+                  if (!(_userCounter.length > 1 )) {
+                    //如果个数大于1个或者唯一一个账号跟当前账号不一样才弹出历史账号
+                    _expand = false;
+                  }
+                });
+              },
+            ),
+          ],
+        ),
+      ),
+      onTap: () {
+        setState(() {
+          _username = user.lastLoginAccount;
+          _password = user.password;
+          _accountController.text = _username;
+          _passwordController.text = _password;
+          _expand = false;
+        });
+      },
+    );
+  }
+
+  ///构建登录和注册按钮
+  Widget _buildButton() {
+    return Container(
+      child: Flex(
+        mainAxisAlignment: MainAxisAlignment.center,
+        direction: Axis.horizontal,
+        children: <Widget>[
+          FlatButton(
+            onPressed: () async {
+              //判断账号类型
+              String accountType() {
+                if (_isTel)
+                  return "phone";
+                else if (_isMail)
+                  return "mail";
+                else
+                  return null;
+              }
+
+              res1 = await dioLogin(
+                  dio, _username, _password, accountType(), _remember);
+
+              setState(() {
+                _isSent = true;
+              });
+
+              ///登录成功
+              if (res1.statusCode == 200) {
+                try {
+                  List<Cookie> cookies = (await Api.cookieJar).loadForRequest(
+                      Uri.parse(dio.options.baseUrl + "/v1/api/user/login"));
+                  print("Load cookies successly");
+
+                  setState(() {
+                    _isSent = false;
+                  });
+                  Map<String, dynamic> u = json.decode(res1.data);
+                  user = User.fromJson(u);
+                  user.account = _username;
+
+                  dioGetAllCards(dio, user.userId).then((res2) async {
+                    if (res2.statusCode == 200) {
+                      List<dynamic> js = res2.data;
+                      List<CardInfo> list = CardCounter.fromJson(js).cardList;
+                      Provider.of<CardCounter>(context).cardList = list;
+                      print("get cards succeed");
+                    } else {
+                      showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                                title: Text("Alert"),
+                                content: Text("Fail to read"),
+                              ));
+                    }
+                  });
+                  if (_remember == true) {
+                    _userCounter.addUser(user);
+                    SharedPreferenceUtil.saveUser(user);
+                    SharedPreferenceUtil.addNoRepeat(
+                        _userCounter.getList(), user);
+                  }
+
+                  Navigator.of(context).pushNamed("/bottomMenu", arguments: {
+                    "user": user,
+                  });
+                  _loginMsg = "Login Suceeded";
+                  print(_loginMsg);
+                } on FormatException {
+                  _loginMsg = "Login Failed";
+                  showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                            title: Text("Alert"),
+                            content: Text(_loginMsg),
+                          ));
+                }
+              }
+
+              //登录失败
+              else if (res1.statusCode == 400) {
+                _loginMsg = "Network connection failed, "
+                    "check your network";
+                print(res1.statusCode);
+                showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                          title: Text("Alert"),
+                          content: Text(_loginMsg),
+                        ));
+                setState(() {
+                  _isSent = false;
+                });
+              } else if (res1.statusCode == 406) {
+                _loginMsg = "Account does not exist or Password error";
+                print(res1.statusCode);
+                showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                          title: Text("Alert"),
+                          content: Text(_loginMsg),
+                        ));
+                setState(() {
+                  _isSent = false;
+                });
+              } else {
+                _loginMsg = "Server error";
+                print(res1.statusCode);
+                showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                          title: Text("Alert"),
+                          content: Text(_loginMsg),
+                        ));
+                setState(() {
+                  _isSent = false;
+                });
+              }
+            },
+            child: _isSent ? CircularProgressIndicator() : Text("Sign in"),
+            color: Colors.blueGrey,
+            textColor: Colors.white,
+            highlightColor: Colors.blue,
+          ),
+          MaterialButton(
+            color: Colors.blue,
+            onPressed: () {
+              Navigator.of(context).pushNamed("/registerPage");
+            },
+            child: Text("Sign Up"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  ///获取历史用户
+  void _gainUsers() async {
+    _userCounter.clear();
+    List<User> _userList = await SharedPreferenceUtil.getUsers();
+    for (int i = 0; i < _userList.length; i++){
+      _userCounter.addUser(_userList[i]);
+    }
+    //默认加载第一个账号
+    if (_userCounter.length > 0) {
+      _username = _userCounter.index(0).lastLoginAccount;
+      _password = _userCounter.index(0).password;
+      setState(() {
+        _accountController.text = _username;
+        _passwordController.text = _password;
+      });
+    }
+  }
+
+  ///初始化输入栏控制
+  void _initController() {
+    //账户输入栏控制
+    _accountController = TextEditingController.fromValue(
+      TextEditingValue(
+        text: _username,
+        selection: TextSelection.fromPosition(
+          TextPosition(
+            affinity: TextAffinity.downstream,
+            offset: _username == null ? 0 : _username.length,
+          ),
+        ),
+      ),
+    );
+    _accountController.addListener(() {
+      RegExp exp1 = RegExp(
+          r'^((13[0-9])|(14[0-9])|(15[0-9])|(16[0-9])|(17[0-9])|(18[0-9])|(19[0-9]))\d{8}$');
+      _isTel = exp1.hasMatch(_accountController.text); //校验手机号
+      RegExp exp2 =
+          RegExp("^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*\$");
+      _isMail = exp2.hasMatch(_accountController.text); //校验邮箱
+
+      if (_accountController.text.isEmpty) {
+        setState(() {
+          _accountCorrect = false;
+          _accountErrMsg = "Can not be empty";
+        });
+      } else if (_isMail || _isTel) {
+        setState(() {
+          _accountCorrect = true;
+          _accountErrMsg = null;
+        });
+      } else {
+        setState(() {
+          _accountCorrect = false;
+          _accountErrMsg = "Can only input your phone number or mailbox";
+        });
+      }
+    });
+
+    //密码输入栏控制
+    _passwordController = TextEditingController.fromValue(
+      TextEditingValue(
+        text: _username,
+        selection: TextSelection.fromPosition(
+          TextPosition(
+            affinity: TextAffinity.downstream,
+            offset: _username == null ? 0 : _username.length,
+          ),
+        ),
+      ),
+    );
     _passwordController.addListener(() {
       if (_passwordController.text.contains(RegExp(r"\W"))) {
         setState(() {
@@ -73,293 +526,5 @@ class LoginPageState extends State<LoginPage> {
         });
       }
     });
-    _accountController.addListener(() {
-      RegExp exp1 = RegExp(
-          r'^((13[0-9])|(14[0-9])|(15[0-9])|(16[0-9])|(17[0-9])|(18[0-9])|(19[0-9]))\d{8}$');
-      isTel = exp1.hasMatch(_accountController.text);     //校验手机号
-      RegExp exp2 = RegExp(
-        "^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*\$"
-      );
-      isMail = exp2.hasMatch(_accountController.text);    //校验邮箱
-
-      if (_accountController.text.isEmpty) {
-        setState(() {
-          _accountCorrect = false;
-          _accountErrMsg = "Can not be empty";
-        });
-      } else if (isMail || isTel) {
-        setState(() {
-          _accountCorrect = true;
-          _accountErrMsg = null;
-        });
-      } else {
-        setState(() {
-          _accountCorrect = false;
-          _accountErrMsg = "Can only input your phone number or mailbox";
-        });
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-
-    var _accountTextField = TextField(
-      decoration: InputDecoration(
-        labelText: "Account",
-        errorText: _accountErrMsg,
-      ),
-      controller: _accountController,
-      maxLength: 24,
-    );
-
-    var _passwordTextField = TextField(
-      obscureText: true,
-      decoration: InputDecoration(
-        errorText: _passwordErrMsg,
-        labelText: "Password",
-      ),
-      controller: _passwordController,
-    );
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Login'),
-      ),
-      body: ListView(
-          children:<Widget>[
-            Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                children: <Widget>[
-                  _accountTextField,
-                  _passwordTextField,
-                  Row(
-                    children: <Widget>[
-                      Checkbox(
-                        value: _remember,
-                        activeColor: Colors.red, //选中时的颜色
-                        onChanged:(value){
-                          setState(() {
-                            _remember=value;
-                          });
-                        } ,
-                      ),
-                      Text("Remember Password"),
-                    ],
-                  ),
-
-                  Flex(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    direction: Axis.horizontal,
-                    children: <Widget>[
-                      MaterialButton(
-                        onPressed: _accountCorrect && _passwordCorrect
-                            ? () async {
-                          _loginMsg = "";
-                          dio.interceptors.add(CookieManager(await Api.cookieJar));
-
-                          List userList = Provider.of<UserCounter>(context).userList;
-                          int i=0;
-                          for(;i < userList.length; i++){
-                            if(_accountController.text == userList[i].mail
-                               || _accountController.text == userList[i].tel){   //之前保存了这个账号的信息了
-
-                              res1 = await dioLoginWithCookie(dio);    //直接就用cookie登录了
-                              if(res1.statusCode == 200){
-                                //获取cookies
-                                List<Cookie> cookies = (await Api.cookieJar).loadForRequest(Uri.parse(dio.options.baseUrl+"/v1/api/user/login"));
-                                print(cookies);
-                                print("Load cookies successly");
-
-                                setState(() {
-                                  isSent = true;
-                                });
-                                print(userList.length);
-                                Map<String, dynamic> u = json.decode(res1.data);
-                                user = User.fromJson(u);
-                                dioGetAllCards(dio, user.userId).then((res2)async{
-                                  if(res2.statusCode == 200){
-                                    List<dynamic> js = res2.data;
-                                    //print(js[0]);
-                                    List<CardInfo> list = CardCounter.fromJson(js).cardList;
-                                    //print(list.toString());
-                                    Provider.of<CardCounter>(context).cardList = list;
-                                    print("get cards succeed");
-                                  }
-                                  else{
-                                    showDialog(
-                                        context: context,
-                                        builder: (_) => AlertDialog(
-                                          title: Text("Alert"),
-                                          content: Text("Fail to read"),
-                                        ));
-                                  }
-                                });
-                                print("Login with cookie suceeded");
-                                Navigator.of(context).pushNamed("/bottomMenu",arguments: {
-                                  "user": user,
-                                });
-                              }
-                              else{
-                                _loginMsg = "Login Failed";
-                                showDialog(context: context, builder: (_) => AlertDialog(
-                                  title: Text("Alert"),
-                                  content: Text(_loginMsg),
-                                ));
-                              }
-                             break;
-                            }
-                          }
-
-                          if(i == userList.length){           //之前没有保存这个用户的账号
-                            //////判断账号类型
-                            String accountType(){
-                              if(isTel)  return "phone";
-                              else if(isMail)  return "mail";
-                              else  return null;
-                            }
-                            String account = _accountController.text;
-                            String psw = _passwordController.text;
-
-                            res1 = await dioLogin(dio, account, psw, accountType(), _remember);
-
-                            setState(() {
-                              isSent = true;
-                            });
-
-                            ///登录成功
-                            if (res1.statusCode == 200) {
-                              try {
-                                List<Cookie> cookies = (await Api.cookieJar).loadForRequest(Uri.parse(dio.options.baseUrl+"/v1/api/user/login"));
-                                print(cookies);
-                                print("Load cookies successly");
-
-                                setState(() {
-                                  isSent = false;
-                                });
-                                Map<String, dynamic> u = json.decode(res1.data);
-                                user = User.fromJson(u);
-
-                                if(_remember){    //当前选择记住密码且之前没有保存这个用户的账号
-                                  Provider.of<UserCounter>(context).addUser(user);
-                                  print("userInfo saved");
-                                }
-                                print(userList.length);
-
-                                dioGetAllCards(dio, user.userId).then((res2)async{
-                                  if(res2.statusCode == 200){
-                                    List<dynamic> js = res2.data;
-                                    //print(js[0]);
-                                    List<CardInfo> list = CardCounter.fromJson(js).cardList;
-                                    //print(list.toString());
-                                    Provider.of<CardCounter>(context).cardList = list;
-                                    print("get cards succeed");
-                                  }
-                                  else{
-                                    showDialog(
-                                        context: context,
-                                        builder: (_) => AlertDialog(
-                                          title: Text("Alert"),
-                                          content: Text("Fail to read"),
-                                        ));
-                                  }
-                                });
-                                Navigator.of(context).pushNamed("/bottomMenu",arguments: {
-                                  "user": user,
-                                });
-                                _loginMsg = "Login Suceeded";
-                                print(_loginMsg);
-                              } on FormatException {
-                                _loginMsg = "Login Failed";
-                                showDialog(
-                                    context: context,
-                                    builder: (_) => AlertDialog(
-                                      title: Text("Alert"),
-                                      content: Text(_loginMsg),
-                                    ));
-                              }
-                            }
-
-                            //登录失败
-                            else if (res1.statusCode == 400) {
-                              _loginMsg =
-                              "Network connection failed, "
-                                  "check your network";
-                              print(res1.statusCode);
-                              showDialog(context: context, builder: (_) => AlertDialog(
-                                title: Text("Alert"),
-                                content: Text(_loginMsg),
-                              ));
-                            }
-                            else if (res1.statusCode == 406) {
-                              _loginMsg = "Account does not exist or Password error";
-                              print(res1.statusCode);
-                              showDialog(context: context, builder: (_) => AlertDialog(
-                                title: Text("Alert"),
-                                content: Text(_loginMsg),
-                              ));
-                            }
-                            else{
-                              _loginMsg = "Server error";
-                              print(res1.statusCode);
-                              showDialog(context: context, builder: (_) => AlertDialog(
-                                title: Text("Alert"),
-                                content: Text(_loginMsg),
-                              ));
-                            }
-                          }
-                        }
-                            : null,
-                        color: Colors.amber,
-                        child: Container(
-                          child: Text(
-                            "Sign In",
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                      MaterialButton(
-                        color: Colors.blue,
-                        onPressed: () {
-                          Navigator.of(context).pushNamed("/registerPage");
-                        },
-                        child: Container(
-                          child: Text("Sign Up"),
-                        ),
-                      )
-                    ],
-                  ),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      FlatButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, "/forgetPage");
-                        },
-                        child: Text("Forget password?",
-                            style: TextStyle(
-                              color: Colors.grey,
-                              decoration: TextDecoration.underline
-                            )
-                        ),
-                      )
-                    ],
-                  ),
-                  Container(
-                    child: isSent
-                        ? CircularProgressIndicator()
-                        : Text(
-                      _loginMsg == null ? "" : _loginMsg,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ]
-      ),
-    );
   }
 }

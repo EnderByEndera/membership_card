@@ -22,6 +22,7 @@ dependencies:
   barcode_flutter: ^1.0.0
   flutter_nfc_reader: ^0.1.0
   path_provider: ^1.3.0
+  shared_preferences: ^0.5.3
 
   flutter:
     sdk: flutter
