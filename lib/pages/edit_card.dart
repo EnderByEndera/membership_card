@@ -210,7 +210,7 @@ class EditCardPageState extends  State<EditCardPage>
               ),
               onPressed: (){
                 try {
-                  dioDelete(args["card"], dio).then((res){
+                  dioDelete(args["card"], dio).then((res) async{
                     Navigator.of(context).popAndPushNamed('/allCardsPage');
                     counter.deleteCard(args["card"]);
                     print(res.statusCode);

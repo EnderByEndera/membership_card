@@ -53,24 +53,24 @@ Future<Response<T>> dioGetAllCards<T>(Dio dio, String userId) async {
 Future<Response<T>> dioLogin<T>(Dio dio, String account, String password, String type, bool remember) async {
   dio.interceptors.add(CookieManager(await Api.cookieJar));
 
-  Response res = Response();
-  Map<String, dynamic> toJson() => {
-    "account": account,
-    "password": password,
-    "accounttype": type,
-    "remember": remember,
-  };
-  try {
-    res = await dio.put<String>(
-      "/v1/api/user/login",
-      data: jsonEncode(toJson()),
-    );
-    print("${res.statusCode}");
+      Response res = Response();
+      Map<String, dynamic> toJson() => {
+        "account": account,
+        "password": password,
+        "accounttype": type,
+        "remember": remember,
+      };
+      try {
+        res = await dio.put<String>(
+          "/v1/api/user/login",
+          data: jsonEncode(toJson()),
+        );
+        print("${res.statusCode}");
 
-  } on DioError catch (e) {
-    if (e.response == null) {
-      res.statusCode = 500;
-      res.data = "Error from the server, meet 500 error";
+      } on DioError catch (e) {
+        if (e.response == null) {
+          res.statusCode = 500;
+          res.data = "Error from the server, meet 500 error";
       return res;
     } else {
       return e.response;
@@ -190,7 +190,7 @@ Future<Response<T>> dioDelete<T>(CardInfo cardInfo, Dio dio) async {
   var res = Response();
   try {
     res = await dio.post(
-      "/v1/api/user/card/:id/delete",
+      "/v1/api/user/card/${cardInfo.cardId}/delete",
       data: jsonEncode(cardInfo.idToJson()),
       queryParameters: cardInfo.idToJson(),
     );
@@ -246,7 +246,7 @@ Future<Response<T>> dioModify<T>(Dio dio,String cardId,String eName)async{
   };
   try{
     res=await dio.put(
-      "/v1/api/user/card/:id/info",
+      "/v1/api/user/card/$cardId/info",
       data: jsonEncode(data),
       queryParameters: data,
     );
@@ -395,6 +395,7 @@ Future<Response<T>> dioForgetVerify<T>(Dio dio, String mail) async {
   return res;
 }
 
+<<<<<<< HEAD
 Future<Response<T>> dioGetDiscountCard<T>(Dio dio, int cardId, String eName, String cardtype) async {
   dio.interceptors.add(CookieManager(await Api.cookieJar));
 
@@ -421,4 +422,26 @@ Future<Response<T>> dioGetDiscountCard<T>(Dio dio, int cardId, String eName, Str
     }
   }
   return res;
+=======
+
+Future<Response<T>> dioGetActivities<T>(Dio dio) async {
+  Response res = Response();
+  try {
+    String url = "/v1/api/user/enterprise/activity" ;
+    res = await dio.get(url);
+
+    return res;
+  } on DioError catch (e) {
+    if (e.response == null) {
+      res.data = "Error occured before connection";
+      res.statusCode = 500;
+      print(e);
+      return res;
+    } else {
+      res.statusCode = e.response.statusCode;
+      print(e);
+      return res;
+    }
+  }
+>>>>>>> dc6fcd758a85e0521ba49b5eed8b64a8aa7e43a2
 }
