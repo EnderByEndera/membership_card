@@ -8,7 +8,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:membership_card/model/card_count.dart';
 import 'package:membership_card/model/card_model.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter/services.dart';
 import 'dart:async';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:membership_card/network/client.dart';
@@ -211,7 +210,7 @@ class EditCardPageState extends  State<EditCardPage>
               ),
               onPressed: (){
                 try {
-                  dioDelete(args["card"], dio).then((res){
+                  dioDelete(args["card"], dio).then((res) async{
                     Navigator.of(context).popAndPushNamed('/allCardsPage');
                     counter.deleteCard(args["card"]);
                     print(res.statusCode);

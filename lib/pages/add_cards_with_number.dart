@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -51,7 +52,7 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
   ///card type control
   TextEditingController cardStoreController = TextEditingController();
 
-
+  String cardType;
 
   String result="Hey!";
 
@@ -86,7 +87,8 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
 
 
   Widget build(BuildContext context) {
-
+    dynamic args = ModalRoute.of(context).settings.arguments;
+    cardStoreController.text=args["store"];
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
