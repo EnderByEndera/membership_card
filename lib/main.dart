@@ -12,6 +12,7 @@ import 'package:membership_card/pages/login.dart';
 import 'package:membership_card/pages/register.dart';
 import 'package:membership_card/pages/search.dart';
 import 'package:membership_card/pages/settings.dart';
+import 'package:membership_card/pages/store_list.dart';
 import 'package:provider/provider.dart';
 import 'pages/user_info.dart';
 import 'model/card_model.dart';
@@ -24,6 +25,8 @@ import 'pages/card_info_qrcode.dart';
 import 'package:membership_card/pages/bottom_menu.dart';
 import 'package:membership_card/pages/find_password.dart';
 import 'package:membership_card/pages/discount_detail.dart';
+import 'package:membership_card/pages/add_cards.dart';
+
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -92,6 +95,8 @@ class GoWallet extends StatelessWidget {
 
             "/findpasswordpage":(_)=>FindPasswordPage(),
             "/discountDetail":(_)=> discountDetailPage(),
+            "/activityListPage":(_) =>SwiperPage(),
+            "/addCard":(_) => AddCardPage(),
           },
         ));
   }
