@@ -6,6 +6,8 @@ import 'package:membership_card/model/user_model.dart';
 import 'package:membership_card/model/card_count.dart';
 import 'dart:async';
 import 'package:cookie_jar/cookie_jar.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'package:membership_card/network/cookie.dart';
 
 const SERVER_URL = "http://106.15.198.136";
 const PORT       = "8080";
@@ -49,6 +51,8 @@ Future<Response<T>> dioGetAllCards<T>(Dio dio, String userId) async {
 }
 
 Future<Response<T>> dioLogin<T>(Dio dio, String account, String password, String type, bool remember) async {
+  dio.interceptors.add(CookieManager(await Api.cookieJar));
+
   Response res = Response();
   Map<String, dynamic> toJson() => {
     "account": account,
@@ -391,3 +395,30 @@ Future<Response<T>> dioForgetVerify<T>(Dio dio, String mail) async {
   return res;
 }
 
+Future<Response<T>> dioGetDiscountCard<T>(Dio dio, int cardId, String eName, String cardtype) async {
+  dio.interceptors.add(CookieManager(await Api.cookieJar));
+
+  Response res = Response();
+  Map<String, dynamic> toJson() => {
+    "CardID": cardId,
+    "Enterprise": eName,
+    "CardType": cardtype,
+  };
+  try {
+    String url ="/v1/api/user/card/get/" + cardId.toString();
+    res = await dio.put<String>(url,
+      data: jsonEncode(toJson()),
+    );
+    print("${res.statusCode}");
+
+  } on DioError catch (e) {
+    if (e.response == null) {
+      res.statusCode = 500;
+      res.data = "Error from the server, meet 500 error";
+      return res;
+    } else {
+      return e.response;
+    }
+  }
+  return res;
+}
