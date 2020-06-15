@@ -395,23 +395,22 @@ Future<Response<T>> dioForgetVerify<T>(Dio dio, String mail) async {
   return res;
 }
 
-<<<<<<< HEAD
 Future<Response<T>> dioGetDiscountCard<T>(Dio dio, int cardId, String eName, String cardtype) async {
-  dio.interceptors.add(CookieManager(await Api.cookieJar));
+  dio.interceptors.add(CookieManager(await Api.cookieJar));  //在请求头带上cookie
 
   Response res = Response();
-  Map<String, dynamic> toJson() => {
-    "CardID": cardId,
-    "Enterprise": eName,
-    "CardType": cardtype,
-  };
+  Map<String, dynamic> toJson() =>
+      {
+        "CardID": cardId,
+        "Enterprise": eName,
+        "CardType": cardtype,
+      };
   try {
-    String url ="/v1/api/user/card/get/" + cardId.toString();
+    String url = "/v1/api/user/card/get/" + cardId.toString();
     res = await dio.put<String>(url,
       data: jsonEncode(toJson()),
     );
     print("${res.statusCode}");
-
   } on DioError catch (e) {
     if (e.response == null) {
       res.statusCode = 500;
@@ -422,7 +421,7 @@ Future<Response<T>> dioGetDiscountCard<T>(Dio dio, int cardId, String eName, Str
     }
   }
   return res;
-=======
+}
 
 Future<Response<T>> dioGetActivities<T>(Dio dio) async {
   Response res = Response();
@@ -443,5 +442,4 @@ Future<Response<T>> dioGetActivities<T>(Dio dio) async {
       return res;
     }
   }
->>>>>>> dc6fcd758a85e0521ba49b5eed8b64a8aa7e43a2
 }
