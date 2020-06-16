@@ -21,6 +21,7 @@ import 'package:membership_card/network/cookie.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:membership_card/model/activity_model.dart';
 import 'package:membership_card/model/activity_count.dart';
+
 class ActivityinfoPage extends StatefulWidget {
   @override
   ActivityinfoState createState() {
@@ -44,7 +45,7 @@ class ActivityinfoState extends State<ActivityinfoPage> {
   var list = ['1'];
 
   getmy(){
-    dioGetActivity(dio).then((res) async {
+    dioGetActivities(dio).then((res) async {
       list.clear();
       print(res.statusCode);
 
@@ -80,8 +81,6 @@ class ActivityinfoState extends State<ActivityinfoPage> {
 
     getmy();
 
-
-
       Iterable<Widget> listTitles = list.map((dynamic item) {
         print(item);
         return new ListTile(
@@ -94,13 +93,6 @@ class ActivityinfoState extends State<ActivityinfoPage> {
         );
       });
       return listTitles.toList();
-
-
-
-
-
-
-
   }
 
 

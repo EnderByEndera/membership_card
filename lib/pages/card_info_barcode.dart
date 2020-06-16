@@ -76,10 +76,14 @@ class CardInfo2State extends State<CardInfo2Page>{
               alignment: Alignment.topLeft,
               padding: EdgeInsets.all(60),
               decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("assets/backgrounds/starbucksBackground.jpg",),
+                  fit: BoxFit.fitWidth
+                ),
                 borderRadius: BorderRadius.circular(5.0),
-                color: card.cardColor,
+//                color: card.cardColor,
               ),
-              height: 180.0,
+              height: 270.0,
             ),
             Expanded(
               child: Stack(
@@ -112,7 +116,7 @@ class CardInfo2State extends State<CardInfo2Page>{
                     ),
                   ),
                   Positioned(
-                    bottom: 120,
+                    bottom: 80,
                     right: 20.0,
                     left: 20.0,
                     child: Center(

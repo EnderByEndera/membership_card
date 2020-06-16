@@ -574,7 +574,7 @@ class _AllCardsPageState extends State<AllCardsPage>
         body: NotificationListener<OverscrollNotification>(
           onNotification: (notification) {
             if (notification.dragDetails?.delta?.dy != null &&
-                notification.dragDetails.delta.dy > 80) {
+                notification.dragDetails.delta.dy > 50) {
               Navigator.of(context).pop();
               return true;
             } else {
@@ -805,7 +805,11 @@ class _AllCardsPageState extends State<AllCardsPage>
         },
         child: Container(
           decoration: BoxDecoration(
-            color: counter.getCardColor(index),
+//            color: counter.getCardColor(index),
+            image: DecorationImage(
+                image: AssetImage("assets/backgrounds/starbucksBackground.jpg",),
+                fit: BoxFit.fitWidth
+            ),
             borderRadius: BorderRadius.circular(10.0),
           ),
           constraints: BoxConstraints(minHeight: 160),
@@ -863,7 +867,11 @@ class _AllCardsPageState extends State<AllCardsPage>
         child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10.0),
-              color: counter.getCardColor(index),
+//              color: counter.getCardColor(index),
+              image: DecorationImage(
+                  image: AssetImage("assets/backgrounds/starbucksBackground.jpg",),
+                  fit: BoxFit.fitWidth
+              ),
             ),
             constraints: BoxConstraints(minHeight: 160.0),
             child: Stack(
