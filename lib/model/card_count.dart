@@ -10,6 +10,7 @@ class CardCounter extends ChangeNotifier {
 
   set cardList(List<CardInfo> value) {
     _cardList = value;
+    notifyListeners();
   } //default constructor
 
   List<CardInfo> get cardList => _cardList;
@@ -41,8 +42,8 @@ class CardCounter extends ChangeNotifier {
   }
 
   void editCard(CardInfo cardInfo, String number, String store){
-    cardInfo.setCardId(number);
-    cardInfo.setCardStore(store);
+    cardInfo.cardId = number;
+    cardInfo.eName = store;
     notifyListeners();
   }
 

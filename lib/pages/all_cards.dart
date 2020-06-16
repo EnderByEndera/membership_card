@@ -622,7 +622,7 @@ class _AllCardsPageState extends State<AllCardsPage>
                       ),
                     ),
                     onTap: () {
-                      Navigator.of(context).pushNamed("/addnumber");
+                      Navigator.of(context).pushNamed("/addCard");
                     },
                   )
                 ],

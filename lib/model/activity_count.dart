@@ -7,6 +7,11 @@ class ActivityCounter extends ChangeNotifier {
 
   List<ActivityInfo> _activityList = new List<ActivityInfo>();
 
+  set activityList(List<ActivityInfo> value) {
+    _activityList = value;
+    notifyListeners();
+  }
+
   ActivityCounter(this._activityList);
 
   ActivityCounter.fromJson(List<dynamic> json){

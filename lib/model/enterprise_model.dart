@@ -37,9 +37,11 @@ class EnterpriseInfo extends ChangeNotifier{
 
   set enterpriseId(String value) {
     _enterpriseId = value;
+    notifyListeners();
   }
   set enterpriseName(String value) {
     _enterpriseName = value;
+    notifyListeners();
   }
 
   EnterpriseInfo.fromJSON(Map<String, dynamic> json){

@@ -10,7 +10,10 @@ class UserCounter extends ChangeNotifier {
     length = 0;
   }
 
-  set userList(List<User> cardList) => this._userList = cardList;
+  set userList(List<User> cardList){
+    this._userList = cardList;
+    notifyListeners();
+  }
   List<User> get userList => _userList;
 
   void addUser(User user) {

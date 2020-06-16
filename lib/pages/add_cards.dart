@@ -79,7 +79,7 @@ class AddCardState extends State<AddCardPage> {
                title: Text('Starbucks',style:TextStyle(color:Colors.black,fontSize: 15.0) ,),
                dense: true,
                onTap: (){
-                 Navigator.of(context).pushNamed( "/addnumber" ,arguments: {"store":'Starbucks'});
+                 Navigator.of(context).pushNamed( "/addnumber" ,arguments: {"store":'starbucks'});
                },
              ),
 
