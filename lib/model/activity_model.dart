@@ -10,7 +10,7 @@ class ActivityInfo extends ChangeNotifier {
   static const String DESCRIPTION_JSON = "Describe";
   static const String EXPIRETIME_JSON = "ExpireTime";
 
-  String _activityId;
+  int _activityId;
   String _type;
   String _enterprise;
   String _state;
@@ -20,7 +20,7 @@ class ActivityInfo extends ChangeNotifier {
   String _expireTime;
 
 
-  String get activityId => _activityId;
+  int get activityId => _activityId;
   String get type => _type;
   String get enterprise => _enterprise;
   String get state => _state;
@@ -31,7 +31,7 @@ class ActivityInfo extends ChangeNotifier {
 
   ActivityInfo([this._activityId, this._type, this._enterprise]);
 
-  set activityId(String value) {
+  set activityId(int value) {
     _activityId = value;
     notifyListeners();
   }
