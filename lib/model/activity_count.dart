@@ -11,13 +11,16 @@ class ActivityCounter extends ChangeNotifier {
     _activityList = value;
     notifyListeners();
   }
-
+  ActivityInfo getOneActivity(int index) {
+    return _activityList.elementAt(index);
+  }
   ActivityCounter(this._activityList);
-
+  List<ActivityInfo> get activityList => _activityList;
   ActivityCounter.fromJson(List<dynamic> json){
     List<ActivityInfo> list = [];
     for (int i = 0; i < json.length; i++) {
       list.add(ActivityInfo.fromJson(json[i]));
     }
+    _activityList = list;
   }
 }
