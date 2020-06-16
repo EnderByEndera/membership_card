@@ -350,7 +350,8 @@ class LoginPageState extends State<LoginPage> {
                           builder: (_) => AlertDialog(
                                 title: Text("Alert"),
                                 content: Text("Fail to read"),
-                              ));
+                              )
+                      );
                     }
                   });
                   if (_remember == true) {

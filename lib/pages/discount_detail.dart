@@ -1,5 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
+import 'package:membership_card/network/client.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:flutter/services.dart';
+import 'package:flutter/cupertino.dart';
+import 'dart:io';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'package:membership_card/network/cookie.dart';
 
 class discountDetailPage extends StatefulWidget {
   @override
@@ -9,6 +18,7 @@ class discountDetailPage extends StatefulWidget {
 }
 
 class discountDetailPageState extends State<discountDetailPage> {
+  Dio dio = initDio();
 
   @override
   Widget build(BuildContext context) {
@@ -46,25 +56,27 @@ class discountDetailPageState extends State<discountDetailPage> {
 //            ),
 //          ),
 //        ),
-        title:GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Container(
-              child: Padding(
-                padding: const EdgeInsets.all(0),
-                child: Text(
-                  "< Back",
-                  style: TextStyle(
-                    decoration: TextDecoration.none,
-                    fontSize: 25.0,
-                    color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.w500,
-                  ),
+        title: GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Container(
+            child: Padding(
+              padding: const EdgeInsets.all(0),
+              child: Text(
+                "< Back",
+                style: TextStyle(
+                  decoration: TextDecoration.none,
+                  fontSize: 25.0,
+                  color: Theme
+                      .of(context)
+                      .primaryColor,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),
           ),
+        ),
       ),
       body: Builder(
           builder: (context) =>
@@ -75,7 +87,9 @@ class discountDetailPageState extends State<discountDetailPage> {
                     child: Column(
                       children: <Widget>[
                         Image(
-                          image: AssetImage("assets/backgrounds/starbucksBackground.jpg"),   //card.background
+                          image: AssetImage(
+                              "assets/backgrounds/starbucksBackground.jpg"),
+                          //card.background
                           //height: 300,
                           fit: BoxFit.fitWidth,
                         ),
@@ -84,12 +98,15 @@ class discountDetailPageState extends State<discountDetailPage> {
 //                            args["title"],
                             "discount 50%",
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 25, color: Color.fromARGB(255, 119, 136, 213), fontWeight: FontWeight.w700 ),
+                            style: TextStyle(fontSize: 25,
+                                color: Color.fromARGB(255, 119, 136, 213),
+                                fontWeight: FontWeight.w700),
                           ),
                         ),
                         Card(
                           elevation: 10.0,
-                          margin: new EdgeInsets.only(left: 15.0, right: 15.0, top: 15.0),
+                          margin: new EdgeInsets.only(
+                              left: 15.0, right: 15.0, top: 15.0),
                           color: Color.fromARGB(0, 255, 255, 255),
                           child: new Container(
                             width: 400.0,
@@ -97,9 +114,11 @@ class discountDetailPageState extends State<discountDetailPage> {
                             decoration: new BoxDecoration(
                               color: Colors.white,
                               image: new DecorationImage(
-                                  image: new AssetImage("assets/coupon/coffee.png"),
+                                  image: new AssetImage(
+                                      "assets/coupon/coffee.png"),
                                   fit: BoxFit.contain),
-                              shape: BoxShape.rectangle, // <-- 这里需要设置为 rectangle
+                              shape: BoxShape.rectangle,
+                              // <-- 这里需要设置为 rectangle
                               borderRadius: new BorderRadius.all(
                                 const Radius.circular(
                                     15.0), // <-- rectangle 时，BorderRadius 才有效
@@ -123,7 +142,9 @@ class discountDetailPageState extends State<discountDetailPage> {
                           splashColor: Colors.grey,
                           child: Text('领取', style: TextStyle(fontSize: 16)),
 //              shape:RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-                          onPressed: () => getDialog(context),
+//                          onPressed: () => getDialog(context, args["cardId"], args["enterprise"], args["cardtype"]),
+                          onPressed: () => getDialog(context, 1, 'HP', 'Recharge'),
+
                         ),
                       ],
                     ),
@@ -134,12 +155,12 @@ class discountDetailPageState extends State<discountDetailPage> {
     );
   }
 
-  void getDialog(BuildContext context) {
+  void getDialog(BuildContext context, int cardId, String eName, String cardtype) {
     showDialog(
         context: context,
         barrierDismissible: true,
         builder:(_) => AlertDialog(
-            content: Text('确认领取优惠券?'),
+          content: Text('确认领取优惠券?'),
 //            title: Center(
 //                child: Text(
 //                  '您将会回到登陆页面',
@@ -148,24 +169,67 @@ class discountDetailPageState extends State<discountDetailPage> {
 //                      fontSize: 20.0,
 //                      fontWeight: FontWeight.bold),
 //                )),
-            actions: <Widget>[
-              FlatButton(
-                  onPressed: () {
-                    Scaffold.of(context).showSnackBar(new SnackBar(
-                      content: new Text("优惠券领取成功"),
-                    ));
+          actions: <Widget>[
+            FlatButton(
+                onPressed: () async{
+
+                  dioGetDiscountCard(dio, cardId, eName, cardtype).then((res) async{
+                    print(res.statusCode);
+                    if(res.statusCode==200){
+                      Scaffold.of(context).showSnackBar(new SnackBar(
+                        content: new Text("优惠券领取成功"),
+                      ));
+                    }
+                    else if(res.statusCode==400){
+                      showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            title: Text("Alert"),
+                            content: Text("Fail to read"),
+                          )
+                      );
+                    }
+                    else if(res.statusCode==401){
+                      showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            title: Text("Alert"),
+                            content: Text("You are currently not logged in!"),
+                          )
+                      );
+                    }
+                    else if(res.statusCode==403){
+                      showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            title: Text("Alert"),
+                            content: Text("The card has been collected by others"),
+                          )
+                      );
+                    }
+                    else if(res.statusCode==405){
+                      showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            title: Text("Alert"),
+                            content: Text("Get card failed!"),
+                          )
+                      );
+                    }
                     Navigator.of(context).pop();
-                    ///****************************有待补充***************************//
-                    ///**************************************************************//
-                  },
-                  child: Text('是')),
-              FlatButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('否')),
-            ],
-          ));
+                  });
+                },
+                child: Text('是'),
+            ),
+
+            FlatButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('否')),
+          ],
+        ));
 
   }
+
 }
