@@ -443,3 +443,35 @@ Future<Response<T>> dioGetActivities<T>(Dio dio) async {
     }
   }
 }
+
+
+
+
+
+Future<Response<T>>  dioGetActivity<T>(Dio dio)async{
+  Response res=Response();
+
+  try{
+    res=await dio.put(
+        "/v1/api/user/enterprise/activity",
+
+        data: {
+          "enterprise": "HP",
+          "card_type": "Recharge",
+        }
+    );
+    print("${res.statusCode}");
+
+
+  } on DioError catch(e) {
+    if (e.response == null) {
+      res.statusCode = 500;
+      res.data = "Error from the server, meet 500 error";
+      return res;
+    }else {
+      res.statusCode = e.response.statusCode;
+      return res;
+    }
+  }
+  return  res;
+}
