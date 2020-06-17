@@ -48,18 +48,23 @@ class User extends ChangeNotifier {
 
   set userId(String value) {
     _userId = value;
+    notifyListeners();
   }
   set password(String value) {
     _password = value;
+    notifyListeners();
   }
   set mail(String value) {
     _mail = value;
+    notifyListeners();
   }
   set tel(String value) {
     _tel = value;
+    notifyListeners();
   }
   set account(String value){
     _lastLoginAccount = value;
+    notifyListeners();
   }
 
   User.fromJson(Map<String, dynamic> json) {

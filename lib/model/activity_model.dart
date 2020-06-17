@@ -10,7 +10,7 @@ class ActivityInfo extends ChangeNotifier {
   static const String DESCRIPTION_JSON = "Describe";
   static const String EXPIRETIME_JSON = "ExpireTime";
 
-  String _activityId;
+  int _activityId;
   String _type;
   String _enterprise;
   String _state;
@@ -20,7 +20,7 @@ class ActivityInfo extends ChangeNotifier {
   String _expireTime;
 
 
-  String get activityId => _activityId;
+  int get activityId => _activityId;
   String get type => _type;
   String get enterprise => _enterprise;
   String get state => _state;
@@ -31,29 +31,37 @@ class ActivityInfo extends ChangeNotifier {
 
   ActivityInfo([this._activityId, this._type, this._enterprise]);
 
-  set activityId(String value) {
+  set activityId(int value) {
     _activityId = value;
+    notifyListeners();
   }
   set type(String value) {
     _type = value;
+    notifyListeners();
   }
   set enterprise(String value) {
     _enterprise = value;
+    notifyListeners();
   }
   set state(String value) {
     _state = value;
+    notifyListeners();
   }
   set city(String value){
     _city = value;
+    notifyListeners();
   }
   set coupons(String value){
     _coupons = value;
+    notifyListeners();
   }
   set description(String value){
     _description = value;
+    notifyListeners();
   }
   set expireTime(String value){
     _description = value;
+    notifyListeners();
   }
 
   ActivityInfo.fromJson(Map<String, dynamic> json) {
@@ -66,5 +74,4 @@ class ActivityInfo extends ChangeNotifier {
     _description = json[DESCRIPTION_JSON];
     _expireTime = json[EXPIRETIME_JSON];
   }
-
 }

@@ -10,6 +10,7 @@ class EnterpriseCounter extends ChangeNotifier {
 
   set enterpriseList(List<EnterpriseInfo> value) {
     _enterpriseList = value;
+    notifyListeners();
   } //default constructor
 
   List<EnterpriseInfo> get enterpriseList => _enterpriseList;

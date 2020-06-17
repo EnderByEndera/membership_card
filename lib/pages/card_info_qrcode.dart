@@ -79,7 +79,11 @@ class CardInfo3State extends State<CardInfo3Page>{
                   padding: EdgeInsets.all(60),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5.0),
-                    color: card.cardColor,
+//                    color: card.cardColor,
+                    image: DecorationImage(
+                        image: AssetImage("assets/backgrounds/starbucksBackground.jpg",),
+                        fit: BoxFit.fitWidth
+                    ),
                   ),
                   height: 180.0,
                 ),

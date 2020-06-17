@@ -83,15 +83,6 @@ class CardInfo extends ChangeNotifier{
   Color _cardColor = Color.fromARGB(255, Random().nextInt(255),
       Random().nextInt(255), Random().nextInt(255));
 
-  void setCardId(String cardId){
-    this._cardId=cardId;
-  }
-
-  void setCardStore(String cardStore){
-    this._eName=cardStore;
-  }
-
-
   String get cardId      => _cardId;
   String get cardType    => _cardType;
   String get remark      => _remark;
@@ -121,58 +112,72 @@ class CardInfo extends ChangeNotifier{
   int get serialNum => _serialNum;
   String get state => _state;
 
-  set isChosen(bool isChosen) => this._isChosen = isChosen;
-
-  void addScore(int score) {
-    if (this._currentScore <= 5)
-      this._currentScore = score;
-    else this._currentScore = 0;
-   }
-
-  void redeemCoupon() {
-    this._couponsNum--;
+  set cardId(String value) {
+    _cardId = value;
     notifyListeners();
   }
 
-  CardInfo([this._cardId, this._eName, this._remark]);
-
-  CardInfo.fromJson(Map<String, dynamic> json) {
-    this._cardId = json[CARD_ID_JSON];
-    this._eName = json[E_NAME_JSON];
-    ///this._remark = json[REMARK_JSON];
-    this._currentScore = json[CURRENT_SCORE_JSON];
-    this._expireTime = json[EXPIRE_TIME_JSON];
-    this._couponsNum = json[COUPON_NUM_JSON];
-    this._userId = json[USER_ID_JSON];
-    this._city = json[CITY_JSON];
-    this._batchNum = json[BATCH_NUM_JSON];
-    this._cardType = json[CARD_TYPE_JSON];
-    this._factoryNum = json[FACTORY_NUM_JSON];
-    this._cardOrder = json[CARD_ORDER_JSON];
-    this._coupons = json[COUPONS_JSON];//.cast<String>();
-    this._delTime = json[DEL_TIME_JSON];//cast<String>();
-    this._money = json[MONEY_JSON];
-    this._serialNum = json[SERIAL_NUM_JSON];
-    this._state = json[STATE_JSON];
+  set eName(String value) {
+    _eName = value;
+    notifyListeners();
   }
 
-  factory CardInfo.getJson(Map<String, dynamic> json) {
-    return CardInfo(json[CARD_ID_JSON],json[E_NAME_JSON]);
+  set isChosen(bool isChosen){
+    this._isChosen = isChosen;
+    notifyListeners();
   }
 
-  Map<String, dynamic> toJson() => {
-    CARD_ID_JSON   : cardId,
-    E_NAME_JSON : cardType,
-  };
+    void addScore(int score) {
+      if (this._currentScore <= 5)
+        this._currentScore = score;
+      else this._currentScore = 0;
+    }
 
-  Map<String, dynamic> idToJson()=>{
-    CARD_ID_JSON : cardId,
-  };
+    void redeemCoupon() {
+      this._couponsNum--;
+      notifyListeners();
+    }
+
+    CardInfo([this._cardId, this._eName, this._remark]);
+
+    CardInfo.fromJson(Map<String, dynamic> json) {
+      this._cardId = json[CARD_ID_JSON];
+      this._eName = json[E_NAME_JSON];
+      ///this._remark = json[REMARK_JSON];
+      this._currentScore = json[CURRENT_SCORE_JSON];
+      this._expireTime = json[EXPIRE_TIME_JSON];
+      this._couponsNum = json[COUPON_NUM_JSON];
+      this._userId = json[USER_ID_JSON];
+      this._city = json[CITY_JSON];
+      this._batchNum = json[BATCH_NUM_JSON];
+      this._cardType = json[CARD_TYPE_JSON];
+      this._factoryNum = json[FACTORY_NUM_JSON];
+      this._cardOrder = json[CARD_ORDER_JSON];
+      this._coupons = json[COUPONS_JSON];//.cast<String>();
+      this._delTime = json[DEL_TIME_JSON];//cast<String>();
+      this._money = json[MONEY_JSON];
+      this._serialNum = json[SERIAL_NUM_JSON];
+      this._state = json[STATE_JSON];
+    }
+
+    factory CardInfo.getJson(Map<String, dynamic> json) {
+      return CardInfo(json[CARD_ID_JSON],json[E_NAME_JSON]);
+    }
+
+    Map<String, dynamic> toJson() => {
+      CARD_ID_JSON   : cardId,
+      E_NAME_JSON : cardType,
+    };
+
+    Map<String, dynamic> idToJson()=>{
+      CARD_ID_JSON : cardId,
+    };
 
 
-  void chooseOrNotChoose() {
-    _isChosen = _isChosen? false : true;
+    void chooseOrNotChoose() {
+      _isChosen = _isChosen? false : true;
+    }
   }
-}
+
 
 

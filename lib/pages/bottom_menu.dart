@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:membership_card/pages/all_cards.dart';
 import 'package:membership_card/pages/user_info.dart';
 import 'package:membership_card/model/user_model.dart';
+import 'package:membership_card/pages/store_list.dart';
+
+
 class BottomMenuPage extends StatefulWidget {
   @override
   BottomMenuPageState createState() => BottomMenuPageState();
@@ -20,7 +23,7 @@ class BottomMenuPageState extends State<BottomMenuPage>
   Widget build(BuildContext context){
     dynamic args = ModalRoute.of(context).settings.arguments;
     User user = args["user"];
-    List<Widget> viewList = [AllCardsMainPage(), UserInfoPage(user)];
+    List<Widget> viewList = [AllCardsMainPage(), SwiperPage(), UserInfoPage(user)];
 
     return Container(
       child: Scaffold(
@@ -32,6 +35,12 @@ class BottomMenuPageState extends State<BottomMenuPage>
                 icon: Image.asset("assets/backgrounds/tabCard.png",height: 28),
                 title: Text("My Cards",style: TextStyle(color: Colors.blue),),
               ),
+
+              BottomNavigationBarItem(
+                icon: Icon(Icons.local_activity, size: 36,),
+                title: Text("Account",style: TextStyle(color: Colors.blue),),
+              ),
+
               BottomNavigationBarItem(
                 icon: Image.asset("assets/backgrounds/tabUser.png",height: 28),
                 title: Text("Account",style: TextStyle(color: Colors.blue),),
