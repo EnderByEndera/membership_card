@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'dart:ui';
 import 'dart:ui' as prefix0;
 import 'package:flutter/cupertino.dart';
@@ -10,8 +11,9 @@ import 'dart:async';
 import 'package:provider/provider.dart';
 import 'package:membership_card/model/card_count.dart';
 import 'package:membership_card/model/user_model.dart';
-
-
+import 'package:membership_card/model/enterprise_model.dart';
+import 'package:membership_card/model/enterprise_count.dart';
+import 'dart:convert';
 /// This is the Card_Info Page showing one card's information.
 /// It should include one card's all the information here.
 class CardInfo1Page extends StatefulWidget {
@@ -23,7 +25,7 @@ class CardInfo1Page extends StatefulWidget {
 
 class CardInfo1State extends State<CardInfo1Page> {
   //Response res;
-  //Dio dio = initDio();
+  Dio dio = initDio();
 
   ScrollController _scrollController;
   void initState() {
@@ -44,6 +46,30 @@ class CardInfo1State extends State<CardInfo1Page> {
     dynamic args = ModalRoute.of(context).settings.arguments;
     CardInfo card = Provider.of<CardCounter>(context,listen:false).getCard(args["card"]);
     int itemNum = card.couponsNum + 3;
+
+    List<EnterpriseInfo> list = Provider.of<EnterpriseCounter>(context).enterpriseList;
+    String back_CaptchaCode;
+    for(int i = 0; i < list.length; i++){
+      if(list[i].enterpriseName == card.eName){
+
+        String enterpriseId = list[i].enterpriseId;
+
+        dioGetEnterpriseInfo(dio, enterpriseId).then((res) async{
+          print(res.statusCode);
+          print(res.data);
+          if(res.statusCode==200){
+            Map<String, dynamic> js = res.data;
+            back_CaptchaCode = EnterpriseDemo.fromJson(js).base64;
+          }
+        }
+        );
+        break;
+      }
+    }
+    //商家店面背景
+    back_CaptchaCode = back_CaptchaCode.split(',')[1];
+    Uint8List bytes = Base64Decoder().convert(back_CaptchaCode);
+
     return Scaffold(
         backgroundColor: Colors.white,
         //Todo: Add more UI about Card Info body from here
@@ -107,7 +133,7 @@ class CardInfo1State extends State<CardInfo1Page> {
                         try{
                           if (index == 0) {
                             return Image(
-                              image: AssetImage("assets/backgrounds/starbucksBackground.jpg"),   //card.background
+                              image: MemoryImage(bytes),   //card.background
                               //height: 300,
                               fit: BoxFit.fitWidth,
                             );
@@ -291,7 +317,7 @@ class CardInfo1State extends State<CardInfo1Page> {
                           }
                         }on Exception{
                           return Image(
-                            image: AssetImage("assets/backgrounds/starbucksBackground.jpg"),   //card.background
+                            image: MemoryImage(bytes),   //card.background
                             //height: 300,
                             fit: BoxFit.fitWidth,
                           );

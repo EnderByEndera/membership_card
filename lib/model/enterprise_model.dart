@@ -56,5 +56,22 @@ class EnterpriseInfo extends ChangeNotifier{
     _licenseId = json[LICENSE_ID_JSON];
   }
 
+}
 
+class EnterpriseDemo{
+//  static const String BACK_BASE64_JSON = "base64";
+
+  EnterpriseInfo _eInfo;
+  String _base64;
+
+  String get base64 => _base64;
+
+  set base64(String value) {
+    _base64 = value;
+  }
+
+  EnterpriseDemo.fromJson(Map<String, dynamic> parsedJson){
+    _base64 = parsedJson["base64"];
+    _eInfo = EnterpriseInfo.fromJSON(parsedJson['enterprise']);
+  }
 }

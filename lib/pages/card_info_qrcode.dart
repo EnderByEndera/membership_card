@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,11 @@ import 'package:provider/provider.dart';
 import 'package:membership_card/model/card_count.dart';
 import 'package:membership_card/model/card_model.dart';
 import 'package:membership_card/model/user_model.dart';
+import 'package:membership_card/model/enterprise_model.dart';
+import 'package:membership_card/model/enterprise_count.dart';
+import 'package:dio/dio.dart';
+import 'dart:convert';
+import 'package:membership_card/network/client.dart';
 
 /// This is the Card_Info Page showing one card's information with qrcode.
 class CardInfo3Page extends StatefulWidget {
@@ -16,10 +22,36 @@ class CardInfo3Page extends StatefulWidget {
 }
 
 class CardInfo3State extends State<CardInfo3Page>{
+  Dio dio = initDio();
+
   @override
   Widget build(BuildContext context) {
     dynamic args = ModalRoute.of(context).settings.arguments;
     CardInfo card = Provider.of<CardCounter>(context,listen:false).getCard(args["card"]);
+
+    List<EnterpriseInfo> list = Provider.of<EnterpriseCounter>(context).enterpriseList;
+    String back_CaptchaCode;
+    for(int i = 0; i < list.length; i++){
+      if(list[i].enterpriseName == card.eName){
+
+        String enterpriseId = list[i].enterpriseId;
+
+        dioGetEnterpriseInfo(dio, enterpriseId).then((res) async{
+          print(res.statusCode);
+          print(res.data);
+          if(res.statusCode==200){
+            Map<String, dynamic> js = res.data;
+            back_CaptchaCode = EnterpriseDemo.fromJson(js).base64;
+          }
+        }
+        );
+        break;
+      }
+    }
+    //商家店面背景
+    back_CaptchaCode = back_CaptchaCode.split(',')[1];
+    Uint8List bytes = Base64Decoder().convert(back_CaptchaCode);
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -81,7 +113,7 @@ class CardInfo3State extends State<CardInfo3Page>{
                     borderRadius: BorderRadius.circular(5.0),
 //                    color: card.cardColor,
                     image: DecorationImage(
-                        image: AssetImage("assets/backgrounds/starbucksBackground.jpg",),
+                        image: MemoryImage(bytes),
                         fit: BoxFit.fitWidth
                     ),
                   ),

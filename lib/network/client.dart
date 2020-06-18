@@ -477,3 +477,27 @@ Future<Response<T>>  dioGetActivity<T>(Dio dio,String Ename,String Cardtype)asyn
   }
   return  res;
 }
+
+Future<Response<T>> dioGetEnterpriseInfo<T>(Dio dio,String enterpriseId)async{
+  Response res=Response();
+  Map<String,dynamic> data={
+    "Id": enterpriseId,
+  };
+  try{
+    res=await dio.get(
+      "/v1/api/user/enterprise/info/$enterpriseId",
+      queryParameters: data,
+    );
+    print("${res.statusCode}");
+  } on DioError catch(e) {
+    if (e.response == null) {
+      res.statusCode = 500;
+      res.data = "Error from the server, meet 500 error";
+      return res;
+    }else {
+      res.statusCode = e.response.statusCode;
+      return res;
+    }
+  }
+  return res;
+}
