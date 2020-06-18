@@ -56,32 +56,32 @@ class SettingsPage extends StatelessWidget {
       child: ListView(
       children: <Widget>[
         SizedBox(height: 300,),
-        GestureDetector(
-          onTap: (){
-           showAlertDialog(context);
-          },
-          child: Container(
-            decoration:  BoxDecoration(
-              color: Colors.white,
-              border: new Border.all(color: Colors.orange, width: 2.0),
-              borderRadius: new BorderRadius.circular((5.0)),
-            ),
-            child: Column(
-              children: <Widget>[
-                Container(
-                  color: Colors.white,
-                  height: 50,
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  alignment: Alignment.center,
-                      child:Text("Sign Out", textAlign: TextAlign.center,style: TextStyle(fontSize: 18,color: Colors.red,fontWeight: FontWeight.bold)),
-                      //Expanded(child: Container()),
-                      //Image.asset('img/arrow_right.png'),
-                ),
-
-              ],
-            ),
-          ),
-        )
+//        GestureDetector(
+//          onTap: (){
+//           showAlertDialog(context);
+//          },
+//          child: Container(
+//            decoration:  BoxDecoration(
+//              color: Colors.white,
+//              border: new Border.all(color: Colors.orange, width: 2.0),
+//              borderRadius: new BorderRadius.circular((5.0)),
+//            ),
+//            child: Column(
+//              children: <Widget>[
+//                Container(
+//                  color: Colors.white,
+//                  height: 50,
+//                  padding: EdgeInsets.symmetric(horizontal: 20),
+//                  alignment: Alignment.center,
+//                      child:Text("Sign Out", textAlign: TextAlign.center,style: TextStyle(fontSize: 18,color: Colors.red,fontWeight: FontWeight.bold)),
+//                      //Expanded(child: Container()),
+//                      //Image.asset('img/arrow_right.png'),
+//                ),
+//
+//              ],
+//            ),
+//          ),
+//        )
 
       ],
      )
