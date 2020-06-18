@@ -56,6 +56,17 @@ class EnterpriseInfo extends ChangeNotifier{
     _licenseId = json[LICENSE_ID_JSON];
   }
 
+  EnterpriseInfo.fromCOUNTER(
+      [this._enterpriseId,
+        this._addr,
+        this._isLocal,
+        this._type,
+        this._registerNum,
+        this._enterpriseName,
+        this._helpMsg,
+        this._website,
+        this._licenseId]);
+
 }
 
 class EnterpriseDemo{
