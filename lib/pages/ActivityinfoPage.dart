@@ -35,7 +35,6 @@ class ActivityinfoState extends State<ActivityinfoPage> {
 
   Response res;
   Dio dio = initDio();
-  var list=[];
   var my=[];
   int index;
 
@@ -49,19 +48,11 @@ class ActivityinfoState extends State<ActivityinfoPage> {
         List<dynamic> js = res.data['activity'];
         print(js);
         List<ActivityInfo> mylist = ActivityCounter.fromJson(js).activityList;
-        int i = 0;
         print(mylist);
-        var b=[];
-        for (; i < mylist.length; i++) {
-          ActivityInfo a = mylist[i];
-          b.add(a.description);
 
-        }
         setState(() {
-          list = b;
           my=mylist;
         });
-        print(list);
       });
     }
 
