@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,9 @@ import 'package:barcode_flutter/barcode_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:dio/dio.dart';
 import 'package:membership_card/network/client.dart';
+import 'package:membership_card/model/enterprise_model.dart';
+import 'package:membership_card/model/enterprise_count.dart';
+import 'dart:convert';
 
 /// This is the All_Cards Page [AllCardsMainPage] which is the home of the App.
 /// It shows all the cards users created and users can also add cards
@@ -542,6 +546,8 @@ class AllCardsPage extends StatefulWidget {
 
 class _AllCardsPageState extends State<AllCardsPage>
     with SingleTickerProviderStateMixin {
+  Dio dio = initDio();
+
   TabController _tabController;
   TextEditingController _textEditingController;
   ScrollController _scrollController;
@@ -795,103 +801,150 @@ class _AllCardsPageState extends State<AllCardsPage>
     return rewardList;
   }
 
-  static Widget buildBarcode(
-          CardCounter counter, int index, BuildContext context) =>
-      GestureDetector(
-        onTap: () {
-          Navigator.of(context).pushNamed("/cardinfo_barcode", arguments: {
-            "herotag": counter.getOneCard(index).cardKey,
-            "card": counter.getOneCard(index)
-          });
-        },
-        child: Container(
-          decoration: BoxDecoration(
-//            color: counter.getCardColor(index),
-            image: DecorationImage(
-                image: AssetImage("assets/backgrounds/starbucksBackground.jpg",),
-                fit: BoxFit.fitWidth
-            ),
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          constraints: BoxConstraints(minHeight: 160),
-          child: Stack(
-            fit: StackFit.passthrough,
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.all(16.0),
-                alignment: Alignment(-1, -0.7),
-                child: Text(
-                  counter.getOneCard(index).eName,
-                  style: TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              Container(
-                  margin: EdgeInsets.all(16.0),
-                  alignment: Alignment(-1, -0.1),
-                  child: Text(counter.getOneCard(index).cardId,
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        color: Colors.white,
-                      ))),
-              Container(
-                margin: EdgeInsets.all(16.0),
-                alignment: Alignment.bottomRight,
-                child: BarCodeImage(
-                  padding: EdgeInsets.symmetric(vertical: 6.0),
-                  params: ITFBarCodeParams(
-                    counter.getOneCard(index).cardId,
-                    barHeight: 30.0,
-                    withBearerBars: false,
-                    wideBarRatio: 2.25,
-                  ),
-                  backgroundColor: Colors.white,
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
+   Widget buildBarcode(CardCounter counter, int index, BuildContext context){
+    List<EnterpriseInfo> list = Provider.of<EnterpriseCounter>(context).enterpriseList;
+    String back_CaptchaCode;
+    for(int i = 0; i < list.length; i++){
+      if(list[i].enterpriseName == counter.getOneCard(index).eName){
 
-  static Widget buildqrCode(
-          CardCounter counter, int index, BuildContext context) =>
-      GestureDetector(
-        onTap: () {
-          Navigator.of(context).pushNamed("/cardinfo_qrcode", arguments: {
-            "herotag": counter.getOneCard(index).cardKey,
-            "card": counter.getOneCard(index)
-          });
-        },
-        child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.0),
-//              color: counter.getCardColor(index),
-              image: DecorationImage(
-                  image: AssetImage("assets/backgrounds/starbucksBackground.jpg",),
-                  fit: BoxFit.fitWidth
+        String enterpriseId = list[i].enterpriseId;
+
+        dioGetEnterpriseInfo(dio, enterpriseId).then((res) async{
+          print(res.statusCode);
+          print(res.data);
+          if(res.statusCode==200){
+            Map<String, dynamic> js = res.data;
+            back_CaptchaCode = EnterpriseDemo.fromJson(js).base64;
+          }
+        }
+        );
+        break;
+      }
+    }
+    //商家店面背景
+    back_CaptchaCode = back_CaptchaCode.split(',')[1];
+    Uint8List bytes = Base64Decoder().convert(back_CaptchaCode);
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).pushNamed("/cardinfo_barcode", arguments: {
+          "herotag": counter.getOneCard(index).cardKey,
+          "card": counter.getOneCard(index)
+        });
+      },
+      child: Container(
+        decoration: BoxDecoration(
+//            color: counter.getCardColor(index),
+          image: DecorationImage(
+              image: MemoryImage(bytes),
+              fit: BoxFit.fitWidth
+          ),
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        constraints: BoxConstraints(minHeight: 160),
+        child: Stack(
+          fit: StackFit.passthrough,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.all(16.0),
+              alignment: Alignment(-1, -0.7),
+              child: Text(
+                counter.getOneCard(index).eName,
+                style: TextStyle(
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
             ),
-            constraints: BoxConstraints(minHeight: 160.0),
-            child: Stack(
-              fit: StackFit.passthrough,
-              children: <Widget>[
-                Container(
-                  margin: EdgeInsets.all(16.0),
-                  alignment: Alignment.topRight,
-                  child: QrImage(
-                    version: QrVersions.auto,
-                    backgroundColor: Colors.white,
-                    data: counter.getOneCard(index).cardId,
-                    size: 60.0,
-                    padding: EdgeInsets.all(4.0),
-                  ),
+            Container(
+                margin: EdgeInsets.all(16.0),
+                alignment: Alignment(-1, -0.1),
+                child: Text(counter.getOneCard(index).cardId,
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.white,
+                    ))),
+            Container(
+              margin: EdgeInsets.all(16.0),
+              alignment: Alignment.bottomRight,
+              child: BarCodeImage(
+                padding: EdgeInsets.symmetric(vertical: 6.0),
+                params: ITFBarCodeParams(
+                  counter.getOneCard(index).cardId,
+                  barHeight: 30.0,
+                  withBearerBars: false,
+                  wideBarRatio: 2.25,
                 ),
-              ],
-            )),
-      );
+                backgroundColor: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+   Widget buildqrCode(CardCounter counter, int index, BuildContext context){
+     List<EnterpriseInfo> list = Provider.of<EnterpriseCounter>(context).enterpriseList;
+     String back_CaptchaCode;
+     for(int i = 0; i < list.length; i++){
+       if(list[i].enterpriseName == counter.getOneCard(index).eName){
+
+         String enterpriseId = list[i].enterpriseId;
+
+         dioGetEnterpriseInfo(dio, enterpriseId).then((res) async{
+           print(res.statusCode);
+           print(res.data);
+           if(res.statusCode==200){
+             Map<String, dynamic> js = res.data;
+             back_CaptchaCode = EnterpriseDemo.fromJson(js).base64;
+           }
+         }
+         );
+         break;
+       }
+     }
+     //商家店面背景
+     back_CaptchaCode = back_CaptchaCode.split(',')[1];
+     Uint8List bytes = Base64Decoder().convert(back_CaptchaCode);
+
+     return GestureDetector(
+       onTap: () {
+         Navigator.of(context).pushNamed("/cardinfo_qrcode", arguments: {
+           "herotag": counter.getOneCard(index).cardKey,
+           "card": counter.getOneCard(index)
+         });
+       },
+       child: Container(
+           decoration: BoxDecoration(
+             borderRadius: BorderRadius.circular(10.0),
+//              color: counter.getCardColor(index),
+             image: DecorationImage(
+                 image: MemoryImage(bytes),
+                 fit: BoxFit.fitWidth
+             ),
+           ),
+           constraints: BoxConstraints(minHeight: 160.0),
+           child: Stack(
+             fit: StackFit.passthrough,
+             children: <Widget>[
+               Container(
+                 margin: EdgeInsets.all(16.0),
+                 alignment: Alignment.topRight,
+                 child: QrImage(
+                   version: QrVersions.auto,
+                   backgroundColor: Colors.white,
+                   data: counter.getOneCard(index).cardId,
+                   size: 60.0,
+                   padding: EdgeInsets.all(4.0),
+                 ),
+               ),
+             ],
+           )),
+     );
+  }
+
 
   Widget _cardDesign(CardCounter counter, int index, CardDesign cardDesign) {
     Widget design;

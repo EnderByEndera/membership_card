@@ -9,7 +9,7 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:membership_card/network/cookie.dart';
 
-const SERVER_URL = "http://39.97.164.119:8080";
+const SERVER_URL = "http://106.15.198.136";
 const PORT       = "8080";
 
 
@@ -17,7 +17,7 @@ Dio initDio() {
   Dio dio = Dio(
     // This is the base options for Dio client to connect to server
     BaseOptions(
-      baseUrl: "http://39.97.164.119:8080",
+      baseUrl: "http://106.15.198.136:8080",
       connectTimeout: 3000,
       receiveTimeout: 3000,
       receiveDataWhenStatusError: false,
@@ -476,4 +476,28 @@ Future<Response<T>>  dioGetActivity<T>(Dio dio,String Ename,String Cardtype)asyn
     }
   }
   return  res;
+}
+
+Future<Response<T>> dioGetEnterpriseInfo<T>(Dio dio,String enterpriseId)async{
+  Response res=Response();
+  Map<String,dynamic> data={
+    "Id": enterpriseId,
+  };
+  try{
+    res=await dio.get(
+      "/v1/api/user/enterprise/info/$enterpriseId",
+      queryParameters: data,
+    );
+    print("${res.statusCode}");
+  } on DioError catch(e) {
+    if (e.response == null) {
+      res.statusCode = 500;
+      res.data = "Error from the server, meet 500 error";
+      return res;
+    }else {
+      res.statusCode = e.response.statusCode;
+      return res;
+    }
+  }
+  return res;
 }

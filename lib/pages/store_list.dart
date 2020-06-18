@@ -66,6 +66,8 @@ class SwiperPageState extends State<SwiperPage> {
        List<dynamic> js = res1.data['enterprise'];
        print(js);
        List<EnterpriseInfo> list = EnterpriseCounter.fromJson(js).enterpriseList;
+       Provider.of<EnterpriseCounter>(context).enterpriseList = list;
+
        for(int i=0;i<list.length;i++){
          numList[i]='i';
        }

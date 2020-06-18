@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
 class ActivityInfo extends ChangeNotifier {
-  static const String ID_JSON = "Id";
+  static const String ID_JSON = "TypeId";
   static const String TYPE_JSON = "CardType";
   static const String ENTERPRISE_JSON = "Enterprise";
   static const String STATE_JSON = "State";
@@ -9,20 +9,21 @@ class ActivityInfo extends ChangeNotifier {
   static const String COUPONS_JSON = "Coupons";
   static const String DESCRIPTION_JSON = "Describe";
   static const String EXPIRETIME_JSON = "ExpireTime";
-  static const String TYPE_ID_JSON     = "TypeId";
+  //static const String TYPE_ID_JSON     = "TypeId";
+  static const String BASE64_JSON="BackgroundBase64";
 
-  int _activityId;
-  String _type;
   int _typeId;
+  String _type;
   String _enterprise;
   String _state;
   String _city;
   String _coupons;
   String _description;
   String _expireTime;
+  String _backgroundbase64;
 
 
-  int get activityId => _activityId;
+  int get activityId => _typeId;
   String get type => _type;
   String get enterprise => _enterprise;
   String get state => _state;
@@ -30,17 +31,22 @@ class ActivityInfo extends ChangeNotifier {
   String get coupons => _coupons;
   String get description => _description;
   String get expireTime => _expireTime;
+  String get backgroundbase64=> _backgroundbase64;
 
-  int get typeId => _typeId;
+      int get typeId => _typeId;
 
   set typeId(int value) {
     _typeId = value;
   }
 
-  ActivityInfo([this._activityId, this._type, this._enterprise]);
-
+  ActivityInfo([this._typeId, this._type, this._enterprise]);
+  set backgroundbase64(String value){
+    _backgroundbase64=value;
+    notifyListeners();
+  }
+  
   set activityId(int value) {
-    _activityId = value;
+    _typeId = value;
     notifyListeners();
   }
   set type(String value) {
@@ -73,7 +79,7 @@ class ActivityInfo extends ChangeNotifier {
   }
 
   ActivityInfo.fromJson(Map<String, dynamic> json) {
-    _activityId = json[ID_JSON];
+    _typeId = json[ID_JSON];
     _type = json[TYPE_JSON];
     _enterprise = json[ENTERPRISE_JSON];
     _state = json[STATE_JSON];
@@ -81,7 +87,8 @@ class ActivityInfo extends ChangeNotifier {
     _coupons = json[COUPONS_JSON];
     _description = json[DESCRIPTION_JSON];
     _expireTime = json[EXPIRETIME_JSON];
-    this._typeId = json[TYPE_ID_JSON];
+    //this._typeId = json[TYPE_ID_JSON];
+    _backgroundbase64=json[BASE64_JSON];
 
   }
 }
