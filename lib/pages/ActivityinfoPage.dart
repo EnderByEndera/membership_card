@@ -1,5 +1,7 @@
 import 'dart:convert';
+//import 'dart:html';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
@@ -21,6 +23,9 @@ import 'package:membership_card/network/cookie.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:membership_card/model/activity_model.dart';
 import 'package:membership_card/model/activity_count.dart';
+import 'package:membership_card/model/enterprise_model.dart';
+import 'package:membership_card/model/enterprise_count.dart';
+
 class ActivityinfoPage extends StatefulWidget {
   @override
   ActivityinfoState createState() {
@@ -41,7 +46,7 @@ class ActivityinfoState extends State<ActivityinfoPage> {
   String ename;
   var args={};
   bool ischanged=false;
-
+  Uint8List bytes;
 
   @override
   void initState() {
@@ -113,6 +118,31 @@ class ActivityinfoState extends State<ActivityinfoPage> {
         });
       });
 
+      //根据商家名称获取商家对应的Id, 再根据这个Id用api获取商家背景图base64编码
+      List<EnterpriseInfo> list = Provider.of<EnterpriseCounter>(context).enterpriseList;
+      String back_CaptchaCode;
+      String dicountCard_CaptchaCode;
+      for(int i = 0; i < list.length; i++){
+        if(list[i].enterpriseName == args["Ename"]){
+
+          String enterpriseId = list[i].enterpriseId;
+
+          dioGetEnterpriseInfo(dio, enterpriseId).then((res) async{
+            print(res.statusCode);
+            print(res.data);
+            if(res.statusCode==200){
+              Map<String, dynamic> js = res.data;
+              back_CaptchaCode = EnterpriseDemo.fromJson(js).base64;
+            }
+          }
+          );
+          break;
+        }
+      }
+
+      //商家店面背景
+      back_CaptchaCode  = back_CaptchaCode.split(',')[1];
+      bytes = Base64Decoder().convert(back_CaptchaCode);
     }
     return Scaffold(
       backgroundColor: Colors.white,
@@ -144,9 +174,10 @@ class ActivityinfoState extends State<ActivityinfoPage> {
           Container(
               height: MediaQuery.of(context).size.height * 0.37,
               alignment: Alignment(0.5, 0),
-              child: Image(
+              child: bytes!=null ? Image.memory(bytes, fit: BoxFit.contain,):Image(
                 image: AssetImage("assets/backgrounds/starbucksBackground.jpg"),
-              )),
+              )
+          ),
 
           SizedBox(height: 30,),
           new ListView(

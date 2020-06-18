@@ -113,7 +113,7 @@ class CardInfo3State extends State<CardInfo3Page>{
                     borderRadius: BorderRadius.circular(5.0),
 //                    color: card.cardColor,
                     image: DecorationImage(
-                        image: MemoryImage(bytes),
+                        image: bytes!=null ? MemoryImage(bytes): AssetImage("assets/backgrounds/starbucksBackground.jpg"),
                         fit: BoxFit.fitWidth
                     ),
                   ),

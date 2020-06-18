@@ -25,9 +25,6 @@ class discountDetailPage extends StatefulWidget {
 
 class discountDetailPageState extends State<discountDetailPage> {
   Dio dio = initDio();
-  String enterpriseId;
-  String back_CaptchaCode;
-  String dicountCard_CaptchaCode;
 
   @override
   Widget build(BuildContext context) {
@@ -35,10 +32,12 @@ class discountDetailPageState extends State<discountDetailPage> {
 
     //根据商家名称获取商家对应的Id, 再根据这个Id用api获取商家背景图base64编码
     List<EnterpriseInfo> list = Provider.of<EnterpriseCounter>(context).enterpriseList;
+    String back_CaptchaCode;
+    String dicountCard_CaptchaCode;
     for(int i = 0; i < list.length; i++){
       if(list[i].enterpriseName == args["Enterprise"]){
 
-        enterpriseId = list[i].enterpriseId;
+        String enterpriseId = list[i].enterpriseId;
 
         dioGetEnterpriseInfo(dio, enterpriseId).then((res) async{
           print(res.statusCode);

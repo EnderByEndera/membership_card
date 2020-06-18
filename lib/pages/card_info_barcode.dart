@@ -109,8 +109,8 @@ class CardInfo2State extends State<CardInfo2Page>{
               padding: EdgeInsets.all(60),
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: MemoryImage(bytes),
-                    fit: BoxFit.fitWidth
+                  image: bytes!=null ? MemoryImage(bytes): AssetImage("assets/backgrounds/starbucksBackground.jpg"),
+                  fit: BoxFit.fitWidth
                 ),
                 borderRadius: BorderRadius.circular(5.0),
 //                color: card.cardColor,

@@ -132,11 +132,17 @@ class CardInfo1State extends State<CardInfo1Page> {
                       if(index < itemNum){
                         try{
                           if (index == 0) {
-                            return Image(
-                              image: MemoryImage(bytes),   //card.background
-                              //height: 300,
-                              fit: BoxFit.fitWidth,
-                            );
+                            if(bytes!=null){
+                              return Image.memory(bytes, fit: BoxFit.fitWidth,);
+                            }
+                            else{
+                              return Image.asset("assets/backgrounds/starbucksBackground.jpg");
+                            }
+//                            return Image(
+//                              image: MemoryImage(bytes),   //card.background
+//                              //height: 300,
+//                              fit: BoxFit.fitWidth,
+//                            );
                           }
                           if(index == 1){
                             return  Text(
@@ -316,11 +322,7 @@ class CardInfo1State extends State<CardInfo1Page> {
                             );
                           }
                         }on Exception{
-                          return Image(
-                            image: MemoryImage(bytes),   //card.background
-                            //height: 300,
-                            fit: BoxFit.fitWidth,
-                          );
+                          return Image.asset("assets/backgrounds/starbucksBackground.jpg");
                         }
                       }
                       else{
