@@ -9,7 +9,7 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:membership_card/network/cookie.dart';
 
-const SERVER_URL = "http://106.15.198.136";
+const SERVER_URL = "http://39.97.164.119:8080";
 const PORT       = "8080";
 
 
@@ -17,7 +17,7 @@ Dio initDio() {
   Dio dio = Dio(
     // This is the base options for Dio client to connect to server
     BaseOptions(
-      baseUrl: "http://106.15.198.136:8080",
+      baseUrl: "http://39.97.164.119:8080",
       connectTimeout: 3000,
       receiveTimeout: 3000,
       receiveDataWhenStatusError: false,
@@ -186,13 +186,16 @@ Future<Response<T>> dioRegisterVerify<T>(Dio dio, String mail) async {
   return res;
 }
 
-Future<Response<T>> dioDelete<T>(CardInfo cardInfo, Dio dio) async {
+Future<Response<T>> dioDelete<T>(String cardId, Dio dio) async {
   var res = Response();
   try {
+    Map<String,dynamic> data={
+      "cardid": cardId,
+    };
     res = await dio.post(
-      "/v1/api/user/card/${cardInfo.cardId}/delete",
-      data: jsonEncode(cardInfo.idToJson()),
-      queryParameters: cardInfo.idToJson(),
+      "/v1/api/user/card/$cardId/delete",
+      data: jsonEncode(data),
+      queryParameters: data,
     );
     print("${res.statusCode}");
 
@@ -238,7 +241,7 @@ Future<Response<T>> dioAdd<T>(Dio dio,String cardId, String eName)async {
 
 
 
-Future<Response<T>> dioModify<T>(Dio dio,String cardId,String eName)async{
+Future<Response<T>> dioModify<T>(Dio dio,String cardId,String eName,String oldId)async{
   Response res=Response();
   Map<String,dynamic> data={
     "CardID":cardId,
@@ -246,7 +249,7 @@ Future<Response<T>> dioModify<T>(Dio dio,String cardId,String eName)async{
   };
   try{
     res=await dio.put(
-      "/v1/api/user/card/$cardId/info",
+      "/v1/api/user/card/$oldId/info",
       data: jsonEncode(data),
       queryParameters: data,
     );

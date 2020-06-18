@@ -12,7 +12,8 @@ import 'dart:async';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:membership_card/network/client.dart';
 import 'package:membership_card/model/user_model.dart';
-
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'package:membership_card/network/cookie.dart';
 
 class EditCardPage extends StatefulWidget{
   final String cardId;
@@ -92,10 +93,13 @@ class EditCardPageState extends  State<EditCardPage>
         ),
         actions: <Widget>[
           FlatButton(
-              onPressed: () {
+              onPressed: () async{
                if((_formKey.currentState as FormState).validate()) {
                 try {
-                  dioModify(dio,cardController.text,cardStoreController.text).then((res){
+                  dio.interceptors.add(CookieManager(await Api.cookieJar));
+                  dioModify(dio,cardController.text,cardStoreController.text,cardId).then((res) async{
+                    print(res.statusCode);
+                    print(res.data);
                     if(res.statusCode==200) {
                       Navigator.pop(context);
                       Provider.of<CardCounter>(context, listen: false).editCard(
@@ -208,9 +212,10 @@ class EditCardPageState extends  State<EditCardPage>
                 left: 20.0,
                 right: 20.0,
               ),
-              onPressed: (){
+              onPressed: () async{
                 try {
-                  dioDelete(args["card"], dio).then((res) async{
+                  dio.interceptors.add(CookieManager(await Api.cookieJar));
+                  dioDelete(cardId, dio).then((res) async{
                     Navigator.of(context).popAndPushNamed('/allCardsPage');
                     counter.deleteCard(args["card"]);
                     print(res.statusCode);

@@ -648,7 +648,7 @@ class _AllCardsPageState extends State<AllCardsPage>
                             builder: (context, counter, _) => Hero(
                               tag: counter.getOneCard(index).cardKey,
                               child:
-                                  buildMembership(counter, index, context, 5),
+                                  buildMembership(counter, index, context, counter.getOneCard(index).discountTimes),
                             ),
                           );
                         }
@@ -725,7 +725,7 @@ class _AllCardsPageState extends State<AllCardsPage>
                 margin: EdgeInsets.all(16.0),
                 alignment: Alignment(-1.0, -0.3),
                 child: Text(
-                  "Buy 5 Get 1 Free",
+                  "Buy " + counter.getOneCard(index).discountTimes.toString()+" Get 1 Free",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 20.0,
@@ -736,7 +736,8 @@ class _AllCardsPageState extends State<AllCardsPage>
               Container(
                   margin: EdgeInsets.all(16.0),
                   alignment: Alignment(-1, 0.1),
-                  child: Text("Offer expires at 31/12/2019",
+                  child: Text(
+                      "Offer expires at " + counter.getOneCard(index).expireTime,
                       style: TextStyle(
                         fontSize: 14.0,
                         color: Colors.white,
@@ -745,7 +746,7 @@ class _AllCardsPageState extends State<AllCardsPage>
                   margin: EdgeInsets.all(16.0),
                   alignment: Alignment(-1, 0.6),
                   child: Text(
-                      "${counter.getOneCard(index).currentScore % 5} "
+                      "${counter.getOneCard(index).discountTimes - counter.getOneCard(index).currentScore % counter.getOneCard(index).discountTimes} "
                       "More to go",
                       style: TextStyle(
                           fontSize: 18.0,
@@ -757,7 +758,7 @@ class _AllCardsPageState extends State<AllCardsPage>
                   padding: EdgeInsets.only(
                       left: 16.0, right: 16.0, top: 125.0, bottom: 2.0),
                   scrollDirection: Axis.horizontal,
-                  children: _buildRewardPlace(counter.getOneCard(index).currentScore, rewardMaxPoint, context),
+                  children: _buildRewardPlace(counter.getOneCard(index).currentScore % counter.getOneCard(index).discountTimes, rewardMaxPoint, context),
                 ),
               )
             ],
@@ -774,9 +775,9 @@ class _AllCardsPageState extends State<AllCardsPage>
         constraints: BoxConstraints.tightFor(
             height: 33.0,
             width: (MediaQuery.of(context).size.width - 64.0) / 5),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.white),
-        ),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.white),
+            ),
         alignment: Alignment.center,
         child:
             i > score

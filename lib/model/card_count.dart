@@ -34,12 +34,12 @@ class CardCounter extends ChangeNotifier {
     return card;
   }
 
-  void chooseOneCard(int index) {
-    if (index < _cardList.length) {
-      _cardList.elementAt(index).chooseOrNotChoose();
-      notifyListeners();
-    }
-  }
+//  void chooseOneCard(int index) {
+//    if (index < _cardList.length) {
+//      _cardList.elementAt(index).chooseOrNotChoose();
+//      notifyListeners();
+//    }
+//  }
 
   void editCard(CardInfo cardInfo, String number, String store){
     cardInfo.cardId = number;

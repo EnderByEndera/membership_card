@@ -133,11 +133,20 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
                   //Save cookies
                   //(await Api.cookieJar).saveFromResponse(res.request.uri, cookies.map((str) => Cookie.fromSetCookieValue(str.toString())).toList());
                   //print("Save cookies successly");
-                  Navigator.pop(context);
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                      "/allCardsPage", (route) => route == null);
                   Map<String, dynamic> card = json.decode(res.data);
                   counter.addCard(CardInfo.fromJson(card));
                   print(res.statusCode);
-                }else {
+                }else if(res.statusCode==403){
+                  showDialog(
+                      context: context,
+                      builder: (_) =>
+                          AlertDialog(
+                            title: Text("Alert"),
+                            content: Text("This card has been already added!"),
+                          ));
+                } else {
                   showDialog(
                       context: context,
                       builder: (_) =>
