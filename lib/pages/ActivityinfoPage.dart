@@ -53,7 +53,6 @@ class ActivityinfoState extends State<ActivityinfoPage> {
         print(mylist);
         var b=[];
         for (; i < mylist.length; i++) {
-
           ActivityInfo a = mylist[i];
           b.add(a.description);
 
@@ -63,42 +62,30 @@ class ActivityinfoState extends State<ActivityinfoPage> {
           my=mylist;
         });
         print(list);
-
       });
-
-
     }
-
-
 
   getList() {
     Iterable<Widget> listTitles;
-int i=0;
-       listTitles = list.map((dynamic item) {
-
+    int i = 0;
+       listTitles = my.map((dynamic item) {
+         i++;
         print(item);
         return new ListTile(
           isThreeLine: true,
           dense: false,
-
-          leading: new CircleAvatar(child: new Text((i+1).toString())),
+          leading: new CircleAvatar(child: new Text(i.toString())),
           title: new Text('卡片类型'),
-          subtitle: new Text(item),
+          subtitle: new Text(item.description),
           trailing: new Icon(Icons.arrow_right, color: Colors.green),
           onTap: () {
-            print(i);
-            print(my);
-            Navigator.of(context).popAndPushNamed('/discountDetail',arguments:{"CardType":my[i].type,"Enterprise":my[i].enterprise,
-            "Coupons":my[i].coupons,"Describe":my[i].description,"ExpireTime":my[i].expireTime,"Id":my[i].activityId,
+            Navigator.of(context).popAndPushNamed('/discountDetail',arguments:{"CardType":item.type,"Enterprise":item.enterprise,
+            "Coupons":item.coupons,"Describe":item.description,"ExpireTime":item.expireTime,"Id":item.activityId,
             });
           },
-
-
         );
 
       });
-
-    i=i+1;
       return listTitles.toList();
   }
 
@@ -139,7 +126,6 @@ int i=0;
               child: Image(
                 image: AssetImage("assets/backgrounds/starbucksBackground.jpg"),
               )),
-
 
           SizedBox(height: 30,),
           new ListView(

@@ -95,8 +95,8 @@ class discountDetailPageState extends State<discountDetailPage> {
                         ),
                         ListTile(
                           title: Text(
-//                            args["title"],
-                            "discount 50%",
+                            args["Coupons"],
+//                            "discount 50%",
                             textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 25,
                                 color: Color.fromARGB(255, 119, 136, 213),
@@ -114,14 +114,12 @@ class discountDetailPageState extends State<discountDetailPage> {
                             decoration: new BoxDecoration(
                               color: Colors.white,
                               image: new DecorationImage(
-                                  image: new AssetImage(
-                                      "assets/coupon/coffee.png"),
+                                  image: new AssetImage("assets/coupon/coffee.png"),
                                   fit: BoxFit.contain),
                               shape: BoxShape.rectangle,
                               // <-- 这里需要设置为 rectangle
                               borderRadius: new BorderRadius.all(
-                                const Radius.circular(
-                                    15.0), // <-- rectangle 时，BorderRadius 才有效
+                                const Radius.circular(15.0), // <-- rectangle 时，BorderRadius 才有效
                               ),
                             ),
                           ),
@@ -129,12 +127,14 @@ class discountDetailPageState extends State<discountDetailPage> {
                         Container(
                           padding: EdgeInsets.fromLTRB(8, 20, 8, 0),
                           child: Text(
-//                            args["describe"],
-                            "use while buying hp's laptop",
+                            args["Describe"],
+//                            "use while buying hp's laptop",
                             textAlign: TextAlign.start,
                             style: TextStyle(fontSize: 16),
                           ),
                         ),
+                        SizedBox(height: 30,),
+
                         RaisedButton(
                           color: Colors.blue,
                           highlightColor: Colors.blue[700],
@@ -142,8 +142,8 @@ class discountDetailPageState extends State<discountDetailPage> {
                           splashColor: Colors.grey,
                           child: Text('领取', style: TextStyle(fontSize: 16)),
 //              shape:RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-//                          onPressed: () => getDialog(context, args["cardId"], args["enterprise"], args["cardtype"]),
-                          onPressed: () => getDialog(context, 1, 'HP', 'Recharge'),
+                          onPressed: () => getDialog(context, args["Id"], args["Enterprise"], args["CardType"]),
+//                          onPressed: () => getDialog(context, 1, 'HP', 'Recharge'),
 
                         ),
                       ],
