@@ -186,13 +186,16 @@ Future<Response<T>> dioRegisterVerify<T>(Dio dio, String mail) async {
   return res;
 }
 
-Future<Response<T>> dioDelete<T>(CardInfo cardInfo, Dio dio) async {
+Future<Response<T>> dioDelete<T>(String cardId, Dio dio) async {
   var res = Response();
   try {
+    Map<String,dynamic> data={
+      "cardid": cardId,
+    };
     res = await dio.post(
-      "/v1/api/user/card/${cardInfo.cardId}/delete",
-      data: jsonEncode(cardInfo.idToJson()),
-      queryParameters: cardInfo.idToJson(),
+      "/v1/api/user/card/$cardId/delete",
+      data: jsonEncode(data),
+      queryParameters: data,
     );
     print("${res.statusCode}");
 
@@ -238,7 +241,7 @@ Future<Response<T>> dioAdd<T>(Dio dio,String cardId, String eName)async {
 
 
 
-Future<Response<T>> dioModify<T>(Dio dio,String cardId,String eName)async{
+Future<Response<T>> dioModify<T>(Dio dio,String cardId,String eName,String oldId)async{
   Response res=Response();
   Map<String,dynamic> data={
     "CardID":cardId,
@@ -246,7 +249,7 @@ Future<Response<T>> dioModify<T>(Dio dio,String cardId,String eName)async{
   };
   try{
     res=await dio.put(
-      "/v1/api/user/card/$cardId/info",
+      "/v1/api/user/card/$oldId/info",
       data: jsonEncode(data),
       queryParameters: data,
     );
