@@ -3,7 +3,7 @@ import 'package:membership_card/pages/all_cards.dart';
 import 'package:membership_card/pages/user_info.dart';
 import 'package:membership_card/model/user_model.dart';
 import 'package:membership_card/pages/store_list.dart';
-
+import 'package:membership_card/pages/ActivityinfoPage.dart';
 
 class BottomMenuPage extends StatefulWidget {
   @override

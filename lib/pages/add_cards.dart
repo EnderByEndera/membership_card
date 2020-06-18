@@ -53,7 +53,7 @@ class AddCardState extends State<AddCardPage> {
 
                title: Text('Other card',style:TextStyle(color:Colors.black) ,),
                onTap: (){
-               Navigator.pushNamed(context, "/addnumber");
+                 Navigator.of(context).pushNamed( "/addnumber" ,arguments: {"store":''});
                },
 
              ),

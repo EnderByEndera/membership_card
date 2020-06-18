@@ -21,7 +21,6 @@ import 'package:membership_card/network/cookie.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:membership_card/model/activity_model.dart';
 import 'package:membership_card/model/activity_count.dart';
-
 class ActivityinfoPage extends StatefulWidget {
   @override
   ActivityinfoState createState() {
@@ -31,74 +30,90 @@ class ActivityinfoPage extends StatefulWidget {
 
 class ActivityinfoState extends State<ActivityinfoPage> {
   static List _imageUrls = [
-    'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1892437343,3193213548&fm=26&gp=0.jpg',
-    'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1700718690,9797066&fm=26&gp=0.jpg',
-    'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2774630792,60701066&fm=26&gp=0.jpg',
-    'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=837235093,3732460301&fm=26&gp=0.jpg',
+    'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1892437343,3193213548&fm=26&gp=0.jpg'
   ];
-
-
 
   Response res;
   Dio dio = initDio();
-  var ab=[];
-  var list = ['1'];
+  var my=[];
+  int index;
+  String cardtype;
+  String ename;
+  var args={};
+  bool ischanged=false;
 
-  getmy(){
-    dioGetActivities(dio).then((res) async {
-      list.clear();
+
+  @override
+  void initState() {
+   /* setState(() {
+      args=ModalRoute.of(context).settings.arguments;
+    });
+*/    super.initState();
+
+/*
+    dioGetActivity(dio,args['Ename'],args['type']).then((res) async {
       print(res.statusCode);
-
       print(res.data);
-
-
       List<dynamic> js = res.data['activity'];
       print(js);
-
-
-
       List<ActivityInfo> mylist = ActivityCounter.fromJson(js).activityList;
-
-      int i = 0;
-      print(2);
       print(mylist);
 
-
-      i=0;
-
-
-      for (; i < mylist.length; i++) {
-        ActivityInfo a = mylist[i];
-        list.add(a.description);
-
-
-      }
-      print(list);
-    });
-      return null;
-  }
-  getList() {
-
-    getmy();
-
-      Iterable<Widget> listTitles = list.map((dynamic item) {
-        print(item);
-        return new ListTile(
-          isThreeLine: true,
-          dense: false,
-          leading: new CircleAvatar(child: new Text('卡片')),
-          title: new Text('卡片类型'),
-          subtitle: new Text(item),
-          trailing: new Icon(Icons.arrow_right, color: Colors.green),
-        );
+      setState(() {
+        my=mylist;
       });
-      return listTitles.toList();
+    });*/
+  }
+
+  getList() {
+    Iterable<Widget> listTitles;
+    int i = 0;
+    listTitles = my.map((dynamic item) {
+      i++;
+      print(item);
+      return new ListTile(
+        isThreeLine: true,
+        dense: false,
+        leading: new CircleAvatar(child: new Text(i.toString())),
+        title: new Text('卡片类型'),
+        subtitle: new Text(item.description),
+        trailing: new Icon(Icons.arrow_right, color: Colors.green),
+        onTap: () {
+          Navigator.of(context).popAndPushNamed('/discountDetail',arguments:{"CardType":item.type,"Enterprise":item.enterprise,
+            "Coupons":item.coupons,"Describe":item.description,"ExpireTime":item.expireTime,"Id":item.activityId,
+          });
+        },
+      );
+
+    });
+    return listTitles.toList();
   }
 
 
   @override
   Widget build(BuildContext context) {
 
+    setState(() {
+      args=ModalRoute.of(context).settings.arguments;
+    });
+    if(ischanged==false) {
+      dioGetActivity(dio, args['Ename'], args['type']).then((res) async {
+        print(res.statusCode);
+        print(res.data);
+        List<dynamic> js = res.data['activity'];
+        print(js);
+        List<ActivityInfo> mylist = ActivityCounter
+            .fromJson(js)
+            .activityList;
+        print(mylist);
+
+        setState(() {
+          my = mylist;
+          ischanged=true;
+        });
+      });
+
+    }
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -127,16 +142,18 @@ class ActivityinfoState extends State<ActivityinfoPage> {
       body: ListView(
         children:<Widget>[
           Container(
-              width: MediaQuery.of(context).size.width,
-              height: 200.0,
-              child: _swiper),
+              height: MediaQuery.of(context).size.height * 0.37,
+              alignment: Alignment(0.5, 0),
+              child: Image(
+                image: AssetImage("assets/backgrounds/starbucksBackground.jpg"),
+              )),
 
           SizedBox(height: 30,),
-
           new ListView(
             children: this.getList(),
             shrinkWrap: true, // 添加
             physics: NeverScrollableScrollPhysics(),
+
           )
         ],
       ),
@@ -149,14 +166,7 @@ class ActivityinfoState extends State<ActivityinfoPage> {
 
 
 
-
-
-
-
-
-
-
-
+/*
   var _swiper=new Swiper
     (
     itemBuilder: (BuildContext context, int index) {
@@ -177,7 +187,7 @@ class ActivityinfoState extends State<ActivityinfoPage> {
     autoplay: true,
     onTap: (index) => print('点击了第$index个'),
   );
-
+*/
 
 
 }

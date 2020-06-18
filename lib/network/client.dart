@@ -423,11 +423,11 @@ Future<Response<T>> dioGetDiscountCard<T>(Dio dio, int cardId, String eName, Str
   return res;
 }
 
-Future<Response<T>> dioGetActivities<T>(Dio dio) async {
+Future<Response<T>> dioGetEnterprise<T>(Dio dio) async {
   Response res = Response();
   try {
-    String url = "/v1/api/user/enterprise/activity" ;
-    res = await dio.get(url);
+    String url = "/v1/api/user/enterprise/getAll" ;
+    res = await dio.get<String>(url);
 
     return res;
   } on DioError catch (e) {
@@ -442,4 +442,35 @@ Future<Response<T>> dioGetActivities<T>(Dio dio) async {
       return res;
     }
   }
+}
+
+
+
+
+Future<Response<T>>  dioGetActivity<T>(Dio dio,String Ename,String Cardtype)async{
+  Response res=Response();
+
+  try{
+    res=await dio.put(
+        "/v1/api/user/enterprise/activity",
+
+        data: {
+          "enterprise": Ename,
+          "card_type": Cardtype,
+        }
+    );
+    print("${res.statusCode}");
+
+
+  } on DioError catch(e) {
+    if (e.response == null) {
+      res.statusCode = 500;
+      res.data = "Error from the server, meet 500 error";
+      return res;
+    }else {
+      res.statusCode = e.response.statusCode;
+      return res;
+    }
+  }
+  return  res;
 }

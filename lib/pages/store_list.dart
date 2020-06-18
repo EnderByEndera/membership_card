@@ -1,14 +1,18 @@
 import 'dart:convert';
 import 'dart:io';
-
+import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+
+//import 'package:url_launcher/url_launcher.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:membership_card/model/card_count.dart';
 import 'package:membership_card/model/card_model.dart';
+import 'package:membership_card/model/enterprise_model.dart';
+import 'package:membership_card/model/enterprise_count.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
@@ -35,40 +39,65 @@ class SwiperPageState extends State<SwiperPage> {
     'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=837235093,3732460301&fm=26&gp=0.jpg',
   ];
 
+ static List webs=[
+   'https://www.starbucks.com'
+   'https://www.coca-cola.com.cn'
+   'http://www.subway.com.cn'
+   'https://www.mcdonalds.com.cn'
+ ];
+
  Dio dio=initDio();
  Response res1;
+ var my=[];
+
+
+ var numList =['1','2'];
 
 
 
- var numList =['a','b','c','d'];
+
+ void initState() {
+   //页面初始化
+   super.initState();
+   dioGetEnterprise(dio).then((res1) async{
+     print(res1.statusCode);
+     print(res1.data);
+     if(res1.statusCode==200){
+       List<dynamic> js = res1.data['enterprise'];
+       print(js);
+       List<EnterpriseInfo> list = EnterpriseCounter.fromJson(js).enterpriseList;
+       for(int i=0;i<list.length;i++){
+         numList[i]='i';
+       }
+       setState(() {
+         my=list;
+       });
+     }
+
+
+
+   } );
+ }
 
  getList() {
-   Iterable<Widget> listTitles = numList.map((String item) {
+   int i = 0;
+   Iterable<Widget> listTitles = my.map((dynamic item) {
+     i++;
      return new ListTile(
        isThreeLine: true,
        dense: false,
-       leading: new CircleAvatar(child: new Text(item)),
-       title: new Text(item),
-       subtitle: new Text('item 的内容'),
+       leading: new CircleAvatar(child: new Text(numList[i])),
+       title: new Text(item.Name),
+       subtitle: new Text('Click to see more information'),
        trailing: new Icon(Icons.arrow_right, color: Colors.green),
+       onTap: () {
+         Navigator.of(context).popAndPushNamed('/discountDetail',arguments:{"Ename":item.Name, "type":item.Type,
+         });
+       },
      );
    });
    return listTitles.toList();
  }
-
-
-
-// void initState() {
-//   //页面初始化
-//   super.initState();
-//   dioGetActivities(dio).then((res1) async{
-//     if(res1.statusCode==200){
-//       List<dynamic> js = res1.data;
-//       List<CardInfo> list = CardCounter.fromJson(js).cardList;
-//       numList=list;
-//     }
-//   } );
-// }
 
 
  @override
@@ -78,25 +107,25 @@ class SwiperPageState extends State<SwiperPage> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
-        title: Container(
-          child: GestureDetector(
-            child: Padding(
-              padding: const EdgeInsets.all(0),
-              child: Text(
-                "< Back",
-                style: TextStyle(
-                  decoration: TextDecoration.none,
-                  fontSize: 25.0,
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-        ),
+//        title: Container(
+//          child: GestureDetector(
+//            child: Padding(
+//              padding: const EdgeInsets.all(0),
+//              child: Text(
+//                "< Back",
+//                style: TextStyle(
+//                  decoration: TextDecoration.none,
+//                  fontSize: 25.0,
+//                  color: Theme.of(context).primaryColor,
+//                  fontWeight: FontWeight.w500,
+//                ),
+//              ),
+//            ),
+//            onTap: () {
+//              Navigator.pop(context);
+//            },
+//          ),
+//        ),
       ),
       body: ListView(
           children:<Widget>[
@@ -120,17 +149,6 @@ class SwiperPageState extends State<SwiperPage> {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
   var _swiper=new Swiper
     (
     itemBuilder: (BuildContext context, int index) {
@@ -149,7 +167,9 @@ class SwiperPageState extends State<SwiperPage> {
     control: new SwiperControl(),
     scrollDirection: Axis.horizontal,
     autoplay: true,
-    onTap: (index) => print('点击了第$index个'),
+//    onTap: (index) async {
+//       await launch(webs[index]);
+//    }
   );
 
 
