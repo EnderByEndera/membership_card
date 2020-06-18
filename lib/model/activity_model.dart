@@ -12,9 +12,8 @@ class ActivityInfo extends ChangeNotifier {
   //static const String TYPE_ID_JSON     = "TypeId";
   static const String BASE64_JSON="BackgroundBase64";
 
-  int _activityId;
-  String _type;
   int _typeId;
+  String _type;
   String _enterprise;
   String _state;
   String _city;
@@ -24,7 +23,7 @@ class ActivityInfo extends ChangeNotifier {
   String _backgroundbase64;
 
 
-  int get activityId => _activityId;
+  int get activityId => _typeId;
   String get type => _type;
   String get enterprise => _enterprise;
   String get state => _state;
@@ -40,13 +39,14 @@ class ActivityInfo extends ChangeNotifier {
     _typeId = value;
   }
 
-  ActivityInfo([this._activityId, this._type, this._enterprise]);
-set backgroundbase64(String value){
-  _backgroundbase64=value;
-  notifyListeners();
-}
+  ActivityInfo([this._typeId, this._type, this._enterprise]);
+  set backgroundbase64(String value){
+    _backgroundbase64=value;
+    notifyListeners();
+  }
+  
   set activityId(int value) {
-    _activityId = value;
+    _typeId = value;
     notifyListeners();
   }
   set type(String value) {
@@ -79,7 +79,7 @@ set backgroundbase64(String value){
   }
 
   ActivityInfo.fromJson(Map<String, dynamic> json) {
-    _activityId = json[ID_JSON];
+    _typeId = json[ID_JSON];
     _type = json[TYPE_JSON];
     _enterprise = json[ENTERPRISE_JSON];
     _state = json[STATE_JSON];
