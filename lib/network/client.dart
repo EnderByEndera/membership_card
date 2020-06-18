@@ -447,8 +447,7 @@ Future<Response<T>> dioGetEnterprise<T>(Dio dio) async {
 
 
 
-
-Future<Response<T>>  dioGetActivity<T>(Dio dio)async{
+Future<Response<T>>  dioGetActivity<T>(Dio dio,String Ename,String Cardtype)async{
   Response res=Response();
 
   try{
@@ -456,8 +455,8 @@ Future<Response<T>>  dioGetActivity<T>(Dio dio)async{
         "/v1/api/user/enterprise/activity",
 
         data: {
-          "enterprise": "HP",
-          "card_type": "Recharge",
+          "enterprise": Ename,
+          "card_type": Cardtype,
         }
     );
     print("${res.statusCode}");
