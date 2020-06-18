@@ -37,53 +37,83 @@ class ActivityinfoState extends State<ActivityinfoPage> {
   Dio dio = initDio();
   var my=[];
   int index;
+  String cardtype;
+  String ename;
+  var args={};
+  bool ischanged=false;
 
 
   @override
   void initState() {
-    super.initState();
-      dioGetActivity(dio).then((res) async {
-        print(res.statusCode);
-        print(res.data);
-        List<dynamic> js = res.data['activity'];
-        print(js);
-        List<ActivityInfo> mylist = ActivityCounter.fromJson(js).activityList;
-        print(mylist);
+   /* setState(() {
+      args=ModalRoute.of(context).settings.arguments;
+    });
+*/    super.initState();
 
-        setState(() {
-          my=mylist;
-        });
+/*
+    dioGetActivity(dio,args['Ename'],args['type']).then((res) async {
+      print(res.statusCode);
+      print(res.data);
+      List<dynamic> js = res.data['activity'];
+      print(js);
+      List<ActivityInfo> mylist = ActivityCounter.fromJson(js).activityList;
+      print(mylist);
+
+      setState(() {
+        my=mylist;
       });
-    }
+    });*/
+  }
 
   getList() {
     Iterable<Widget> listTitles;
     int i = 0;
-       listTitles = my.map((dynamic item) {
-         i++;
-        print(item);
-        return new ListTile(
-          isThreeLine: true,
-          dense: false,
-          leading: new CircleAvatar(child: new Text(i.toString())),
-          title: new Text('卡片类型'),
-          subtitle: new Text(item.description),
-          trailing: new Icon(Icons.arrow_right, color: Colors.green),
-          onTap: () {
-            Navigator.of(context).popAndPushNamed('/discountDetail',arguments:{"CardType":item.type,"Enterprise":item.enterprise,
+    listTitles = my.map((dynamic item) {
+      i++;
+      print(item);
+      return new ListTile(
+        isThreeLine: true,
+        dense: false,
+        leading: new CircleAvatar(child: new Text(i.toString())),
+        title: new Text('卡片类型'),
+        subtitle: new Text(item.description),
+        trailing: new Icon(Icons.arrow_right, color: Colors.green),
+        onTap: () {
+          Navigator.of(context).popAndPushNamed('/discountDetail',arguments:{"CardType":item.type,"Enterprise":item.enterprise,
             "Coupons":item.coupons,"Describe":item.description,"ExpireTime":item.expireTime,"Id":item.activityId,
-            });
-          },
-        );
+          });
+        },
+      );
 
-      });
-      return listTitles.toList();
+    });
+    return listTitles.toList();
   }
 
 
   @override
   Widget build(BuildContext context) {
 
+    setState(() {
+      args=ModalRoute.of(context).settings.arguments;
+    });
+    if(ischanged==false) {
+      dioGetActivity(dio, args['Ename'], args['type']).then((res) async {
+        print(res.statusCode);
+        print(res.data);
+        List<dynamic> js = res.data['activity'];
+        print(js);
+        List<ActivityInfo> mylist = ActivityCounter
+            .fromJson(js)
+            .activityList;
+        print(mylist);
+
+        setState(() {
+          my = mylist;
+          ischanged=true;
+        });
+      });
+
+    }
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -156,7 +186,6 @@ class ActivityinfoState extends State<ActivityinfoPage> {
     scrollDirection: Axis.horizontal,
     autoplay: true,
     onTap: (index) => print('点击了第$index个'),
-
   );
 */
 
