@@ -14,6 +14,8 @@ import 'package:membership_card/model/user_count.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:membership_card/network/cookie.dart';
+import 'package:membership_card/model/enterprise_count.dart';
+import 'package:membership_card/model/enterprise_model.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -360,6 +362,14 @@ class LoginPageState extends State<LoginPage> {
                     SharedPreferenceUtil.addNoRepeat(
                         _userCounter.getList(), user);
                   }
+                  dioGetEnterprise(dio).then((res1) async{
+                    print(res1.statusCode);
+                    print(res1.data);
+                    if(res1.statusCode==200){
+                      List<EnterpriseInfo> list = EnterpriseCounter.fromJson(jsonDecode(res1.data)).enterpriseList;
+                      Provider.of<EnterpriseCounter>(context).enterpriseList = list;
+                    }
+                  });
 
                   Navigator.of(context).pushNamed("/bottomMenu", arguments: {
                     "user": user,
