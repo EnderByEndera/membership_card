@@ -91,7 +91,7 @@ class SwiperPageState extends State<SwiperPage> {
        subtitle: new Text('Click to see more information'),
        trailing: new Icon(Icons.arrow_right, color: Colors.green),
        onTap: () {
-         Navigator.of(context).popAndPushNamed('/discountDetail',arguments:{"Ename":item.Name,
+         Navigator.of(context).popAndPushNamed('/discountDetail',arguments:{"Ename":item.Name, "type":item.Type,
          });
        },
      );
