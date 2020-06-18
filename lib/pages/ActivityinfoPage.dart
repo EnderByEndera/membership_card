@@ -80,7 +80,7 @@ class ActivityinfoState extends State<ActivityinfoPage> {
         trailing: new Icon(Icons.arrow_right, color: Colors.green),
         onTap: () {
           Navigator.of(context).popAndPushNamed('/discountDetail',arguments:{"CardType":item.type,"Enterprise":item.enterprise,
-            "Coupons":item.coupons,"Describe":item.description,"ExpireTime":item.expireTime,"Id":item.activityId,
+            "Coupons":item.coupons,"Describe":item.description,"ExpireTime":item.expireTime,"TypeId":item.activityId,"BackgroundBase64":item.backgroundbase64
           });
         },
       );
