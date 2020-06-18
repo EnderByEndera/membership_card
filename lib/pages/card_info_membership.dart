@@ -114,12 +114,12 @@ class CardInfo1State extends State<CardInfo1Page> {
                           }
                           if(index == 1){
                             return  Text(
-                              //" Add: " + card.address + "\n"
-                              " Add: "  "\n"
-                              //"Tel: " + card.tel + "\n"
-                                  " Tel: "  "\n"
-                              //"BH: " + card.workTime + "\n",
-                                  " BH: "  "\n",
+                              " City: " + card.city + "\n" +
+//                              " City: "  "\n" +
+//                              "Tel: " + card.tel + "\n" +
+//                                  " Tel: "  "\n" +
+                              " BH: " + card.startTime + "\n",
+//                                  " BH: "  "\n",
                               style:
                               TextStyle(color: Colors.grey, fontSize: 15, height: 2),
                               textAlign: TextAlign.left,
@@ -151,7 +151,7 @@ class CardInfo1State extends State<CardInfo1Page> {
                                     margin: EdgeInsets.all(20.0),
                                     alignment: Alignment(-1.0, -0.3),
                                     child: Text(
-                                      "Buy " + card.maxScore.toString()+" Get 1 Free",
+                                      "Buy " + card.discountTimes.toString()+" Get 1 Free",
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 20.0,
@@ -162,7 +162,7 @@ class CardInfo1State extends State<CardInfo1Page> {
                                   Container(
                                       margin: EdgeInsets.all(20.0),
                                       alignment: Alignment(-1, 0.1),
-                                      child: Text("Offer expires at " ,//+ card.expireTime,
+                                      child: Text("Offer expires at " + card.expireTime,
                                           style: TextStyle(
                                             fontSize: 14.0,
                                             color: Colors.white,
@@ -171,7 +171,7 @@ class CardInfo1State extends State<CardInfo1Page> {
                                       margin: EdgeInsets.all(20.0),
                                       alignment: Alignment(-1, 0.6),
                                       child: Text(
-                                          "${card.currentScore % card.maxScore} "
+                                          "${card.currentScore % card.discountTimes} "
                                               "More to go",
                                           style: TextStyle(
                                               fontSize: 18.0,
@@ -183,7 +183,7 @@ class CardInfo1State extends State<CardInfo1Page> {
                                       padding: EdgeInsets.only(
                                           left: 20.0, right: 20.0, top: 125.0, bottom: 2.0),
                                       scrollDirection: Axis.horizontal,
-                                      children: _buildRewardPlace(card.currentScore % card.maxScore , card.maxScore, context),
+                                      children: _buildRewardPlace(card.currentScore % card.discountTimes , card.discountTimes, context),
                                     ),
                                   )
                                 ],
@@ -216,10 +216,10 @@ class CardInfo1State extends State<CardInfo1Page> {
                                             textAlign: TextAlign.left,
                                           ),
                                           Text(
-                                            //" Add: " + card.address + "\n"
-                                            "Add: "  "\n"
-                                            //"Tel: " + card.tel + "\n"
-                                                "Tel: "  "\n",
+                                            " City: " + card.city + "\n",
+//                                            "City: "  "\n",
+//                                            "Tel: " + card.tel + "\n",
+//                                                "Tel: "  "\n",
                                             style: TextStyle(
                                               color: Colors.black54,
                                               fontSize: 10,
@@ -233,8 +233,8 @@ class CardInfo1State extends State<CardInfo1Page> {
                                             const EdgeInsets.symmetric(vertical: 12.0),
                                           ),
                                           Text(
-                                            //card.description+"\n"
-                                            "\n"
+//                                            card.description+"\n" +
+//                                            "\n"
                                                 "Enjoy the extra",
                                             style: TextStyle(
                                               color: Colors.orange,
@@ -263,7 +263,7 @@ class CardInfo1State extends State<CardInfo1Page> {
                                             const EdgeInsets.symmetric(vertical: 20.0),
                                           ),
                                           Text(
-                                            "Offer expires at" , //+ args["expireTime"],
+                                            "Offer expires at" + args["expireTime"],
                                             style: TextStyle(
                                               color: Colors.grey,
                                               fontSize: 10,

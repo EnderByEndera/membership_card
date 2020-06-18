@@ -9,9 +9,11 @@ class ActivityInfo extends ChangeNotifier {
   static const String COUPONS_JSON = "Coupons";
   static const String DESCRIPTION_JSON = "Describe";
   static const String EXPIRETIME_JSON = "ExpireTime";
+  static const String TYPE_ID_JSON     = "TypeId";
 
   int _activityId;
   String _type;
+  int _typeId;
   String _enterprise;
   String _state;
   String _city;
@@ -28,6 +30,12 @@ class ActivityInfo extends ChangeNotifier {
   String get coupons => _coupons;
   String get description => _description;
   String get expireTime => _expireTime;
+
+  int get typeId => _typeId;
+
+  set typeId(int value) {
+    _typeId = value;
+  }
 
   ActivityInfo([this._activityId, this._type, this._enterprise]);
 
@@ -73,5 +81,7 @@ class ActivityInfo extends ChangeNotifier {
     _coupons = json[COUPONS_JSON];
     _description = json[DESCRIPTION_JSON];
     _expireTime = json[EXPIRETIME_JSON];
+    this._typeId = json[TYPE_ID_JSON];
+
   }
 }
