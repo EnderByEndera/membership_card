@@ -88,7 +88,9 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage>
 
   Widget build(BuildContext context) {
     dynamic args = ModalRoute.of(context).settings.arguments;
-    cardStoreController.text=args["store"];
+    if(args["store"]!=null) {
+      cardStoreController.text = args["store"];
+    }
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,

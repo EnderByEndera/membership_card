@@ -14,4 +14,11 @@ class EnterpriseCounter extends ChangeNotifier {
   } //default constructor
 
   List<EnterpriseInfo> get enterpriseList => _enterpriseList;
+
+    EnterpriseCounter.fromJson(List<dynamic> json){
+      List<EnterpriseInfo> list = [];
+      for (int i = 0; i < json.length; i++) {
+        list.add(EnterpriseInfo.fromJSON(json[i]));
+      }
+    }
 }
