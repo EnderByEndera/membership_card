@@ -84,8 +84,9 @@ class ActivityinfoState extends State<ActivityinfoPage> {
         subtitle: new Text(item.description),
         trailing: new Icon(Icons.arrow_right, color: Colors.green),
         onTap: () {
+//          print("typeID is "+ item.typeId);
           Navigator.of(context).popAndPushNamed('/discountDetail',arguments:{"CardType":item.type,"Enterprise":item.enterprise,
-            "Coupons":item.coupons,"Describe":item.description,"ExpireTime":item.expireTime,"TypeId":item.activityId,"BackgroundBase64":item.backgroundbase64
+            "Coupons":item.coupons,"Describe":item.description,"ExpireTime":item.expireTime,"Id":item.Id
           });
         },
       );
@@ -118,31 +119,31 @@ class ActivityinfoState extends State<ActivityinfoPage> {
         });
       });
 
-      //根据商家名称获取商家对应的Id, 再根据这个Id用api获取商家背景图base64编码
-      List<EnterpriseInfo> list = Provider.of<EnterpriseCounter>(context).enterpriseList;
-      String back_CaptchaCode;
-      String dicountCard_CaptchaCode;
-      for(int i = 0; i < list.length; i++){
-        if(list[i].enterpriseName == args["Ename"]){
-
-          String enterpriseId = list[i].enterpriseId;
-
-          dioGetEnterpriseInfo(dio, enterpriseId).then((res) async{
-            print(res.statusCode);
-            print(res.data);
-            if(res.statusCode==200){
-              Map<String, dynamic> js = res.data;
-              back_CaptchaCode = EnterpriseDemo.fromJson(js).base64;
-            }
-          }
-          );
-          break;
-        }
-      }
-
-      //商家店面背景
-      back_CaptchaCode  = back_CaptchaCode.split(',')[1];
-      bytes = Base64Decoder().convert(back_CaptchaCode);
+//      //根据商家名称获取商家对应的Id, 再根据这个Id用api获取商家背景图base64编码
+//      List<EnterpriseInfo> list = Provider.of<EnterpriseCounter>(context).enterpriseList;
+//      String back_CaptchaCode;
+//      String dicountCard_CaptchaCode;
+//      for(int i = 0; i < list.length; i++){
+//        if(list[i].enterpriseName == args["Ename"]){
+//
+//          String enterpriseId = list[i].enterpriseId;
+//
+//          dioGetEnterpriseInfo(dio, enterpriseId).then((res) async{
+//            print(res.statusCode);
+//            print(res.data);
+//            if(res.statusCode==200){
+//              Map<String, dynamic> js = res.data;
+//              back_CaptchaCode = EnterpriseDemo.fromJson(js).base64;
+//            }
+//          }
+//          );
+//          break;
+//        }
+//      }
+//
+//      //商家店面背景
+//      back_CaptchaCode  = back_CaptchaCode.split(',')[1];
+//      bytes = Base64Decoder().convert(back_CaptchaCode);
     }
     return Scaffold(
       backgroundColor: Colors.white,
