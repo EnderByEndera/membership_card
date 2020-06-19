@@ -385,8 +385,7 @@ CupertinoAlertDialog nfcsuccessDialog(String name){
                               if (index == 0) {
                                 return GestureDetector(
                                   onTap: () {
-                                    Navigator.of(context)
-                                        .pushNamed("/addnumber");
+                                    Navigator.of(context).pushNamed( "/addnumber" ,arguments: {"store":''});
                                   },
                                   child: Container(
                                     margin:

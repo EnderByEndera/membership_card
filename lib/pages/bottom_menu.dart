@@ -23,7 +23,7 @@ class BottomMenuPageState extends State<BottomMenuPage>
   Widget build(BuildContext context){
     dynamic args = ModalRoute.of(context).settings.arguments;
     User user = args["user"];
-    List<Widget> viewList = [AllCardsMainPage(), ActivityinfoPage(), UserInfoPage(user)];
+    List<Widget> viewList = [AllCardsMainPage(), SwiperPage(), UserInfoPage(user)];
 
     return Container(
       child: Scaffold(
@@ -38,7 +38,7 @@ class BottomMenuPageState extends State<BottomMenuPage>
 
               BottomNavigationBarItem(
                 icon: Icon(Icons.local_activity, size: 36,),
-                title: Text("Account",style: TextStyle(color: Colors.blue),),
+                title: Text("Activity",style: TextStyle(color: Colors.blue),),
               ),
 
               BottomNavigationBarItem(

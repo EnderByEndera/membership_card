@@ -34,9 +34,9 @@ class SwiperPage extends StatefulWidget {
 class SwiperPageState extends State<SwiperPage> {
  static List _imageUrls = [
     'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1892437343,3193213548&fm=26&gp=0.jpg',
-    'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1700718690,9797066&fm=26&gp=0.jpg',
+    'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3943529541,3857368461&fm=26&gp=0.jpg',
     'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2774630792,60701066&fm=26&gp=0.jpg',
-    'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=837235093,3732460301&fm=26&gp=0.jpg',
+    'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1419382611,2308198156&fm=26&gp=0.jpg',
   ];
 
  static List webs=[
@@ -48,10 +48,10 @@ class SwiperPageState extends State<SwiperPage> {
 
  Dio dio=initDio();
  Response res1;
- var my=[];
+ var my=['Starbucks','Subway','HP','Luckin'];
+var type=['empty','empty','store','store'];
 
-
- var numList =['1','2'];
+ var numList =['1','2','3','4'];
 
 
 
@@ -59,28 +59,20 @@ class SwiperPageState extends State<SwiperPage> {
  void initState() {
    //页面初始化
    super.initState();
-   List<EnterpriseInfo> list = Provider.of<EnterpriseCounter>(context).enterpriseList;
-   for(int i=0;i<list.length;i++){
-     numList[i]='i';
-   }
-   setState(() {
-     my=list;
-   });
+
  }
 
  getList() {
-   int i = 0;
-   Iterable<Widget> listTitles = my.map((dynamic item) {
-     i++;
+   Iterable<Widget> listTitles = numList.map((String item) {
      return new ListTile(
        isThreeLine: true,
        dense: false,
-       leading: new CircleAvatar(child: new Text(numList[i])),
-       title: new Text(item.Name),
+       leading: new CircleAvatar(child: new Text(item)),
+       title: new Text(my[int.parse(item)-1]),
        subtitle: new Text('Click to see more information'),
        trailing: new Icon(Icons.arrow_right, color: Colors.green),
        onTap: () {
-         Navigator.of(context).popAndPushNamed('/discountDetail',arguments:{"Ename":item.Name, "type":item.Type,
+         Navigator.of(context).popAndPushNamed('/discountDetail',arguments:{"Ename":my[int.parse(item)-1], "type":type[int.parse(item)-1],
          });
        },
      );
