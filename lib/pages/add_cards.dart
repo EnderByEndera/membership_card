@@ -92,15 +92,15 @@ class AddCardState extends State<AddCardPage> {
 
              ListTile(
                leading:CircleAvatar(
-                 backgroundImage: NetworkImage('https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2433869611,3143457223&fm=26&gp=0.jpg'),
+                 backgroundImage: NetworkImage('http://www.logoids.com/upload/image/201812/15454614929456282.jpg'),
                  radius: 35.0,
                ),
 
 //
-               title: Text('McDonald',style:TextStyle(color:Colors.black,fontSize: 15.0) ,),
+               title: Text('Subway',style:TextStyle(color:Colors.black,fontSize: 15.0) ,),
                dense: true,
                onTap: (){
-                 Navigator.of(context).pushNamed( "/addnumber" ,arguments: {"store":'McDonald'});
+                 Navigator.of(context).pushNamed( "/addnumber" ,arguments: {"store":'Subway'});
                },
              ),
 
@@ -132,15 +132,15 @@ class AddCardState extends State<AddCardPage> {
 
              ListTile(
                leading:CircleAvatar(
-                 backgroundImage: NetworkImage('https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1592200203721&di=8d227c12a08d5e10502f23a526f0bd6a&imgtype=0&src=http%3A%2F%2Fimg.mp.itc.cn%2Fupload%2F20160504%2Fcc297d7d29f9418f929569f57170cd64_th.jpg'),
+                 backgroundImage: NetworkImage('https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1592537131028&di=eb58ffa8bdd05d2814e87c8a1ef9209a&imgtype=0&src=http%3A%2F%2Fwww.0511zxw.com%2Fuploads%2Fallimg%2F200301%2F093J211I-0.jpg'),
                  radius: 35.0,
                ),
 
 //
-               title: Text('BurgerKing',style:TextStyle(color:Colors.black,fontSize: 15.0) ,),
+               title: Text('Luckin',style:TextStyle(color:Colors.black,fontSize: 15.0) ,),
                dense: true,
                onTap: (){
-                 Navigator.of(context).pushNamed( "/addnumber" ,arguments: {"store":'BurgerKing'});
+                 Navigator.of(context).pushNamed( "/addnumber" ,arguments: {"store":'Luckin'});
                },
              ),
              new Padding(
