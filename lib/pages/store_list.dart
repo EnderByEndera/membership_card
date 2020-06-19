@@ -48,8 +48,8 @@ class SwiperPageState extends State<SwiperPage> {
 
  Dio dio=initDio();
  Response res1;
- var my=['Starbucks','Subway','HP','Luckin'];
-var type=['empty','empty','store','store'];
+ var my=['starbucks','Subway','HP','Luckin'];
+var type=['integrate','empty','store','store'];
 
  var numList =['1','2','3','4'];
 
@@ -72,7 +72,7 @@ var type=['empty','empty','store','store'];
        subtitle: new Text('Click to see more information'),
        trailing: new Icon(Icons.arrow_right, color: Colors.green),
        onTap: () {
-         Navigator.of(context).popAndPushNamed('/discountDetail',arguments:{"Ename":my[int.parse(item)-1], "type":type[int.parse(item)-1],
+         Navigator.of(context).popAndPushNamed('/activitys_of_enterprise',arguments:{"Ename":my[int.parse(item)-1], "type":type[int.parse(item)-1],
          });
        },
      );
@@ -83,6 +83,8 @@ var type=['empty','empty','store','store'];
 
  @override
   Widget build(BuildContext context) {
+   print(my);
+   print(type);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
