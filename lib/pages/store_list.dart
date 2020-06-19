@@ -59,26 +59,13 @@ class SwiperPageState extends State<SwiperPage> {
  void initState() {
    //页面初始化
    super.initState();
-   dioGetEnterprise(dio).then((res1) async{
-     print(res1.statusCode);
-     print(res1.data);
-     if(res1.statusCode==200){
-       List<dynamic> js = res1.data['enterprise'];
-       print(js);
-       List<EnterpriseInfo> list = EnterpriseCounter.fromJson(js).enterpriseList;
-       Provider.of<EnterpriseCounter>(context).enterpriseList = list;
-
-       for(int i=0;i<list.length;i++){
-         numList[i]='i';
-       }
-       setState(() {
-         my=list;
-       });
-     }
-
-
-
-   } );
+   List<EnterpriseInfo> list = Provider.of<EnterpriseCounter>(context).enterpriseList;
+   for(int i=0;i<list.length;i++){
+     numList[i]='i';
+   }
+   setState(() {
+     my=list;
+   });
  }
 
  getList() {
