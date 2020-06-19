@@ -30,35 +30,35 @@ class discountDetailPageState extends State<discountDetailPage> {
   Widget build(BuildContext context) {
     dynamic args = ModalRoute.of(context).settings.arguments;
 
-    //根据商家名称获取商家对应的Id, 再根据这个Id用api获取商家背景图base64编码
-    List<EnterpriseInfo> list = Provider.of<EnterpriseCounter>(context).enterpriseList;
-    String back_CaptchaCode;
-    String dicountCard_CaptchaCode;
-    for(int i = 0; i < list.length; i++){
-      if(list[i].enterpriseName == args["Enterprise"]){
-
-        String enterpriseId = list[i].enterpriseId;
-
-        dioGetEnterpriseInfo(dio, enterpriseId).then((res) async{
-          print(res.statusCode);
-          print(res.data);
-          if(res.statusCode==200){
-            Map<String, dynamic> js = res.data;
-            back_CaptchaCode = EnterpriseDemo.fromJson(js).base64;
-          }
-        }
-        );
-        break;
-      }
-    }
-
-    //商家店面背景
-    back_CaptchaCode  = back_CaptchaCode.split(',')[1];
-    Uint8List bytes1 = Base64Decoder().convert(back_CaptchaCode);
-
-    //优惠券背景
-    dicountCard_CaptchaCode = args["BackgroundBase64"].split(',')[1];   //base64正确格式
-    Uint8List bytes2 = Base64Decoder().convert(dicountCard_CaptchaCode);
+//    //根据商家名称获取商家对应的Id, 再根据这个Id用api获取商家背景图base64编码
+//    List<EnterpriseInfo> list = Provider.of<EnterpriseCounter>(context).enterpriseList;
+//    String back_CaptchaCode;
+//    String dicountCard_CaptchaCode;
+//    for(int i = 0; i < list.length; i++){
+//      if(list[i].enterpriseName == args["Enterprise"]){
+//
+//        String enterpriseId = list[i].enterpriseId;
+//
+//        dioGetEnterpriseInfo(dio, enterpriseId).then((res) async{
+//          print(res.statusCode);
+//          print(res.data);
+//          if(res.statusCode==200){
+//            Map<String, dynamic> js = res.data;
+//            back_CaptchaCode = EnterpriseDemo.fromJson(js).base64;
+//          }
+//        }
+//        );
+//        break;
+//      }
+//    }
+//
+//    //商家店面背景
+//    back_CaptchaCode  = back_CaptchaCode.split(',')[1];
+//    Uint8List bytes1 = Base64Decoder().convert(back_CaptchaCode);
+//
+//    //优惠券背景
+//    dicountCard_CaptchaCode = args["BackgroundBase64"].split(',')[1];   //base64正确格式
+//    Uint8List bytes2 = Base64Decoder().convert(dicountCard_CaptchaCode);
 
     return Scaffold(
       appBar: AppBar(
@@ -123,13 +123,14 @@ class discountDetailPageState extends State<discountDetailPage> {
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
                       children: <Widget>[
-//                        Image(
-//                          image: MemoryImage(bytes1),
-//                          //card.background
-//                          //height: 300,
-//                          fit: BoxFit.fitWidth,
-//                        ),
-                        Image.memory(bytes1, fit: BoxFit.fitWidth,),
+                        Image(
+                          image: AssetImage(
+                              "assets/backgrounds/starbucksBackground.jpg"),
+                          //card.background
+                          //height: 300,
+                          fit: BoxFit.fitWidth,
+                        ),
+//                        Image.memory(bytes1, fit: BoxFit.fitWidth,),
                         ListTile(
                           title: Text(
                             args["Coupons"],
@@ -145,22 +146,22 @@ class discountDetailPageState extends State<discountDetailPage> {
                           margin: new EdgeInsets.only(
                               left: 15.0, right: 15.0, top: 15.0),
                           color: Color.fromARGB(0, 255, 255, 255),
-//                          child: new Container(
-//                            width: 400.0,
-//                            height: 200.0,
-//                            decoration: new BoxDecoration(
-//                              color: Colors.white,
-//                              image: new DecorationImage(
-//                                  image: new AssetImage("assets/coupon/coffee.png"),
-//                                  fit: BoxFit.contain),
-//                              shape: BoxShape.rectangle,
-//                              // <-- 这里需要设置为 rectangle
-//                              borderRadius: new BorderRadius.all(
-//                                const Radius.circular(15.0), // <-- rectangle 时，BorderRadius 才有效
-//                              ),
-//                            ),
-//                          ),
-                          child: Image.memory(bytes2, fit: BoxFit.contain,),
+                          child: new Container(
+                            width: 400.0,
+                            height: 200.0,
+                            decoration: new BoxDecoration(
+                              color: Colors.white,
+                              image: new DecorationImage(
+                                  image: new AssetImage("assets/coupon/coffee.png"),
+                                  fit: BoxFit.contain),
+                              shape: BoxShape.rectangle,
+                              // <-- 这里需要设置为 rectangle
+                              borderRadius: new BorderRadius.all(
+                                const Radius.circular(15.0), // <-- rectangle 时，BorderRadius 才有效
+                              ),
+                            ),
+                          ),
+//                          child: Image.memory(bytes2, fit: BoxFit.contain,),
                         ),
                         Container(
                           padding: EdgeInsets.fromLTRB(8, 20, 8, 0),

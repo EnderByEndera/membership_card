@@ -22,35 +22,35 @@ class CardInfo3Page extends StatefulWidget {
 }
 
 class CardInfo3State extends State<CardInfo3Page>{
-  Dio dio = initDio();
+//  Dio dio = initDio();
 
   @override
   Widget build(BuildContext context) {
     dynamic args = ModalRoute.of(context).settings.arguments;
     CardInfo card = Provider.of<CardCounter>(context,listen:false).getCard(args["card"]);
 
-    List<EnterpriseInfo> list = Provider.of<EnterpriseCounter>(context).enterpriseList;
-    String back_CaptchaCode;
-    for(int i = 0; i < list.length; i++){
-      if(list[i].enterpriseName == card.eName){
-
-        String enterpriseId = list[i].enterpriseId;
-
-        dioGetEnterpriseInfo(dio, enterpriseId).then((res) async{
-          print(res.statusCode);
-          print(res.data);
-          if(res.statusCode==200){
-            Map<String, dynamic> js = res.data;
-            back_CaptchaCode = EnterpriseDemo.fromJson(js).base64;
-          }
-        }
-        );
-        break;
-      }
-    }
-    //商家店面背景
-    back_CaptchaCode = back_CaptchaCode.split(',')[1];
-    Uint8List bytes = Base64Decoder().convert(back_CaptchaCode);
+//    List<EnterpriseInfo> list = Provider.of<EnterpriseCounter>(context).enterpriseList;
+//    String back_CaptchaCode;
+//    for(int i = 0; i < list.length; i++){
+//      if(list[i].enterpriseName == card.eName){
+//
+//        String enterpriseId = list[i].enterpriseId;
+//
+//        dioGetEnterpriseInfo(dio, enterpriseId).then((res) async{
+//          print(res.statusCode);
+//          print(res.data);
+//          if(res.statusCode==200){
+//            Map<String, dynamic> js = res.data;
+//            back_CaptchaCode = EnterpriseDemo.fromJson(js).base64;
+//          }
+//        }
+//        );
+//        break;
+//      }
+//    }
+//    //商家店面背景
+//    back_CaptchaCode = back_CaptchaCode.split(',')[1];
+//    Uint8List bytes = Base64Decoder().convert(back_CaptchaCode);
 
     return SafeArea(
       child: Scaffold(
@@ -111,11 +111,11 @@ class CardInfo3State extends State<CardInfo3Page>{
                   padding: EdgeInsets.all(60),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5.0),
-//                    color: card.cardColor,
-                    image: DecorationImage(
-                        image: bytes!=null ? MemoryImage(bytes): AssetImage("assets/backgrounds/starbucksBackground.jpg"),
-                        fit: BoxFit.fitWidth
-                    ),
+                    color: card.cardColor,
+//                    image: DecorationImage(
+//                        image: bytes!=null ? MemoryImage(bytes): AssetImage("assets/backgrounds/starbucksBackground.jpg"),
+//                        fit: BoxFit.fitWidth
+//                    ),
                   ),
                   height: 180.0,
                 ),

@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,10 +14,6 @@ import 'package:barcode_flutter/barcode_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:dio/dio.dart';
 import 'package:membership_card/network/client.dart';
-import 'package:membership_card/model/enterprise_model.dart';
-import 'package:membership_card/model/enterprise_count.dart';
-import 'dart:convert';
-
 /// This is the All_Cards Page [AllCardsMainPage] which is the home of the App.
 /// It shows all the cards users created and users can also add cards
 /// in this page. Every Card is called [CardInfo].
@@ -38,17 +33,13 @@ class AllCardsMainPage extends StatefulWidget {
     return AllCardsMainPageState();
   }
 }
-
 /// This is the state related to the [AllCardsMainPage]
 /// It is the main state of the [AllCardsMainPage]
 class AllCardsMainPageState extends State<AllCardsMainPage> {
-
   TextEditingController _textEditingController;
   Response res;
   Dio dio = initDio();
-
   NfcData response = new NfcData(content: "");
-
   /// Build on NFC dialog for users to notice the phone is using NFC now.
   /// If NFC not open, will push a [_nfcAlertDialog] to remind of users to open
   /// NFC.
@@ -182,20 +173,18 @@ class AllCardsMainPageState extends State<AllCardsMainPage> {
           index=Provider.of<CardCounter>(context).cardList.length;
           Provider.of<CardCounter>(context).addCard(CardInfo(res.data));
         }
-
       });
       Navigator.of(context).pushNamed("/cardinfo_membership", arguments: {
         "herotag": Provider.of<CardCounter>(context).getOneCard(index).cardKey,
         "card": Provider.of<CardCounter>(context).getOneCard(index)
       });
       showDialog(context: context, builder: (_) => nfcsuccessDialog(response.content));
-
     } on Exception {
       Navigator.of(context).pop();
       showDialog(context: context, builder: (_) => _nfcAlertDialog());
     }
   }
-CupertinoAlertDialog nfcsuccessDialog(String name){
+  CupertinoAlertDialog nfcsuccessDialog(String name){
     return CupertinoAlertDialog(
       title:Text("Thank you!",style: TextStyle(color: Colors.blue,fontWeight: FontWeight.w700)),
       content: SizedBox(
@@ -205,8 +194,7 @@ CupertinoAlertDialog nfcsuccessDialog(String name){
             children: <Widget>[
               Divider(),
               Text("1 Reward point collected \nfrom "+name,style: TextStyle(color: Colors.blue),
-                  ),
-
+              ),
             ],
           ),
         ),
@@ -215,7 +203,6 @@ CupertinoAlertDialog nfcsuccessDialog(String name){
         FlatButton(
           onPressed: (){
             Navigator.of(context).pop();
-
           },
           child: Text("OK",
               style: TextStyle(color: Colors.blue,fontWeight: FontWeight.w700)),
@@ -249,13 +236,10 @@ CupertinoAlertDialog nfcsuccessDialog(String name){
       ],
     );
   }
-
   @override
   Widget build(BuildContext context) {
     //dynamic args = ModalRoute.of(context).settings.arguments;
-
     var _cardNumber = Provider.of<CardCounter>(context).cardList.length;
-
     Widget _randomColorContainer = Container(
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey, width: 1.5),
@@ -269,7 +253,6 @@ CupertinoAlertDialog nfcsuccessDialog(String name){
       height: MediaQuery.of(context).size.height / 10,
       width: MediaQuery.of(context).size.height / 10 / 0.9 * 1.6,
     );
-
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());    //Shift the focus to new FocusNode
@@ -281,7 +264,6 @@ CupertinoAlertDialog nfcsuccessDialog(String name){
       ),
     );
   }
-
   /// Build the body in the Scaffold of the [AllCardsMainPageState]
   SafeArea buildBody(
       BuildContext context, int _cardNumber, Widget _storePicContainer) {
@@ -360,93 +342,92 @@ CupertinoAlertDialog nfcsuccessDialog(String name){
               flex: 130,
               child: _cardNumber == 0
                   ? Flex(direction: Axis.vertical, children: <Widget>[
-                      Expanded(
-                        flex: 10,
-                        child: Align(
-                          alignment: Alignment.bottomLeft,
-                          child: Text(
-                            "Manage other membership cards",
-                            style: TextStyle(
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Spacer(
-                        flex: 4,
-                      ),
-                      Expanded(
-                        flex: 17,
-                        child: Container(
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: 5,
-                            itemBuilder: (context, index) {
-                              if (index == 0) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    Navigator.of(context)
-                                        .pushNamed("/addnumber");
-                                  },
-                                  child: Container(
-                                    margin:
-                                        EdgeInsets.symmetric(horizontal: 4.0),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      border: Border.all(
-                                          color: Colors.grey, width: 1.5),
-                                      borderRadius: BorderRadius.circular(12.0),
-                                    ),
-                                    height: MediaQuery.of(context).size.height *
-                                        0.1,
-                                    width: MediaQuery.of(context).size.height *
-                                        0.1 /
-                                        0.9 *
-                                        1.6,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(24.0),
-                                      child: Image(
-                                        image: AssetImage(
-                                            "assets/buttons/btnAdd.png"),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              } else {
-                                return _storePicContainer;
-                              }
-                            },
-                          ),
-                        ),
-                      )
-                    ])
-                  : Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                      child: GestureDetector(
-                        onVerticalDragEnd: (details) {
-                          if (details.primaryVelocity <= 0) {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (_) => AllCardsPage()));
-                          }
-                        },
-                        child: Consumer<CardCounter>(
-                          builder: (context, counter, child) => Stack(
-                              fit: StackFit.expand,
-                              children: _buildStack(
-                                  _cardNumber > 4
-                                      ? 4
-                                      : _cardNumber,
-                                  context)),
-                        ),
+                Expanded(
+                  flex: 10,
+                  child: Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Text(
+                      "Manage other membership cards",
+                      style: TextStyle(
+                        color: Colors.grey,
                       ),
                     ),
+                  ),
+                ),
+                Spacer(
+                  flex: 4,
+                ),
+                Expanded(
+                  flex: 17,
+                  child: Container(
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 5,
+                      itemBuilder: (context, index) {
+                        if (index == 0) {
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.of(context)
+                                  .pushNamed("/addnumber");
+                            },
+                            child: Container(
+                              margin:
+                              EdgeInsets.symmetric(horizontal: 4.0),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                    color: Colors.grey, width: 1.5),
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              height: MediaQuery.of(context).size.height *
+                                  0.1,
+                              width: MediaQuery.of(context).size.height *
+                                  0.1 /
+                                  0.9 *
+                                  1.6,
+                              child: Padding(
+                                padding: const EdgeInsets.all(24.0),
+                                child: Image(
+                                  image: AssetImage(
+                                      "assets/buttons/btnAdd.png"),
+                                ),
+                              ),
+                            ),
+                          );
+                        } else {
+                          return _storePicContainer;
+                        }
+                      },
+                    ),
+                  ),
+                )
+              ])
+                  : Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                child: GestureDetector(
+                  onVerticalDragEnd: (details) {
+                    if (details.primaryVelocity <= 0) {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (_) => AllCardsPage()));
+                    }
+                  },
+                  child: Consumer<CardCounter>(
+                    builder: (context, counter, child) => Stack(
+                        fit: StackFit.expand,
+                        children: _buildStack(
+                            _cardNumber > 4
+                                ? 4
+                                : _cardNumber,
+                            context)),
+                  ),
+                ),
+              ),
             )
           ],
         ),
       ),
     );
   }
-
   /// Build the Primary Theme AppBar for all the widgets to use.
   Widget _buildAppBar(
       BuildContext context, TextEditingController textEditingController) {
@@ -463,7 +444,7 @@ CupertinoAlertDialog nfcsuccessDialog(String name){
             contentPadding: EdgeInsets.all(12.0),
             hintText: "SEARCH...",
             border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(15.0)),
+            OutlineInputBorder(borderRadius: BorderRadius.circular(15.0)),
           ),
         ),
       ),
@@ -486,7 +467,6 @@ CupertinoAlertDialog nfcsuccessDialog(String name){
           ),
           onTap: () {
             Navigator.of(context).pushNamed("/addCard");
-
 //            Navigator.of(context).pushNamed("/discountDetail", arguments: {
 //              "enterprise": "HP",
 //              "title": 'discount 50%',
@@ -498,7 +478,6 @@ CupertinoAlertDialog nfcsuccessDialog(String name){
       ],
     );
   }
-
   /// Method to build the folding card design in the bottom of
   /// [AllCardsMainPage], the reason why is called [_buildStack] is because it
   /// is serviced for Stack Widget
@@ -536,22 +515,17 @@ CupertinoAlertDialog nfcsuccessDialog(String name){
     return heroList;
   }
 }
-
 class AllCardsPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return _AllCardsPageState();
   }
 }
-
 class _AllCardsPageState extends State<AllCardsPage>
     with SingleTickerProviderStateMixin {
-  Dio dio = initDio();
-
   TabController _tabController;
   TextEditingController _textEditingController;
   ScrollController _scrollController;
-
   /// Overwritten method to build the [_tabController] and [_scrollController]
   @override
   void initState() {
@@ -565,7 +539,6 @@ class _AllCardsPageState extends State<AllCardsPage>
       keepScrollOffset: false,
     );
   }
-
   @override
   void dispose() {
 //    _textEditingController.dispose();
@@ -573,114 +546,113 @@ class _AllCardsPageState extends State<AllCardsPage>
     _scrollController.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: NotificationListener<OverscrollNotification>(
-          onNotification: (notification) {
-            if (notification.dragDetails?.delta?.dy != null &&
-                notification.dragDetails.delta.dy > 50) {
-              Navigator.of(context).pop();
-              return true;
-            } else {
-              return false;
-            }
-          },
-          child: CustomScrollView(
-            controller: _scrollController,
-            slivers: <Widget>[
-              SliverAppBar(
+      body: NotificationListener<OverscrollNotification>(
+        onNotification: (notification) {
+          if (notification.dragDetails?.delta?.dy != null &&
+              notification.dragDetails.delta.dy > 50) {
+            Navigator.of(context).pop();
+            return true;
+          } else {
+            return false;
+          }
+        },
+        child: CustomScrollView(
+          controller: _scrollController,
+          slivers: <Widget>[
+            SliverAppBar(
+              automaticallyImplyLeading: false,
+              pinned: true,
+              expandedHeight: 110,
+              bottom: AppBar(
+                centerTitle: true,
                 automaticallyImplyLeading: false,
-                pinned: true,
-                expandedHeight: 110,
-                bottom: AppBar(
-                  centerTitle: true,
-                  automaticallyImplyLeading: false,
-                  backgroundColor: Colors.white,
-                  title: TextField(
-                    controller: _textEditingController,
-                    autofocus: false,
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.all(12.0),
-                      hintText: "SEARCH...",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0)),
-                    ),
-                  ),
-                ),
                 backgroundColor: Colors.white,
-                title: Text(
-                  "Puntos",
-                  style: TextStyle(
-                    decoration: TextDecoration.none,
-                    fontSize: 32.0,
-                    color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.bold,
+                title: TextField(
+                  controller: _textEditingController,
+                  autofocus: false,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(12.0),
+                    hintText: "SEARCH...",
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15.0)),
                   ),
                 ),
-                actions: <Widget>[
-                  GestureDetector(
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Image(
-                        image: AssetImage("assets/buttons/btnAdd.png"),
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.of(context).pushNamed("/addCard");
-                    },
-                  )
-                ],
               ),
-              SliverPadding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      if (index.isOdd) {
-                        int heroNumber = index ~/ 2;
-                        try {
-                          return Consumer<CardCounter>(
-                            builder: (context, counter, _) => Hero(
-                              tag: counter.getOneCard(heroNumber).cardKey,
-                              child:
-                              _cardDesign(counter, heroNumber,  _getCardDesignByType(counter.getOneCard(heroNumber).cardType)),
-                              //_cardDesign(counter, heroNumber,  _getCardDesignByIndex(index)),
-                            ),
-                          );
-                        } on Exception {
-                          return Consumer<CardCounter>(
-                            builder: (context, counter, _) => Hero(
-                              tag: counter.getOneCard(index).cardKey,
-                              child:
-                                  buildMembership(counter, index, context, counter.getOneCard(index).discountTimes),
-                            ),
-                          );
-                        }
-                      } else {
-                        return Divider(
-                          height: 5,
+              backgroundColor: Colors.white,
+              title: Text(
+                "Puntos",
+                style: TextStyle(
+                  decoration: TextDecoration.none,
+                  fontSize: 32.0,
+                  color: Theme.of(context).primaryColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              actions: <Widget>[
+                GestureDetector(
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Image(
+                      image: AssetImage("assets/buttons/btnAdd.png"),
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pushNamed("/addnumber");
+                    Navigator.of(context).pushNamed("/addCard");
+                  },
+                )
+              ],
+            ),
+            SliverPadding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                    if (index.isOdd) {
+                      int heroNumber = index ~/ 2;
+                      try {
+                        return Consumer<CardCounter>(
+                          builder: (context, counter, _) => Hero(
+                            tag: counter.getOneCard(heroNumber).cardKey,
+                            child:
+                            _cardDesign(counter, heroNumber,  _getCardDesignByType(counter.getOneCard(heroNumber).cardType)),
+                            //_cardDesign(counter, heroNumber,  _getCardDesignByIndex(index)),
+                          ),
+                        );
+                      } on Exception {
+                        return Consumer<CardCounter>(
+                          builder: (context, counter, _) => Hero(
+                            tag: counter.getOneCard(index).cardKey,
+                            child:
+                            buildMembership(counter, index, context, 5),
+                          ),
                         );
                       }
-                    },
-                    childCount:
-                        Provider.of<CardCounter>(context).cardList.length * 2,
-                  ),
+                    } else {
+                      return Divider(
+                        height: 5,
+                      );
+                    }
+                  },
+                  childCount:
+                  Provider.of<CardCounter>(context).cardList.length * 2,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
+      ),
     );
   }
-
   /// Method In order to build a Membership-Type Card.
   /// Contains design of building a membership card which has
   /// [_buildRewardPlace] to build a ListView Widget to show the reward point
   /// the user has of this card.
   static Widget buildMembership(CardCounter counter, int index,
-          BuildContext context, int rewardMaxPoint) =>
+      BuildContext context, int rewardMaxPoint) =>
       GestureDetector(
         onTap: () {
           Navigator.of(context).pushNamed("/cardinfo_membership", arguments: {
@@ -731,7 +703,7 @@ class _AllCardsPageState extends State<AllCardsPage>
                 margin: EdgeInsets.all(16.0),
                 alignment: Alignment(-1.0, -0.3),
                 child: Text(
-                  "Buy " + counter.getOneCard(index).discountTimes.toString()+" Get 1 Free",
+                  "Buy 5 Get 1 Free",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 20.0,
@@ -742,8 +714,7 @@ class _AllCardsPageState extends State<AllCardsPage>
               Container(
                   margin: EdgeInsets.all(16.0),
                   alignment: Alignment(-1, 0.1),
-                  child: Text(
-                      "Offer expires at " + counter.getOneCard(index).expireTime,
+                  child: Text("Offer expires at 31/12/2019",
                       style: TextStyle(
                         fontSize: 14.0,
                         color: Colors.white,
@@ -752,8 +723,8 @@ class _AllCardsPageState extends State<AllCardsPage>
                   margin: EdgeInsets.all(16.0),
                   alignment: Alignment(-1, 0.6),
                   child: Text(
-                      "${counter.getOneCard(index).discountTimes - counter.getOneCard(index).currentScore % counter.getOneCard(index).discountTimes} "
-                      "More to go",
+                      "${counter.getOneCard(index).currentScore % 5} "
+                          "More to go",
                       style: TextStyle(
                           fontSize: 18.0,
                           fontWeight: FontWeight.bold,
@@ -764,14 +735,13 @@ class _AllCardsPageState extends State<AllCardsPage>
                   padding: EdgeInsets.only(
                       left: 16.0, right: 16.0, top: 125.0, bottom: 2.0),
                   scrollDirection: Axis.horizontal,
-                  children: _buildRewardPlace(counter.getOneCard(index).currentScore % counter.getOneCard(index).discountTimes, rewardMaxPoint, context),
+                  children: _buildRewardPlace(counter.getOneCard(index).currentScore, rewardMaxPoint, context),
                 ),
               )
             ],
           ),
         ),
       );
-
   /// Method used in [buildMembership], to build the ListView Widget to show
   /// the reward point one user has of one card
   static List<Widget> _buildRewardPlace(int score, int rewardPoint, BuildContext context) {
@@ -781,171 +751,113 @@ class _AllCardsPageState extends State<AllCardsPage>
         constraints: BoxConstraints.tightFor(
             height: 33.0,
             width: (MediaQuery.of(context).size.width - 64.0) / 5),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.white),
-            ),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.white),
+        ),
         alignment: Alignment.center,
         child:
-            i > score
-                ? Text(i.toString(),
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14.0,
-                    ))
-                : Image(
-                    image: AssetImage("assets/points/Polygon.png"),
-                  ),
+        i > score
+            ? Text(i.toString(),
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 14.0,
+            ))
+            : Image(
+          image: AssetImage("assets/points/Polygon.png"),
+        ),
       ));
     }
     return rewardList;
   }
-
-   Widget buildBarcode(CardCounter counter, int index, BuildContext context){
-    List<EnterpriseInfo> list = Provider.of<EnterpriseCounter>(context).enterpriseList;
-    String back_CaptchaCode;
-    for(int i = 0; i < list.length; i++){
-      if(list[i].enterpriseName == counter.getOneCard(index).eName){
-
-        String enterpriseId = list[i].enterpriseId;
-
-        dioGetEnterpriseInfo(dio, enterpriseId).then((res) async{
-          print(res.statusCode);
-          print(res.data);
-          if(res.statusCode==200){
-            Map<String, dynamic> js = res.data;
-            back_CaptchaCode = EnterpriseDemo.fromJson(js).base64;
-          }
-        }
-        );
-        break;
-      }
-    }
-    //商家店面背景
-    back_CaptchaCode = back_CaptchaCode.split(',')[1];
-    Uint8List bytes = Base64Decoder().convert(back_CaptchaCode);
-
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).pushNamed("/cardinfo_barcode", arguments: {
-          "herotag": counter.getOneCard(index).cardKey,
-          "card": counter.getOneCard(index)
-        });
-      },
-      child: Container(
-        decoration: BoxDecoration(
-//            color: counter.getCardColor(index),
-          image: DecorationImage(
-              image: MemoryImage(bytes),
-              fit: BoxFit.fitWidth
+  static Widget buildBarcode(
+      CardCounter counter, int index, BuildContext context) =>
+      GestureDetector(
+        onTap: () {
+          Navigator.of(context).pushNamed("/cardinfo_barcode", arguments: {
+            "herotag": counter.getOneCard(index).cardKey,
+            "card": counter.getOneCard(index)
+          });
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: counter.getCardColor(index),
+            borderRadius: BorderRadius.circular(10.0),
           ),
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        constraints: BoxConstraints(minHeight: 160),
-        child: Stack(
-          fit: StackFit.passthrough,
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.all(16.0),
-              alignment: Alignment(-1, -0.7),
-              child: Text(
-                counter.getOneCard(index).eName,
-                style: TextStyle(
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            Container(
+          constraints: BoxConstraints(minHeight: 160),
+          child: Stack(
+            fit: StackFit.passthrough,
+            children: <Widget>[
+              Container(
                 margin: EdgeInsets.all(16.0),
-                alignment: Alignment(-1, -0.1),
-                child: Text(counter.getOneCard(index).cardId,
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      color: Colors.white,
-                    ))),
-            Container(
-              margin: EdgeInsets.all(16.0),
-              alignment: Alignment.bottomRight,
-              child: BarCodeImage(
-                padding: EdgeInsets.symmetric(vertical: 6.0),
-                params: ITFBarCodeParams(
-                  counter.getOneCard(index).cardId,
-                  barHeight: 30.0,
-                  withBearerBars: false,
-                  wideBarRatio: 2.25,
+                alignment: Alignment(-1, -0.7),
+                child: Text(
+                  counter.getOneCard(index).eName,
+                  style: TextStyle(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
-                backgroundColor: Colors.white,
               ),
-            ),
-          ],
+              Container(
+                  margin: EdgeInsets.all(16.0),
+                  alignment: Alignment(-1, -0.1),
+                  child: Text(counter.getOneCard(index).cardId,
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.white,
+                      ))),
+              Container(
+                margin: EdgeInsets.all(16.0),
+                alignment: Alignment.bottomRight,
+                child: BarCodeImage(
+                  padding: EdgeInsets.symmetric(vertical: 6.0),
+                  params: ITFBarCodeParams(
+                    counter.getOneCard(index).cardId,
+                    barHeight: 30.0,
+                    withBearerBars: false,
+                    wideBarRatio: 2.25,
+                  ),
+                  backgroundColor: Colors.white,
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-    );
-  }
-
-   Widget buildqrCode(CardCounter counter, int index, BuildContext context){
-     List<EnterpriseInfo> list = Provider.of<EnterpriseCounter>(context).enterpriseList;
-     String back_CaptchaCode;
-     for(int i = 0; i < list.length; i++){
-       if(list[i].enterpriseName == counter.getOneCard(index).eName){
-
-         String enterpriseId = list[i].enterpriseId;
-
-         dioGetEnterpriseInfo(dio, enterpriseId).then((res) async{
-           print(res.statusCode);
-           print(res.data);
-           if(res.statusCode==200){
-             Map<String, dynamic> js = res.data;
-             back_CaptchaCode = EnterpriseDemo.fromJson(js).base64;
-           }
-         }
-         );
-         break;
-       }
-     }
-     //商家店面背景
-     back_CaptchaCode = back_CaptchaCode.split(',')[1];
-     Uint8List bytes = Base64Decoder().convert(back_CaptchaCode);
-
-     return GestureDetector(
-       onTap: () {
-         Navigator.of(context).pushNamed("/cardinfo_qrcode", arguments: {
-           "herotag": counter.getOneCard(index).cardKey,
-           "card": counter.getOneCard(index)
-         });
-       },
-       child: Container(
-           decoration: BoxDecoration(
-             borderRadius: BorderRadius.circular(10.0),
-//              color: counter.getCardColor(index),
-             image: DecorationImage(
-                 image: MemoryImage(bytes),
-                 fit: BoxFit.fitWidth
-             ),
-           ),
-           constraints: BoxConstraints(minHeight: 160.0),
-           child: Stack(
-             fit: StackFit.passthrough,
-             children: <Widget>[
-               Container(
-                 margin: EdgeInsets.all(16.0),
-                 alignment: Alignment.topRight,
-                 child: QrImage(
-                   version: QrVersions.auto,
-                   backgroundColor: Colors.white,
-                   data: counter.getOneCard(index).cardId,
-                   size: 60.0,
-                   padding: EdgeInsets.all(4.0),
-                 ),
-               ),
-             ],
-           )),
-     );
-  }
-
-
+      );
+  static Widget buildqrCode(
+      CardCounter counter, int index, BuildContext context) =>
+      GestureDetector(
+        onTap: () {
+          Navigator.of(context).pushNamed("/cardinfo_qrcode", arguments: {
+            "herotag": counter.getOneCard(index).cardKey,
+            "card": counter.getOneCard(index)
+          });
+        },
+        child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+              color: counter.getCardColor(index),
+            ),
+            constraints: BoxConstraints(minHeight: 160.0),
+            child: Stack(
+              fit: StackFit.passthrough,
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.all(16.0),
+                  alignment: Alignment.topRight,
+                  child: QrImage(
+                    version: QrVersions.auto,
+                    backgroundColor: Colors.white,
+                    data: counter.getOneCard(index).cardId,
+                    size: 60.0,
+                    padding: EdgeInsets.all(4.0),
+                  ),
+                ),
+              ],
+            )),
+      );
   Widget _cardDesign(CardCounter counter, int index, CardDesign cardDesign) {
     Widget design;
     switch (cardDesign) {
@@ -963,7 +875,6 @@ class _AllCardsPageState extends State<AllCardsPage>
     }
     return design;
   }
-
   _getCardDesignByIndex(int index) {
     CardDesign design;
     switch (index % 3) {
@@ -998,18 +909,15 @@ class _AllCardsPageState extends State<AllCardsPage>
     return design;
   }
 }
-
 /// Enumeration of all the card designs
 /// Every design will be used in the [_cardDesign] method
 enum CardDesign {
   /// use [AllCardsMainPageState.buildMembership] to build a membership card
   /// with reward points shown in the bottom
   membership,
-
   /// use [AllCardsMainPageState.buildBarcodeScan] to build a card showing its
   /// barcode
   barcode,
-
   /// use [AllCardsMainPageState.buildQrCodeScan] to build a card showing its
   /// QR Code in the bottom
   qrCode,

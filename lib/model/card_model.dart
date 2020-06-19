@@ -49,8 +49,8 @@ class CardInfo extends ChangeNotifier{
   static const String MONEY_JSON     = "Money";
   static const String SERIAL_NUM_JSON     = "SerialNum";
   static const String STATE_JSON     = "State";
-  static const String USE_TIMES_JSON     = "useTimes";
-  static const String DISCOUNT_TIMES_JSON     = "discountTimes";
+  static const String USE_TIMES_JSON     = "UseTimes";
+  static const String DISCOUNT_TIMES_JSON     = "DiscountTimes";
 
 
   int _useTimes;
@@ -181,8 +181,8 @@ class CardInfo extends ChangeNotifier{
       this._serialNum = json[SERIAL_NUM_JSON];
       this._state = json[STATE_JSON];
       this..startTime = json[START_TIME_JSON];
-      this.useTimes = json[START_TIME_JSON];
-      this._discountTimes = json[USE_TIMES_JSON];
+      this.useTimes = json[USE_TIMES_JSON];
+      this._discountTimes = json[DISCOUNT_TIMES_JSON];
       this._typeId = json[TYPE_ID_JSON];
     }
 

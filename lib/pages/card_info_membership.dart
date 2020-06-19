@@ -47,28 +47,28 @@ class CardInfo1State extends State<CardInfo1Page> {
     CardInfo card = Provider.of<CardCounter>(context,listen:false).getCard(args["card"]);
     int itemNum = card.couponsNum + 3;
 
-    List<EnterpriseInfo> list = Provider.of<EnterpriseCounter>(context).enterpriseList;
-    String back_CaptchaCode;
-    for(int i = 0; i < list.length; i++){
-      if(list[i].enterpriseName == card.eName){
-
-        String enterpriseId = list[i].enterpriseId;
-
-        dioGetEnterpriseInfo(dio, enterpriseId).then((res) async{
-          print(res.statusCode);
-          print(res.data);
-          if(res.statusCode==200){
-            Map<String, dynamic> js = res.data;
-            back_CaptchaCode = EnterpriseDemo.fromJson(js).base64;
-          }
-        }
-        );
-        break;
-      }
-    }
-    //商家店面背景
-    back_CaptchaCode = back_CaptchaCode.split(',')[1];
-    Uint8List bytes = Base64Decoder().convert(back_CaptchaCode);
+//    List<EnterpriseInfo> list = Provider.of<EnterpriseCounter>(context).enterpriseList;
+//    String back_CaptchaCode;
+//    for(int i = 0; i < list.length; i++){
+//      if(list[i].enterpriseName == card.eName){
+//
+//        String enterpriseId = list[i].enterpriseId;
+//
+//        dioGetEnterpriseInfo(dio, enterpriseId).then((res) async{
+//          print(res.statusCode);
+//          print(res.data);
+//          if(res.statusCode==200){
+//            Map<String, dynamic> js = res.data;
+//            back_CaptchaCode = EnterpriseDemo.fromJson(js).base64;
+//          }
+//        }
+//        );
+//        break;
+//      }
+//    }
+//    //商家店面背景
+//    back_CaptchaCode = back_CaptchaCode.split(',')[1];
+//    Uint8List bytes = Base64Decoder().convert(back_CaptchaCode);
 
     return Scaffold(
         backgroundColor: Colors.white,
@@ -132,17 +132,13 @@ class CardInfo1State extends State<CardInfo1Page> {
                       if(index < itemNum){
                         try{
                           if (index == 0) {
-                            if(bytes!=null){
-                              return Image.memory(bytes, fit: BoxFit.fitWidth,);
-                            }
-                            else{
-                              return Image.asset("assets/backgrounds/starbucksBackground.jpg");
-                            }
-//                            return Image(
-//                              image: MemoryImage(bytes),   //card.background
-//                              //height: 300,
-//                              fit: BoxFit.fitWidth,
-//                            );
+//                            if(bytes!=null){
+//                              return Image.memory(bytes, fit: BoxFit.fitWidth,);
+//                            }
+//                            else{
+//                              return Image.asset("assets/backgrounds/starbucksBackground.jpg");
+//                            }
+                            return Image.asset("assets/backgrounds/starbucksBackground.jpg", fit: BoxFit.fitWidth,);
                           }
                           if(index == 1){
                             return  Text(
@@ -322,7 +318,12 @@ class CardInfo1State extends State<CardInfo1Page> {
                             );
                           }
                         }on Exception{
-                          return Image.asset("assets/backgrounds/starbucksBackground.jpg");
+//                          return Image(
+//                            image: AssetImage("assets/backgrounds/starbucksBackground.jpg"),   //card.background
+//                            //height: 300,
+//                            fit: BoxFit.fitWidth,
+//                          );
+                        return Container();
                         }
                       }
                       else{

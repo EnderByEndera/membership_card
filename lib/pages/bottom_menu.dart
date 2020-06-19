@@ -38,7 +38,7 @@ class BottomMenuPageState extends State<BottomMenuPage>
 
               BottomNavigationBarItem(
                 icon: Icon(Icons.local_activity, size: 36,),
-                title: Text("Account",style: TextStyle(color: Colors.blue),),
+                title: Text("Discount",style: TextStyle(color: Colors.blue),),
               ),
 
               BottomNavigationBarItem(
